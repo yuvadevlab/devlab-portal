@@ -77,7 +77,7 @@ export class KeypairService implements OnModuleInit {
     payload: Record<string, unknown>,
     options: { expiresIn?: string; subject?: string; audience?: string } = {},
   ): Promise<string> {
-    const issuer = process.env.OIDC_ISSUER || "http://localhost:3010";
+    const issuer = process.env.OIDC_ISSUER || "http://localhost:3015";
     let jwtBuilder = new jose.SignJWT(payload)
       .setProtectedHeader({ alg: "RS256", kid: DEVLAB_KEY_ID })
       .setIssuedAt()
@@ -99,7 +99,7 @@ export class KeypairService implements OnModuleInit {
    */
   async verifyJwt(token: string): Promise<jose.JWTVerifyResult> {
     return jose.jwtVerify(token, this.publicKey, {
-      issuer: process.env.OIDC_ISSUER || "http://localhost:3010",
+      issuer: process.env.OIDC_ISSUER || "http://localhost:3015",
     });
   }
 }

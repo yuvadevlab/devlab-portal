@@ -49,7 +49,7 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  const port = process.env.PORT || 3010;
+  const port = process.env.PORT || 3015;
   await app.listen(port);
 
   logger.info(`🚀 DevLab Portal API Control Plane listening on http://localhost:${port}`);

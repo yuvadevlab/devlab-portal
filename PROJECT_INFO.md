@@ -35,7 +35,7 @@ In a distributed AI and financial services infrastructure, distributed security 
                   [Portal Web Console (Next.js 15 — Port 3005)]
                                         │  (HTTP / SSE)
                                         ▼
-                  [Portal Fastify API Control Plane (Port 3010)]
+                  [Portal Fastify API Control Plane (Port 3015)]
                                         │
      ┌──────────────────────────────────┼──────────────────────────────────┐
      ▼                                  ▼                                  ▼
@@ -62,7 +62,7 @@ In a distributed AI and financial services infrastructure, distributed security 
   - **Tenant & Team Management**: Invite team members, assign granular RBAC roles, and manage billing profiles.
   - **Real-Time Usage Telemetry**: Charts showing active requests, token consumption, and rate limit saturation.
 
-#### 2. Fastify Control Plane API (`apps/api` — Port `3010`)
+#### 2. Fastify Control Plane API (`apps/api` — Port `3015`)
 
 - **Technology Stack**: Fastify v4, Prisma ORM, PostgreSQL 16, Redis 7.
 - **Purpose**: High-throughput REST API serving authentication verification, key generation, and control plane operations.
@@ -80,7 +80,7 @@ In a distributed AI and financial services infrastructure, distributed security 
 sequenceDiagram
     autonumber
     participant Admin as Security Admin (Portal :3005)
-    participant Portal as Portal API (:3010)
+    participant Portal as Portal API (:3015)
     participant Redis as Redis (:6379)
     participant GW as OrchestraI Gateway (:4001)
     participant Worker as OrchestraI Worker (:4003)
@@ -108,7 +108,7 @@ sequenceDiagram
 | Ecosystem Member    | Direction | Protocol & Transport | Exact Payload Contract & Endpoint                       | Purpose & Operational Behavior                                                                      |
 | :------------------ | :-------: | :------------------- | :------------------------------------------------------ | :-------------------------------------------------------------------------------------------------- |
 | **`orchestrai`**    | Outbound  | Redis Pub/Sub & HTTP | `POST http://localhost:4001/api/v1/internal/killswitch` | Emits revocation events; validates client API keys on session initiation.                           |
-| **`finai`**         | Outbound  | Redis Pub/Sub & HTTP | `GET http://localhost:3010/api/v1/subscriptions/verify` | Provides subscription tier verification and user feature entitlements.                              |
+| **`finai`**         | Outbound  | Redis Pub/Sub & HTTP | `GET http://localhost:3015/api/v1/subscriptions/verify` | Provides subscription tier verification and user feature entitlements.                              |
 | **`devlab-logs`**   | Outbound  | HTTP/2 POST          | `POST http://localhost:3020/api/v1/logs/ingest`         | Streams administrative audit records, access history, and key management actions.                   |
 | **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8085/api/v1/incidents/webhook`   | Dispatches alerts if Redis pub/sub connection drops or database replication delays occur.           |
 | **`devlab-guard`**  |  Inbound  | CLI Git Pre-commit   | `uv run devlab-guard scan --path .`                     | Scans codebase to enforce 250-line rule, type safety, and zero magic strings.                       |
@@ -148,7 +148,7 @@ pnpm install
 pnpm db:generate
 pnpm db:migrate
 
-# Start Web (:3005) and API (:3010) in development mode
+# Start Web (:3005) and API (:3015) in development mode
 pnpm dev
 
 # Verify monorepo typecheck
@@ -159,7 +159,7 @@ pnpm typecheck
 
 | Variable                 |  Type  |         Default          | Required | Description                                                                                   |
 | :----------------------- | :----: | :----------------------: | :------: | :-------------------------------------------------------------------------------------------- |
-| `PORT`                   | Number |          `3010`          |   Yes    | Fastify API listening port.                                                                   |
+| `PORT`                   | Number |          `3015`          |   Yes    | Fastify API listening port.                                                                   |
 | `DATABASE_URL`           | String |            —             |   Yes    | PostgreSQL connection string (`postgresql://postgres:postgres@localhost:5432/devlab_portal`). |
 | `REDIS_URL`              | String | `redis://localhost:6379` |   Yes    | Redis URL for caching key metadata and kill-switch pub/sub.                                   |
 | `DEVLAB_LOGS_URL`        | String | `http://localhost:3020`  |   Yes    | DevLab Logs ingestion endpoint.                                                               |
@@ -169,7 +169,7 @@ pnpm typecheck
 
 ```bash
 # Verify API Key via Fastify Gateway Endpoint
-curl -X POST http://localhost:3010/api/v1/keys/verify \
+curl -X POST http://localhost:3015/api/v1/keys/verify \
   -H "Content-Type: application/json" \
   -d '{
     "apiKey": "dl_live_a1b2c3d4e5f6g7h8i9j0"

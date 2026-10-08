@@ -6,7 +6,7 @@
 
 import { io, Socket } from "socket.io-client";
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3010";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3015";
 
 /**
  * Standard fetch wrapper with JSON serialization and error handling.
