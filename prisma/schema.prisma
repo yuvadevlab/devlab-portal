@@ -1,0 +1,105 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+enum Role {
+  super_admin
+  admin
+  developer
+  operator
+  read_only
+}
+
+enum AppEnvironment {
+  local_dev
+  staging
+  production
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String
+  passwordHash String     @map("password_hash")
+  role         Role       @default(developer)
+  avatarUrl    String?    @map("avatar_url")
+  isActive     Boolean    @default(true) @map("is_active")
+  sessions     Session[]
+  apiKeys      ApiKey[]
+  auditLogs    AuditLog[]
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("sessions")
+}
+
+model RegisteredApp {
+  id               String         @id @default(cuid())
+  appId            String         @unique @map("app_id")
+  name             String
+  slug             String         @unique
+  description      String?
+  iconUrl          String?        @map("icon_url")
+  originUrl        String         @map("origin_url")
+  callbackUrls     String[]       @map("callback_urls")
+  healthUrl        String         @map("health_url")
+  environment      AppEnvironment @default(local_dev)
+  isActive         Boolean        @default(true) @map("is_active")
+  maintenanceNote  String?        @map("maintenance_note")
+  clientSecretHash String         @map("client_secret_hash")
+  apiKeys          ApiKey[]
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  @@map("registered_apps")
+}
+
+model ApiKey {
+  id           String        @id @default(cuid())
+  name         String
+  keyPrefix    String        @map("key_prefix")
+  keyHash      String        @unique @map("key_hash")
+  appId        String        @map("app_id")
+  app          RegisteredApp @relation(fields: [appId], references: [id], onDelete: Cascade)
+  userId       String        @map("user_id")
+  user         User          @relation(fields: [userId], references: [id])
+  scopes       String[]
+  rateLimitRpm Int           @default(600) @map("rate_limit_rpm")
+  expiresAt    DateTime?     @map("expires_at")
+  lastUsedAt   DateTime?     @map("last_used_at")
+  isRevoked    Boolean       @default(false) @map("is_revoked")
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  @@map("api_keys")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  actorId    String   @map("actor_id")
+  actor      User     @relation(fields: [actorId], references: [id])
+  targetType String   @map("target_type")
+  targetId   String   @map("target_id")
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+}

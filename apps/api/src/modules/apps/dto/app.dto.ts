@@ -1,0 +1,90 @@
+/**
+ * @file apps/api/src/modules/apps/dto/app.dto.ts
+ * @description Data Transfer Objects and GraphQL Object Types for Registered Apps and Kill-Switch events.
+ * @module @devlab/portal-api/apps/dto
+ */
+
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Field, InputType, ObjectType } from "@nestjs/graphql";
+
+@InputType()
+export class UpdateAppStatusDto {
+  @Field()
+  @IsBoolean()
+  @IsNotEmpty()
+  isActive!: boolean;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  maintenanceNote?: string;
+}
+
+@ObjectType()
+export class RegisteredAppType {
+  @Field()
+  id!: string;
+
+  @Field()
+  appId!: string;
+
+  @Field()
+  name!: string;
+
+  @Field()
+  slug!: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field({ nullable: true })
+  iconUrl?: string;
+
+  @Field()
+  originUrl!: string;
+
+  @Field(() => [String])
+  callbackUrls!: string[];
+
+  @Field()
+  healthUrl!: string;
+
+  @Field()
+  environment!: string;
+
+  @Field()
+  isActive!: boolean;
+
+  @Field({ nullable: true })
+  maintenanceNote?: string;
+
+  @Field()
+  createdAt!: Date;
+
+  @Field()
+  updatedAt!: Date;
+
+  @Field({ nullable: true })
+  latencyMs?: number;
+
+  @Field({ nullable: true })
+  healthStatus?: string;
+}
+
+@ObjectType()
+export class AppStatusChangedPayload {
+  @Field()
+  appId!: string;
+
+  @Field()
+  name!: string;
+
+  @Field()
+  isActive!: boolean;
+
+  @Field({ nullable: true })
+  maintenanceNote?: string;
+
+  @Field()
+  updatedAt!: Date;
+}
