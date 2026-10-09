@@ -9,6 +9,7 @@ export * from "./api";
 export { AppCard } from "./components/app-card";
 export { AppGrid } from "./components/app-grid";
 export { AppMetrics } from "./components/app-metrics";
+export { RecentActivity } from "./components/recent-activity";
 export { AppSettingsDrawer } from "./components/app-settings-drawer";
 export { KillSwitchModal } from "./components/kill-switch-modal";
 export { RegisterAppModal } from "./components/register-wizard/register-app-modal";

@@ -6,5 +6,6 @@
 
 export * from "./types";
 export * from "./api";
+export { RoleHierarchy } from "./components/role-hierarchy";
 export { TeamTable } from "./components/team-table";
 export { InviteMemberModal } from "./components/invite-member-modal";

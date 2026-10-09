@@ -2,15 +2,27 @@
 
 /**
  * @file apps/web/src/features/apps/components/app-card.tsx
- * @description Application catalog tile with real-time health indicator, latency, and kill-switch trigger.
+ * @description Application catalog card with thematic color palettes, live telemetry, and control actions.
+ * Fully built with @yuva-devlab/ui Button and design tokens.
  * @module @devlab/portal-web/features/apps/components/app-card
  */
 
 import React from "react";
-import { ExternalLink, Settings, Power, ShieldAlert, CheckCircle2 } from "lucide-react";
-import { Badge, Button, CopyButton } from "@yuva-devlab/ui";
-import { UI_COPY } from "@/lib/ui-copy";
-import { AppStatus } from "@/lib/constants";
+import {
+  Link2,
+  HeartPulse,
+  ArrowUpRight,
+  Settings2,
+  Power,
+  ChartNoAxesCombined,
+  Workflow,
+  Terminal,
+  ShieldCheck,
+  Layers,
+  Bot,
+  type LucideIcon,
+} from "lucide-react";
+import { Button } from "@yuva-devlab/ui";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppCardProps {
@@ -20,162 +32,109 @@ interface AppCardProps {
 }
 
 export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleKillSwitch }) => {
-  // Determine if application is actively serving traffic
   const isRoutingActive = app.isActive;
-  // Compute health display state from latency and backend probe status
-  const isHealthy = isRoutingActive && app.healthStatus === AppStatus.HEALTHY;
+
+  // Assign distinct thematic accent color palette
+  const getAppColor = (appId: string): string => {
+    if (appId.includes("finai")) return "mint";
+    if (appId.includes("orchestrai")) return "blue";
+    if (appId.includes("log")) return "amber";
+    if (appId.includes("guard")) return "rose";
+    return "teal";
+  };
+
+  // Assign contextual domain icon
+  const getAppIcon = (appId: string): LucideIcon => {
+    if (appId.includes("finai")) return ChartNoAxesCombined;
+    if (appId.includes("orchestrai")) return Workflow;
+    if (appId.includes("log")) return Terminal;
+    if (appId.includes("guard")) return ShieldCheck;
+    if (appId.includes("portal")) return Layers;
+    return Bot;
+  };
+
+  const appColor = getAppColor(app.appId);
+  const IconComponent = getAppIcon(app.appId);
 
   return (
-    <div className="border-border bg-card hover:border-primary/40 flex flex-col justify-between rounded-xl border p-5 shadow-sm transition-all">
-      {/* Top Bar: Icon, Name, App ID */}
-      <div>
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
-            {app.iconUrl ? (
-              <img
-                src={app.iconUrl}
-                alt={app.name}
-                className="border-border size-10 rounded-lg border object-cover"
-              />
-            ) : (
-              <div className="bg-primary/15 text-primary flex size-10 items-center justify-center rounded-lg text-sm font-bold">
-                {app.name.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div>
-              <h3 className="text-foreground text-sm font-bold">{app.name}</h3>
-              <span className="text-muted-foreground font-mono text-xs">{app.appId}</span>
-            </div>
-          </div>
-
-          {/* Environment Tag */}
-          <Badge variant="outline" className="border-border font-mono text-[10px] uppercase">
-            {app.environment}
-          </Badge>
+    <article className={`app-card ${appColor}`}>
+      {/* Top Header: Thematic Icon & Status Pulse */}
+      <div className="app-card-top">
+        <div className="app-icon">
+          <IconComponent className="size-5" />
         </div>
-
-        {/* Description */}
-        <p className="text-muted-foreground mt-3 line-clamp-2 text-xs">
-          {app.description || UI_COPY.COMMON.EMPTY.NO_DATA}
-        </p>
-
-        {/* Telemetry and Endpoints */}
-        <div className="border-border mt-4 space-y-2 border-t pt-3 font-mono">
-          {/* Origin URL */}
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-muted-foreground text-[11px]">
-              {UI_COPY.APPS.CARD.ORIGIN_LABEL}:
-            </span>
-            <div className="flex items-center gap-1">
-              <span className="text-foreground max-w-35 truncate font-mono text-[11px]">
-                {app.originUrl}
-              </span>
-              <CopyButton textToCopy={app.originUrl} />
-            </div>
-          </div>
-
-          {/* Health & Live Telemetry */}
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-muted-foreground text-[11px]">
-              {UI_COPY.APPS.CARD.HEALTH_LABEL}:
-            </span>
-            <div className="flex items-center gap-1.5 font-mono text-[11px]">
-              {isHealthy ? (
-                <>
-                  <span className="relative flex size-2">
-                    <span className="bg-success absolute inline-flex size-full animate-ping rounded-full opacity-75" />
-                    <span className="bg-success relative inline-flex size-2 rounded-full" />
-                  </span>
-                  <span className="text-success">
-                    {UI_COPY.COMMON.STATUS.HEALTHY}
-                    {app.latencyMs && app.latencyMs > 0
-                      ? ` (${app.latencyMs}${UI_COPY.APPS.CARD.LATENCY_SUFFIX})`
-                      : ""}
-                  </span>
-                </>
-              ) : isRoutingActive ? (
-                <span className="text-warning flex items-center gap-1">
-                  <ShieldAlert className="size-3" />
-                  {UI_COPY.COMMON.STATUS.UNREACHABLE}
-                </span>
-              ) : (
-                <span className="text-destructive flex items-center gap-1">
-                  <Power className="size-3" />
-                  {UI_COPY.APPS.CARD.STATUS_KILLED}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Maintenance Note if kill-switch engaged */}
-          {!isRoutingActive && app.maintenanceNote && (
-            <div className="border-destructive/20 bg-destructive/10 text-destructive rounded p-2 text-[10px]">
-              {app.maintenanceNote}
-            </div>
-          )}
-        </div>
+        <span className={`status ${!isRoutingActive ? "suspended" : ""}`}>
+          <span className="status-dot" />
+          {isRoutingActive ? "Online" : "Suspended"}
+        </span>
       </div>
 
-      {/* Action Footers */}
-      <div className="border-border mt-5 flex items-center justify-between border-t pt-4">
-        {/* Quick Launch & Configure */}
-        <div className="flex items-center gap-2">
-          {isRoutingActive ? (
-            <a
-              href={app.originUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="border-border text-foreground hover:bg-background/80 inline-flex h-8 items-center rounded-md border px-2.5 text-xs font-medium shadow-xs transition-colors"
-            >
-              <ExternalLink className="mr-1 size-3.5" />
-              {UI_COPY.COMMON.ACTIONS.LAUNCH}
-            </a>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              disabled
-              className="border-border h-8 px-2.5 text-xs opacity-50"
-            >
-              <ExternalLink className="mr-1 size-3.5" />
-              {UI_COPY.COMMON.ACTIONS.LAUNCH}
-            </Button>
-          )}
+      {/* App Name & Environment Tag */}
+      <h2>
+        {app.name}
+        <span className="env-badge">
+          {app.environment === "local_dev" ? "local dev" : app.environment}
+        </span>
+      </h2>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onOpenSettings(app)}
-            className="border-border h-8 px-2.5 text-xs"
-          >
-            <Settings className="size-3.5" />
-          </Button>
-        </div>
+      {/* Description */}
+      <p className="app-description">{app.description || "No description provided."}</p>
 
-        {/* Kill Switch Toggle Button */}
-        <Button
-          variant={isRoutingActive ? "destructive" : "default"}
-          size="sm"
-          onClick={() => onToggleKillSwitch(app)}
-          className={`h-8 px-2.5 text-xs font-semibold ${
-            isRoutingActive
-              ? "bg-destructive text-destructive-foreground hover:opacity-90"
-              : "bg-success text-success-foreground hover:opacity-90"
+      {/* Origin URL */}
+      <div className="endpoint">
+        <Link2 className="size-3 shrink-0" />
+        <span>{app.originUrl}</span>
+      </div>
+
+      {/* Health Probe & Status Code */}
+      <div className="endpoint">
+        <HeartPulse className="size-3 shrink-0" />
+        <span>{app.healthUrl || "/health"}</span>
+        <span
+          className={`ml-auto font-mono text-[10px] font-semibold ${
+            isRoutingActive ? "text-success" : "text-destructive"
           }`}
         >
-          {isRoutingActive ? (
-            <>
-              <Power className="mr-1 size-3.5" />
-              {UI_COPY.APPS.CARD.DEACTIVATE_BTN}
-            </>
-          ) : (
-            <>
-              <CheckCircle2 className="mr-1 size-3.5" />
-              {UI_COPY.APPS.CARD.ACTIVATE_BTN}
-            </>
-          )}
-        </Button>
+          {isRoutingActive ? "200 OK" : "503"}
+        </span>
       </div>
-    </div>
+
+      {/* Card Footer: Launch Console & Controls */}
+      <div className="app-card-footer">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="text-muted-foreground hover:text-foreground gap-1 px-2 text-xs"
+          onClick={() => window.open(app.originUrl, "_blank", "noopener,noreferrer")}
+          disabled={!isRoutingActive}
+        >
+          Open console
+          <ArrowUpRight className="size-3" />
+        </Button>
+
+        <div className="flex items-center gap-1">
+          <Button
+            size="icon"
+            variant="ghost"
+            title={`Settings for ${app.name}`}
+            aria-label={`Settings for ${app.name}`}
+            onClick={() => onOpenSettings(app)}
+          >
+            <Settings2 className="size-4" />
+          </Button>
+
+          <Button
+            size="icon"
+            variant="ghost"
+            className="text-destructive hover:bg-destructive/10"
+            title={`${isRoutingActive ? "Kill-switch" : "Restore"} ${app.name}`}
+            aria-label={`Kill-switch ${app.name}`}
+            onClick={() => onToggleKillSwitch(app)}
+          >
+            <Power className="size-4" />
+          </Button>
+        </div>
+      </div>
+    </article>
   );
 };

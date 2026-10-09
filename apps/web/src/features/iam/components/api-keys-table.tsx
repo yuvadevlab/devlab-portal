@@ -2,17 +2,15 @@
 
 /**
  * @file apps/web/src/features/iam/components/api-keys-table.tsx
- * @description Tabular view of active and revoked scoped API keys with prefix previews.
- * Fully built with @yuva-devlab/ui Table, Badge, Button, and CopyButton primitives.
+ * @description Tabular view of scoped machine-to-machine credentials with search and filtering.
+ * Fully built with @yuva-devlab/ui Table, Button, and layout primitives.
  * @module @devlab/portal-web/features/iam/components/api-keys-table
  */
 
-import React from "react";
-import { Key, Plus, Trash2, ShieldCheck, Ban } from "lucide-react";
+import React, { useState } from "react";
+import { Plus, KeyRound, RefreshCw, Ban, Search } from "lucide-react";
 import {
-  Badge,
   Button,
-  CopyButton,
   Table,
   TableHeader,
   TableBody,
@@ -20,6 +18,8 @@ import {
   TableRow,
   TableCell,
 } from "@yuva-devlab/ui";
+import { Heading } from "@/components/layout";
+import { IamMetrics } from "./iam-metrics";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { ApiKey } from "@/features/iam/types";
 
@@ -34,142 +34,146 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
   onOpenGenerateModal,
   onRevokeKey,
 }) => {
+  const [search, setSearch] = useState("");
+  const [selectedApp, setSelectedApp] = useState("All");
+
+  const appsInKeys = Array.from(new Set(apiKeys.map((k) => k.appId)));
+
+  const filteredKeys = apiKeys.filter((k) => {
+    const matchesApp = selectedApp === "All" || k.appId === selectedApp;
+    const matchesSearch =
+      k.name.toLowerCase().includes(search.toLowerCase()) ||
+      k.keyPrefix.toLowerCase().includes(search.toLowerCase());
+    return matchesApp && matchesSearch;
+  });
+
   return (
-    <div className="space-y-6">
-      {/* Section Header */}
-      <div className="border-border flex flex-col justify-between gap-4 border-b pb-5 sm:flex-row sm:items-center">
-        <div>
-          <h2 className="text-foreground text-xl font-bold tracking-tight">
-            {UI_COPY.IAM.HEADER.TITLE}
-          </h2>
-          <p className="text-muted-foreground mt-1 text-xs">{UI_COPY.IAM.HEADER.DESCRIPTION}</p>
-        </div>
-        <Button
-          onClick={onOpenGenerateModal}
-          className="bg-primary text-primary-foreground h-9 shrink-0 px-4 text-xs font-medium shadow-sm hover:opacity-90"
-        >
+    <>
+      <Heading title={UI_COPY.IAM.HEADER.TITLE} description={UI_COPY.IAM.HEADER.DESCRIPTION}>
+        <Button onClick={onOpenGenerateModal}>
           <Plus className="mr-1.5 size-4" />
           {UI_COPY.IAM.HEADER.CREATE_BTN}
         </Button>
+      </Heading>
+
+      <IamMetrics apiKeys={apiKeys} />
+
+      {/* Toolbar */}
+      <div className="app-toolbar">
+        <div className="search-field">
+          <Search className="size-3.5" />
+          <input
+            placeholder="Search key name or prefix…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            aria-label="Search keys"
+          />
+        </div>
+
+        <select
+          className="filter-select text-xs"
+          value={selectedApp}
+          onChange={(e) => setSelectedApp(e.target.value)}
+          aria-label="Filter keys by application"
+        >
+          <option value="All">All applications</option>
+          {appsInKeys.map((appId) => (
+            <option key={appId} value={appId}>
+              {appId}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Keys Table */}
-      {apiKeys.length > 0 ? (
-        <div className="border-border bg-card overflow-hidden rounded-xl border shadow-sm">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-border bg-background/75 text-muted-foreground font-mono text-[10px] uppercase">
-                <TableHead className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.NAME}</TableHead>
-                <TableHead className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.APP}</TableHead>
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.IAM.TABLE.PREFIX}
-                </TableHead>
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.IAM.TABLE.SCOPES}
-                </TableHead>
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.IAM.TABLE.RATE_LIMIT}
-                </TableHead>
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.IAM.TABLE.CREATED}
-                </TableHead>
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.IAM.TABLE.STATUS}
-                </TableHead>
-                <TableHead className="px-4 py-3 text-right font-semibold">
-                  {UI_COPY.IAM.TABLE.ACTIONS}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="divide-border divide-y">
-              {apiKeys.map((k) => (
-                <TableRow key={k.id} className="hover:bg-background/40 transition-colors">
-                  {/* Name */}
-                  <TableCell className="text-foreground px-4 py-3.5 font-semibold">
+      {/* Table */}
+      <div className="table-wrap">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Key name</TableHead>
+              <TableHead>Target app</TableHead>
+              <TableHead>Key prefix</TableHead>
+              <TableHead>Scopes</TableHead>
+              <TableHead>Rate limit</TableHead>
+              <TableHead>Last used</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredKeys.map((k) => (
+              <TableRow key={k.id}>
+                <TableCell>
+                  <div className="flex items-center gap-2 font-medium">
+                    <KeyRound className="text-muted-foreground size-3.5" />
                     {k.name}
-                  </TableCell>
-
-                  {/* App badge */}
-                  <TableCell className="px-4 py-3.5">
-                    <span className="text-muted-foreground font-mono text-xs">{k.appId}</span>
-                  </TableCell>
-
-                  {/* Prefix Preview */}
-                  <TableCell className="px-4 py-3.5 font-mono text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-foreground">{k.keyPrefix}...</span>
-                      <CopyButton textToCopy={k.keyPrefix} />
-                    </div>
-                  </TableCell>
-
-                  {/* Scopes */}
-                  <TableCell className="px-4 py-3.5">
-                    <div className="flex flex-wrap gap-1">
-                      {k.scopes.map((scope) => (
-                        <Badge
-                          key={scope}
-                          variant="secondary"
-                          className="bg-primary/10 text-primary border-primary/20 font-mono text-[9px]"
-                        >
-                          {scope}
-                        </Badge>
-                      ))}
-                    </div>
-                  </TableCell>
-
-                  {/* Rate Limit */}
-                  <TableCell className="text-foreground px-4 py-3.5 font-mono text-[11px]">
-                    {k.rateLimitRpm} rpm
-                  </TableCell>
-
-                  {/* Created Date */}
-                  <TableCell className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
-                    {new Date(k.createdAt).toLocaleDateString()}
-                  </TableCell>
-
-                  {/* Status Badge */}
-                  <TableCell className="px-4 py-3.5">
-                    {k.isRevoked ? (
-                      <span className="bg-destructive/10 text-destructive inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold">
-                        <Ban className="size-3" />
-                        {UI_COPY.COMMON.STATUS.REVOKED}
+                  </div>
+                </TableCell>
+                <TableCell className="text-muted-foreground font-mono text-xs">{k.appId}</TableCell>
+                <TableCell>
+                  <code className="text-muted-foreground font-mono text-[11px]">
+                    {k.keyPrefix}…
+                  </code>
+                </TableCell>
+                <TableCell>
+                  <div className="scope-list">
+                    {k.scopes.map((s) => (
+                      <span className="tag" key={s}>
+                        {s}
                       </span>
-                    ) : (
-                      <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold">
-                        <ShieldCheck className="size-3" />
-                        {UI_COPY.COMMON.STATUS.ACTIVE}
-                      </span>
-                    )}
-                  </TableCell>
+                    ))}
+                  </div>
+                </TableCell>
+                <TableCell className="font-mono text-xs">
+                  {k.rateLimitRpm.toLocaleString()}{" "}
+                  <span className="text-muted-foreground font-sans text-[10px]">RPM</span>
+                </TableCell>
+                <TableCell className="text-muted-foreground text-xs">
+                  {new Date(k.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell>
+                  <span className={`status ${k.isRevoked ? "suspended" : ""}`}>
+                    <span className="status-dot" />
+                    {k.isRevoked ? UI_COPY.COMMON.STATUS.REVOKED : UI_COPY.COMMON.STATUS.ACTIVE}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-1">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      title={`Rotate ${k.name}`}
+                      aria-label={`Rotate ${k.name}`}
+                      disabled={k.isRevoked}
+                    >
+                      <RefreshCw className="size-3.5" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="text-destructive hover:bg-destructive/10"
+                      title={`Revoke ${k.name}`}
+                      aria-label={`Revoke ${k.name}`}
+                      disabled={k.isRevoked}
+                      onClick={() => onRevokeKey(k.id)}
+                    >
+                      <Ban className="size-3.5" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-                  {/* Revoke action */}
-                  <TableCell className="px-4 py-3.5 text-right">
-                    {!k.isRevoked && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onRevokeKey(k.id)}
-                        className="text-destructive hover:bg-destructive/10 h-7 px-2 text-xs"
-                      >
-                        <Trash2 className="mr-1 size-3.5" />
-                        {UI_COPY.COMMON.ACTIONS.REVOKE}
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        /* Empty State */
-        <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
-          <div className="bg-background border-border text-muted-foreground mb-3 flex size-12 items-center justify-center rounded-full border">
-            <Key className="size-6" />
-          </div>
-          <h4 className="text-foreground text-sm font-semibold">{UI_COPY.IAM.TABLE.EMPTY_TEXT}</h4>
-        </div>
-      )}
-    </div>
+        {filteredKeys.length === 0 && (
+          <p className="empty-state">No API keys match your filters.</p>
+        )}
+      </div>
+
+      <div className="text-muted-foreground mt-4 text-xs">
+        {filteredKeys.length} credentials · Secrets are only revealed once
+      </div>
+    </>
   );
 };

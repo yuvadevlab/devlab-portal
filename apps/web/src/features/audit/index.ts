@@ -6,5 +6,6 @@
 
 export * from "./types";
 export * from "./api";
+export { AuditMetrics } from "./components/audit-metrics";
 export { AuditTable } from "./components/audit-table";
 export { AuditInspectorDrawer } from "./components/audit-inspector-drawer";

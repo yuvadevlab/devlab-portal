@@ -2,13 +2,13 @@
 
 /**
  * @file apps/web/src/features/team/components/team-table.tsx
- * @description Organization members and RBAC role assignments table.
+ * @description Organization members and RBAC role assignments table with hierarchy viewer.
  * Fully built with @yuva-devlab/ui Table and Button components.
  * @module @devlab/portal-web/features/team/components/team-table
  */
 
-import React from "react";
-import { Users, Plus, ShieldCheck } from "lucide-react";
+import React, { useState } from "react";
+import { UserPlus, Trash2, Search } from "lucide-react";
 import {
   Button,
   Table,
@@ -17,9 +17,11 @@ import {
   TableHead,
   TableRow,
   TableCell,
+  Checkbox,
 } from "@yuva-devlab/ui";
+import { Heading } from "@/components/layout";
+import { RoleHierarchy } from "./role-hierarchy";
 import { UI_COPY } from "@/lib/ui-copy";
-import { UserRole } from "@/lib/constants";
 import type { UserMember } from "@/features/team/types";
 
 interface TeamTableProps {
@@ -28,111 +30,139 @@ interface TeamTableProps {
 }
 
 export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal }) => {
-  const getRoleBadgeVariant = (role: string) => {
-    switch (role) {
-      case UserRole.SUPER_ADMIN:
-        return "bg-destructive/10 text-destructive border border-destructive/20";
-      case UserRole.ADMIN:
-        return "bg-primary/10 text-primary border border-primary/20";
-      case UserRole.DEVELOPER:
-        return "bg-info/10 text-info border border-info/20";
-      default:
-        return "bg-muted text-muted-foreground border border-border";
+  const [search, setSearch] = useState("");
+
+  const filteredMembers = members.filter(
+    (m) =>
+      m.name.toLowerCase().includes(search.toLowerCase()) ||
+      m.email.toLowerCase().includes(search.toLowerCase()) ||
+      m.role.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const getInitials = (name: string, email: string): string => {
+    if (name.trim()) {
+      const parts = name.trim().split(" ");
+      if (parts.length >= 2 && parts[0] && parts[1]) {
+        return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
+      }
+      return name.slice(0, 2).toUpperCase();
     }
+    return email.slice(0, 2).toUpperCase();
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="border-border flex flex-col justify-between gap-4 border-b pb-5 sm:flex-row sm:items-center">
-        <div>
-          <h2 className="text-foreground text-xl font-bold tracking-tight">
-            {UI_COPY.TEAM.HEADER.TITLE}
-          </h2>
-          <p className="text-muted-foreground mt-1 text-xs">{UI_COPY.TEAM.HEADER.DESCRIPTION}</p>
-        </div>
-        <Button
-          onClick={onOpenInviteModal}
-          className="bg-primary text-primary-foreground h-9 shrink-0 px-4 text-xs font-medium shadow-sm hover:opacity-90"
-        >
-          <Plus className="mr-1.5 size-4" />
+    <>
+      <Heading title={UI_COPY.TEAM.HEADER.TITLE} description={UI_COPY.TEAM.HEADER.DESCRIPTION}>
+        <Button onClick={onOpenInviteModal}>
+          <UserPlus className="mr-1.5 size-4" />
           {UI_COPY.TEAM.HEADER.INVITE_BTN}
         </Button>
+      </Heading>
+
+      <RoleHierarchy />
+
+      {/* Toolbar */}
+      <div className="app-toolbar">
+        <div className="search-field">
+          <Search className="size-3.5" />
+          <input
+            placeholder="Search team members…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            aria-label="Search team members"
+          />
+        </div>
+        <span className="text-muted-foreground text-xs whitespace-nowrap">
+          {filteredMembers.length} members
+        </span>
       </div>
 
-      {/* Table */}
-      {members.length > 0 ? (
-        <div className="border-border bg-card overflow-hidden rounded-xl border shadow-sm">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-border bg-background/75 text-muted-foreground font-mono text-[10px] uppercase">
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.TEAM.TABLE.MEMBER}
-                </TableHead>
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.TEAM.TABLE.EMAIL}
-                </TableHead>
-                <TableHead className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.ROLE}</TableHead>
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.TEAM.TABLE.STATUS}
-                </TableHead>
-                <TableHead className="px-4 py-3 font-semibold">
-                  {UI_COPY.TEAM.TABLE.JOINED}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="divide-border divide-y">
-              {members.map((m) => (
-                <TableRow key={m.id} className="hover:bg-background/40 transition-colors">
-                  {/* Member */}
-                  <TableCell className="px-4 py-3.5">
-                    <div className="flex items-center gap-2.5">
-                      <div className="bg-primary/15 text-primary flex size-7 items-center justify-center rounded-full text-xs font-bold">
-                        {m.name.charAt(0).toUpperCase()}
+      {/* Members Table */}
+      <div className="table-wrap">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Member</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredMembers.map((m) => {
+              const isSelf = m.email.includes("admin@") || m.email.includes("yuvaraj@");
+              return (
+                <TableRow key={m.id}>
+                  {/* Member identity */}
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <span className="avatar">{getInitials(m.name, m.email)}</span>
+                      <div>
+                        <div className="text-foreground flex items-center text-xs font-semibold">
+                          {m.name}
+                          {isSelf && <span className="tag ml-2 py-0!">You</span>}
+                        </div>
+                        <div className="text-muted-foreground mt-0.5 font-mono text-[11px]">
+                          {m.email}
+                        </div>
                       </div>
-                      <span className="text-foreground font-semibold">{m.name}</span>
                     </div>
                   </TableCell>
 
-                  {/* Email */}
-                  <TableCell className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
-                    {m.email}
-                  </TableCell>
-
                   {/* Role */}
-                  <TableCell className="px-4 py-3.5">
-                    <span
-                      className={`inline-block rounded-md px-2 py-0.5 font-mono text-[10px] font-semibold ${getRoleBadgeVariant(m.role)}`}
+                  <TableCell>
+                    <select
+                      className="filter-select h-8 py-1 text-xs"
+                      disabled={isSelf}
+                      value={m.role}
+                      aria-label={`Role for ${m.name}`}
+                      onChange={() => {}}
                     >
-                      {m.role}
-                    </span>
+                      <option value="super_admin">super_admin</option>
+                      <option value="admin">admin</option>
+                      <option value="developer">developer</option>
+                      <option value="operator">operator</option>
+                      <option value="read_only">read_only</option>
+                    </select>
                   </TableCell>
 
-                  {/* Status */}
-                  <TableCell className="px-4 py-3.5">
-                    <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold">
-                      <ShieldCheck className="size-3" />
-                      {UI_COPY.COMMON.STATUS.ACTIVE}
-                    </span>
+                  {/* Status toggle */}
+                  <TableCell>
+                    <label className="flex cursor-pointer items-center gap-2 text-xs">
+                      <Checkbox
+                        checked={m.isActive}
+                        disabled={isSelf}
+                        onCheckedChange={() => {}}
+                        aria-label={`Active status for ${m.name}`}
+                      />
+                      <span className={m.isActive ? "text-success" : "text-muted-foreground"}>
+                        {m.isActive ? "Active" : "Disabled"}
+                      </span>
+                    </label>
                   </TableCell>
 
-                  {/* Joined */}
-                  <TableCell className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
-                    {new Date(m.createdAt).toLocaleDateString()}
+                  {/* Action */}
+                  <TableCell className="text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={isSelf}
+                      aria-label={`Remove ${m.name}`}
+                      className="text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
-          <div className="bg-background border-border text-muted-foreground mb-3 flex size-12 items-center justify-center rounded-full border">
-            <Users className="size-6" />
-          </div>
-          <h4 className="text-foreground text-sm font-semibold">{UI_COPY.TEAM.TABLE.EMPTY_TEXT}</h4>
-        </div>
-      )}
-    </div>
+              );
+            })}
+          </TableBody>
+        </Table>
+
+        {filteredMembers.length === 0 && (
+          <div className="empty-state">No team members match your search.</div>
+        )}
+      </div>
+    </>
   );
 };

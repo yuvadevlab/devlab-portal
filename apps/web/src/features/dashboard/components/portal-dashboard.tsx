@@ -2,13 +2,19 @@
 
 /**
  * @file apps/web/src/features/dashboard/components/portal-dashboard.tsx
- * @description Master client component coordinating tabs, TanStack Query hooks, and real-time sockets.
+ * @description Master client component coordinating Lovable console layout, query hooks, and modals.
  * @module @devlab/portal-web/features/dashboard/components/portal-dashboard
  */
 
 import React, { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Navbar, TabNav } from "@/components/layout";
+import {
+  PortalHeader,
+  PortalNavbar,
+  PortalFooter,
+  CommandDialog,
+  TenantModal,
+} from "@/components/layout";
 import { TabKey } from "@/lib/constants/enums";
 import { SOCKET_EVENTS } from "@/lib/constants/routes";
 import { getSocket, type RegisteredApp } from "@/lib/api-client";
@@ -44,7 +50,7 @@ export function PortalDashboard(): React.JSX.Element {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<TabKey>(TabKey.APPS);
 
-  // TanStack Query hooks subscribing to prehydrated server state
+  // TanStack Query hooks subscribing to server and local cache state
   const { data: apps = [] } = useAppsQuery();
   const { data: apiKeys = [] } = useApiKeysQuery();
   const { data: auditLogs = [] } = useAuditLogsQuery();
@@ -58,7 +64,9 @@ export function PortalDashboard(): React.JSX.Element {
   const toggleKillSwitch = useToggleKillSwitchMutation();
   const revokeApiKey = useRevokeApiKeyMutation();
 
-  // Dialog & Slide-over states
+  // Modal and Drawer States
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [isNewTenantOpen, setIsNewTenantOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [selectedAppForDrawer, setSelectedAppForDrawer] = useState<RegisteredApp | null>(null);
   const [selectedAppForKillSwitch, setSelectedAppForKillSwitch] = useState<RegisteredApp | null>(
@@ -67,7 +75,19 @@ export function PortalDashboard(): React.JSX.Element {
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
-  // Real-time WebSocket event synchronization
+  // Global Keyboard Shortcut (⌘K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Real-time WebSocket synchronization
   useEffect(() => {
     const socket = getSocket();
 
@@ -96,55 +116,67 @@ export function PortalDashboard(): React.JSX.Element {
     };
   }, [queryClient]);
 
-  const activeAppsCount = apps.filter((a) => a.isActive).length;
-
   return (
-    <div className="bg-background text-foreground min-h-screen">
-      <Navbar healthyCount={activeAppsCount} totalApps={apps.length} />
+    <div className="portal-shell">
+      <PortalHeader
+        auditLogs={auditLogs}
+        onOpenCommand={() => setIsCommandOpen(true)}
+        onOpenNewTenant={() => setIsNewTenantOpen(true)}
+        onNavigateTab={setActiveTab}
+      />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <TabNav
-          activeTab={activeTab}
-          onSelectTab={setActiveTab}
-          appsCount={apps.length}
-          keysCount={apiKeys.length}
-          auditCount={auditLogs.length}
-        />
+      <PortalNavbar activeTab={activeTab} onSelectTab={setActiveTab} appsCount={apps.length} />
 
-        <div className="mt-8">
-          {activeTab === TabKey.APPS && (
-            <div className="space-y-8">
-              <AppMetrics apps={apps} />
-              <AppGrid
-                apps={apps}
-                onOpenRegisterModal={() => setIsRegisterOpen(true)}
-                onOpenSettings={(app) => setSelectedAppForDrawer(app)}
-                onToggleKillSwitch={(app) => setSelectedAppForKillSwitch(app)}
-              />
-            </div>
-          )}
-
-          {activeTab === TabKey.IAM && (
-            <ApiKeysTable
-              apiKeys={apiKeys}
-              onOpenGenerateModal={() => setIsApiKeyModalOpen(true)}
-              onRevokeKey={async (id) => {
-                await revokeApiKey.mutateAsync(id);
-              }}
+      <main className="page-content">
+        {activeTab === TabKey.APPS && (
+          <>
+            <AppMetrics apps={apps} />
+            <AppGrid
+              apps={apps}
+              auditLogs={auditLogs}
+              onOpenRegisterModal={() => setIsRegisterOpen(true)}
+              onOpenSettings={(app) => setSelectedAppForDrawer(app)}
+              onToggleKillSwitch={(app) => setSelectedAppForKillSwitch(app)}
+              onNavigateTab={setActiveTab}
             />
-          )}
+          </>
+        )}
 
-          {activeTab === TabKey.AUDIT && <AuditTable logs={auditLogs} />}
+        {activeTab === TabKey.IAM && (
+          <ApiKeysTable
+            apiKeys={apiKeys}
+            onOpenGenerateModal={() => setIsApiKeyModalOpen(true)}
+            onRevokeKey={async (id) => {
+              await revokeApiKey.mutateAsync(id);
+            }}
+          />
+        )}
 
-          {activeTab === TabKey.TEAM && (
-            <TeamTable members={team} onOpenInviteModal={() => setIsInviteModalOpen(true)} />
-          )}
+        {activeTab === TabKey.AUDIT && <AuditTable logs={auditLogs} />}
 
-          {activeTab === TabKey.SETTINGS && <JwksViewer jwks={jwks} oidc={oidc} />}
-        </div>
+        {activeTab === TabKey.TEAM && (
+          <TeamTable members={team} onOpenInviteModal={() => setIsInviteModalOpen(true)} />
+        )}
+
+        {activeTab === TabKey.SETTINGS && <JwksViewer jwks={jwks} oidc={oidc} />}
+
+        <PortalFooter />
       </main>
 
-      {/* Slide-overs & Modals */}
+      {/* Global Command Dialog & Tenant Creation Modal */}
+      <CommandDialog
+        isOpen={isCommandOpen}
+        onClose={() => setIsCommandOpen(false)}
+        onNavigateTab={setActiveTab}
+      />
+
+      <TenantModal
+        isOpen={isNewTenantOpen}
+        onClose={() => setIsNewTenantOpen(false)}
+        onCreateTenant={() => {}}
+      />
+
+      {/* Slide-overs & Operations Modals */}
       <RegisterAppModal
         isOpen={isRegisterOpen}
         onClose={() => setIsRegisterOpen(false)}

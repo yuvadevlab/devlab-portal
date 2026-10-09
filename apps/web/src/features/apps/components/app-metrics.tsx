@@ -2,15 +2,13 @@
 
 /**
  * @file apps/web/src/features/apps/components/app-metrics.tsx
- * @description High-level KPI metrics bar displaying active swarms and routing health.
- * Consumes @yuva-devlab/ui MetricCard and MetricsGrid primitives.
+ * @description Connected 4-column metric cards grid displaying registered services and operational routing telemetry.
  * @module @devlab/portal-web/features/apps/components/app-metrics
  */
 
 import React from "react";
-import { Server, Activity, AlertOctagon, Cpu } from "lucide-react";
-import { MetricCard, MetricsGrid } from "@yuva-devlab/ui";
-import { UI_COPY } from "@/lib/ui-copy";
+import { Server, Activity, AlertOctagon, Zap } from "lucide-react";
+import { MetricsBar, type MetricItem } from "@/components/layout";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppMetricsProps {
@@ -19,44 +17,38 @@ interface AppMetricsProps {
 
 export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
   const totalCount = apps.length;
-  // Calculate healthy microservices responding to probes
-  const healthyCount = apps.filter((app) => app.isActive && app.healthStatus === "healthy").length;
-  // Identify offline or manually severed applications
-  const offlineCount = apps.filter(
-    (app) => !app.isActive || app.healthStatus === "unreachable",
-  ).length;
+  const suspendedCount = apps.filter((app) => !app.isActive).length;
+  const activeCount = totalCount - suspendedCount;
 
-  return (
-    <MetricsGrid className="mb-8">
-      <MetricCard
-        label={UI_COPY.APPS.METRICS.TOTAL_APPS}
-        value={totalCount}
-        icon={<Server className="text-primary size-4" />}
-      />
-      <MetricCard
-        label={UI_COPY.APPS.METRICS.HEALTHY}
-        value={healthyCount}
-        note={
-          totalCount > 0
-            ? `${Math.round((healthyCount / totalCount) * 100)}% operational`
-            : undefined
-        }
-        positive={true}
-        icon={<Activity className="text-success size-4" />}
-      />
-      <MetricCard
-        label={UI_COPY.APPS.METRICS.OFFLINE}
-        value={offlineCount}
-        note={offlineCount > 0 ? "Severed traffic" : "All active"}
-        positive={offlineCount === 0}
-        icon={<AlertOctagon className="text-destructive size-4" />}
-      />
-      <MetricCard
-        label={UI_COPY.APPS.METRICS.TOKEN_OPS}
-        value="2 Swarms"
-        note="Federated nodes"
-        icon={<Cpu className="text-info size-4" />}
-      />
-    </MetricsGrid>
-  );
+  const items: MetricItem[] = [
+    {
+      label: "Registered applications",
+      value: totalCount,
+      note: "Across your DevLab ecosystem",
+      icon: Server,
+    },
+    {
+      label: "Active services",
+      value: activeCount,
+      note: suspendedCount > 0 ? "Services currently suspended" : "100% of services operational",
+      positive: suspendedCount === 0,
+      icon: Activity,
+    },
+    {
+      label: "Active kill-switches",
+      value: suspendedCount,
+      note: suspendedCount > 0 ? "Emergency controls engaged" : "No active service disruptions",
+      positive: suspendedCount === 0,
+      icon: AlertOctagon,
+    },
+    {
+      label: "Monthly inter-service requests",
+      value: "1.2M",
+      note: "↗ 12.8% from last month",
+      positive: true,
+      icon: Zap,
+    },
+  ];
+
+  return <MetricsBar items={items} />;
 };

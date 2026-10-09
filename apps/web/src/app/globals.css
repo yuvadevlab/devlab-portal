@@ -5,6 +5,12 @@
 @import "@yuva-devlab/tokens/themes/portal.css";
 @import "@yuva-devlab/ui/styles.css";
 
+@import "./styles/topbar.css";
+@import "./styles/metrics-grid.css";
+@import "./styles/app-cards.css";
+@import "./styles/app-activity.css";
+@import "./styles/widgets-layout.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
