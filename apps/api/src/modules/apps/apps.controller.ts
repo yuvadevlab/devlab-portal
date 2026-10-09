@@ -7,6 +7,7 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Param,
   Body,
@@ -16,7 +17,7 @@ import {
 } from "@nestjs/common";
 import { AppsService } from "./apps.service.js";
 import { AuthGuard } from "../auth/auth.guard.js";
-import { UpdateAppStatusDto } from "./dto/app.dto.js";
+import { CreateAppDto, UpdateAppSettingsDto, UpdateAppStatusDto } from "./dto/app.dto.js";
 import { CurrentUser } from "../../common/decorators/current-user.decorator.js";
 
 @Controller("api/v1/apps")
@@ -37,6 +38,30 @@ export class AppsController {
   @Get(":id")
   async getApp(@Param("id") id: string) {
     return this.appsService.getApp(id);
+  }
+
+  /**
+   * Registers a new application in the ecosystem catalog.
+   */
+  @Post()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.CREATED)
+  async createApp(@Body() dto: CreateAppDto, @CurrentUser() user: { sub: string }) {
+    return this.appsService.createApp(dto, user?.sub || "cmuzm86p00000sxyr2ct88hws");
+  }
+
+  /**
+   * Updates application operational configuration.
+   */
+  @Patch(":id")
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async updateAppSettings(
+    @Param("id") id: string,
+    @Body() dto: UpdateAppSettingsDto,
+    @CurrentUser() user: { sub: string },
+  ) {
+    return this.appsService.updateAppSettings(id, dto, user?.sub || "cmuzm86p00000sxyr2ct88hws");
   }
 
   /**
