@@ -14,6 +14,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { AppsService } from "./apps.service.js";
 import { AuthGuard } from "../auth/auth.guard.js";
@@ -47,7 +48,10 @@ export class AppsController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createApp(@Body() dto: CreateAppDto, @CurrentUser() user: { sub: string }) {
-    return this.appsService.createApp(dto, user?.sub || "cmuzm86p00000sxyr2ct88hws");
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    return this.appsService.createApp(dto, user.sub);
   }
 
   /**
@@ -61,7 +65,10 @@ export class AppsController {
     @Body() dto: UpdateAppSettingsDto,
     @CurrentUser() user: { sub: string },
   ) {
-    return this.appsService.updateAppSettings(id, dto, user?.sub || "cmuzm86p00000sxyr2ct88hws");
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    return this.appsService.updateAppSettings(id, dto, user.sub);
   }
 
   /**
@@ -75,6 +82,9 @@ export class AppsController {
     @Body() dto: UpdateAppStatusDto,
     @CurrentUser() user: { sub: string },
   ) {
-    return this.appsService.updateAppStatus(id, dto, user?.sub || "cmuzm86p00000sxyr2ct88hws");
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    return this.appsService.updateAppStatus(id, dto, user.sub);
   }
 }

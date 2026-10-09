@@ -5,7 +5,7 @@
  */
 
 import { Resolver, Query, Mutation, Subscription, Args } from "@nestjs/graphql";
-import { UseGuards } from "@nestjs/common";
+import { UseGuards, UnauthorizedException } from "@nestjs/common";
 import { PubSub } from "graphql-subscriptions";
 import { AppsService } from "./apps.service.js";
 import { AuthGuard } from "../auth/auth.guard.js";
@@ -36,11 +36,11 @@ export class AppsResolver {
     @Args("input") input: UpdateAppStatusDto,
     @CurrentUser() user: { sub: string },
   ) {
-    const updated = await this.appsService.updateAppStatus(
-      id,
-      input,
-      user?.sub || "cmuzm86p00000sxyr2ct88hws",
-    );
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+
+    const updated = await this.appsService.updateAppStatus(id, input, user.sub);
 
     await appsPubSub.publish(APP_STATUS_CHANGED_TOPIC, {
       appStatusChanged: {

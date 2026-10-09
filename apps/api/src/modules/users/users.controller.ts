@@ -4,7 +4,16 @@
  * @module @devlab/portal-api/users
  */
 
-import { Controller, Get, Post, Body, UseGuards, HttpCode, HttpStatus } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { UsersService } from "./users.service.js";
 import { AuthGuard } from "../auth/auth.guard.js";
 import { CreateUserDto } from "./dto/user.dto.js";
@@ -30,6 +39,9 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() dto: CreateUserDto, @CurrentUser() user: { sub: string }) {
-    return this.usersService.createUser(dto, user?.sub || "cmuzm86p00000sxyr2ct88hws");
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    return this.usersService.createUser(dto, user.sub);
   }
 }

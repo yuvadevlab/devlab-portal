@@ -22,7 +22,7 @@ enum AppEnvironment {
 }
 
 model User {
-  id           String     @id @default(cuid())
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email        String     @unique
   name         String
   passwordHash String     @map("password_hash")
@@ -39,8 +39,8 @@ model User {
 }
 
 model Session {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   tokenHash String   @unique @map("token_hash")
   expiresAt DateTime @map("expires_at")
@@ -52,7 +52,7 @@ model Session {
 }
 
 model RegisteredApp {
-  id               String         @id @default(cuid())
+  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   appId            String         @unique @map("app_id")
   name             String
   slug             String         @unique
@@ -73,13 +73,13 @@ model RegisteredApp {
 }
 
 model ApiKey {
-  id           String        @id @default(cuid())
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name         String
   keyPrefix    String        @map("key_prefix")
   keyHash      String        @unique @map("key_hash")
-  appId        String        @map("app_id")
+  appId        String        @map("app_id") @db.Uuid
   app          RegisteredApp @relation(fields: [appId], references: [id], onDelete: Cascade)
-  userId       String        @map("user_id")
+  userId       String        @map("user_id") @db.Uuid
   user         User          @relation(fields: [userId], references: [id])
   scopes       String[]
   rateLimitRpm Int           @default(600) @map("rate_limit_rpm")
@@ -92,9 +92,9 @@ model ApiKey {
 }
 
 model AuditLog {
-  id         String   @id @default(cuid())
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   action     String
-  actorId    String   @map("actor_id")
+  actorId    String   @map("actor_id") @db.Uuid
   actor      User     @relation(fields: [actorId], references: [id])
   targetType String   @map("target_type")
   targetId   String   @map("target_id")

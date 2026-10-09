@@ -14,6 +14,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from "@nestjs/common";
 import type { Response } from "express";
 import { AuthService } from "./auth.service.js";
@@ -52,8 +53,12 @@ export class AuthController {
     @Query("user_id") userId: string,
     @Res() res: Response,
   ) {
-    const effectiveUserId = userId || "cmuzm86p00000sxyr2ct88hws";
-    const result = await this.authService.authorize(dto, effectiveUserId);
+    if (!userId) {
+      throw new BadRequestException(
+        "user_id query parameter is required to initiate authorization",
+      );
+    }
+    const result = await this.authService.authorize(dto, userId);
     return res.redirect(result.redirectUrl);
   }
 

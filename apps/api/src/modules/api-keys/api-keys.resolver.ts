@@ -5,7 +5,7 @@
  */
 
 import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
-import { UseGuards } from "@nestjs/common";
+import { UseGuards, UnauthorizedException } from "@nestjs/common";
 import { ApiKeysService } from "./api-keys.service.js";
 import { AuthGuard } from "../auth/auth.guard.js";
 import { ApiKeyType, ApiKeyWithSecretType, CreateApiKeyDto } from "./dto/api-key.dto.js";
@@ -24,13 +24,19 @@ export class ApiKeysResolver {
   @Mutation(() => ApiKeyWithSecretType, { name: "createApiKey" })
   @UseGuards(AuthGuard)
   async createApiKey(@CurrentUser() user: { sub: string }, @Args("input") input: CreateApiKeyDto) {
-    return this.apiKeysService.createApiKey(user?.sub || "cmuzm86p00000sxyr2ct88hws", input);
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    return this.apiKeysService.createApiKey(user.sub, input);
   }
 
   @Mutation(() => Boolean, { name: "revokeApiKey" })
   @UseGuards(AuthGuard)
   async revokeApiKey(@CurrentUser() user: { sub: string }, @Args("id") id: string) {
-    await this.apiKeysService.revokeApiKey(id, user?.sub || "cmuzm86p00000sxyr2ct88hws");
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    await this.apiKeysService.revokeApiKey(id, user.sub);
     return true;
   }
 }
