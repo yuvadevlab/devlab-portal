@@ -5,8 +5,9 @@
  */
 
 import { io, Socket } from "socket.io-client";
-import { API_ROUTES, SOCKET_EVENTS } from "./constants/routes";
+import { API_ROUTES } from "./constants/routes";
 import { HttpMethod } from "./constants/enums";
+import { logger } from "./logger";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3015";
 
@@ -48,7 +49,7 @@ async function getAuthToken(): Promise<string> {
       return cachedToken || "";
     }
   } catch (err) {
-    console.warn("Could not auto-bootstrap admin session:", err);
+    logger.warn("Could not auto-bootstrap admin session:", err);
   }
 
   return "";

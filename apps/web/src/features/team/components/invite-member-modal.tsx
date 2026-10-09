@@ -9,6 +9,7 @@ import { Users, X, UserPlus, CheckCircle2 } from "lucide-react";
 import { Button, Input } from "@yuva-devlab/ui";
 import { UI_COPY } from "../../../lib/ui-copy/index";
 import { UserRole } from "../../../lib/constants/enums";
+import { logger } from "../../../lib/logger";
 import { api } from "../../../lib/api-client";
 
 interface InviteMemberModalProps {
@@ -48,7 +49,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
         onSuccess();
       }, 1200);
     } catch (err) {
-      console.error("Failed to invite member:", err);
+      logger.error("Failed to invite member:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -68,8 +69,8 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
         {/* Header */}
         <div className="border-border flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex h-9 w-9 items-center justify-center rounded-xl">
-              <Users className="h-5 w-5" />
+            <div className="bg-primary/15 text-primary flex size-9 items-center justify-center rounded-xl">
+              <Users className="size-5" />
             </div>
             <div>
               <h3 className="text-foreground text-base font-bold">{UI_COPY.TEAM.MODAL.TITLE}</h3>
@@ -81,7 +82,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             onClick={handleClose}
             className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </button>
         </div>
 
@@ -89,7 +90,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
         <form id="invite-member-form" onSubmit={handleSubmit} className="mt-4 space-y-4">
           {isSuccess && (
             <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs text-emerald-400">
-              <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <CheckCircle2 className="size-4 shrink-0" />
               <span>{UI_COPY.TEAM.MODAL.SUCCESS_ALERT}</span>
             </div>
           )}
@@ -154,7 +155,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             disabled={isSubmitting || !name || !email}
             className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
           >
-            <UserPlus className="mr-1.5 h-3.5 w-3.5" />
+            <UserPlus className="mr-1.5 size-3.5" />
             {isSubmitting ? "Inviting..." : UI_COPY.COMMON.ACTIONS.INVITE}
           </Button>
         </div>

@@ -29,7 +29,7 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
       <MetricCard
         label={UI_COPY.APPS.METRICS.TOTAL_APPS}
         value={totalCount}
-        icon={<Server className="text-primary h-4 w-4" />}
+        icon={<Server className="text-primary size-4" />}
       />
       <MetricCard
         label={UI_COPY.APPS.METRICS.HEALTHY}
@@ -40,20 +40,20 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
             : undefined
         }
         positive={true}
-        icon={<Activity className="h-4 w-4 text-emerald-400" />}
+        icon={<Activity className="size-4 text-emerald-400" />}
       />
       <MetricCard
         label={UI_COPY.APPS.METRICS.OFFLINE}
         value={offlineCount}
         note={offlineCount > 0 ? "Severed traffic" : "All active"}
         positive={offlineCount === 0}
-        icon={<AlertOctagon className="text-destructive h-4 w-4" />}
+        icon={<AlertOctagon className="text-destructive size-4" />}
       />
       <MetricCard
         label={UI_COPY.APPS.METRICS.TOKEN_OPS}
         value="2 Swarms"
         note="Federated nodes"
-        icon={<Cpu className="h-4 w-4 text-sky-400" />}
+        icon={<Cpu className="size-4 text-sky-400" />}
       />
     </MetricsGrid>
   );

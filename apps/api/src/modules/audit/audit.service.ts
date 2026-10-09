@@ -5,6 +5,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
+import type { Prisma } from "@prisma/client";
 import { PrismaService } from "../../prisma/prisma.service.js";
 import { Logger } from "@yuva-devlab/logger";
 
@@ -49,7 +50,7 @@ export class AuditService {
         actorId: params.actorId,
         targetType: params.targetType,
         targetId: params.targetId,
-        metadata: (params.metadata ?? {}) as any,
+        metadata: params.metadata as Prisma.InputJsonObject,
       },
     });
   }

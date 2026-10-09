@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from "react";
 import { X, Save, Sliders, CheckCircle2 } from "lucide-react";
 import { Button, Input, Textarea } from "@yuva-devlab/ui";
+import { logger } from "../../../lib/logger";
 import { UI_COPY } from "../../../lib/ui-copy/index";
 import type { RegisteredApp, UpdateAppSettingsPayload } from "../types";
 
@@ -72,7 +73,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
         onClose();
       }, 1200);
     } catch (err) {
-      console.error("Failed to update app settings:", err);
+      logger.error("Failed to update app settings:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -80,13 +81,13 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
 
   return (
     <div className="animate-in fade-in fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
-      <div className="border-border bg-card flex h-full w-full max-w-lg flex-col justify-between border-l p-6 shadow-2xl">
+      <div className="border-border bg-card flex size-full max-w-lg flex-col justify-between border-l p-6 shadow-2xl">
         {/* Drawer Header */}
         <div>
           <div className="border-border flex items-center justify-between border-b pb-4">
             <div className="flex items-center gap-2.5">
-              <div className="bg-primary/15 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
-                <Sliders className="h-4 w-4" />
+              <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
+                <Sliders className="size-4" />
               </div>
               <div>
                 <h3 className="text-foreground text-base font-bold">{UI_COPY.APPS.DRAWER.TITLE}</h3>
@@ -98,7 +99,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
               onClick={onClose}
               className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
             >
-              <X className="h-4 w-4" />
+              <X className="size-4" />
             </button>
           </div>
 
@@ -110,7 +111,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
           >
             {savedSuccess && (
               <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs text-emerald-400">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                <CheckCircle2 className="size-4 shrink-0" />
                 <span>{UI_COPY.APPS.DRAWER.SUCCESS_ALERT}</span>
               </div>
             )}
@@ -204,7 +205,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
             disabled={isSubmitting}
             className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
           >
-            <Save className="mr-1.5 h-3.5 w-3.5" />
+            <Save className="mr-1.5 size-3.5" />
             {UI_COPY.APPS.DRAWER.SAVE_BTN}
           </Button>
         </div>

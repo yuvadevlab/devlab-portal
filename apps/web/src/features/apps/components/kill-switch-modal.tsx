@@ -7,6 +7,7 @@
 import React, { useState } from "react";
 import { AlertTriangle, Power, CheckCircle, X } from "lucide-react";
 import { Button, Textarea } from "@yuva-devlab/ui";
+import { logger } from "../../../lib/logger";
 import { UI_COPY } from "../../../lib/ui-copy/index";
 import type { RegisteredApp } from "../types";
 
@@ -40,7 +41,7 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
       setMaintenanceNote("");
       onClose();
     } catch (err) {
-      console.error("Failed to toggle kill switch:", err);
+      logger.error("Failed to toggle kill switch:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -53,16 +54,16 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div
-              className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+              className={`flex size-11 items-center justify-center rounded-xl ${
                 app.isActive
                   ? "border border-red-500/30 bg-red-500/15 text-red-400"
                   : "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400"
               }`}
             >
               {app.isActive ? (
-                <AlertTriangle className="h-5 w-5" />
+                <AlertTriangle className="size-5" />
               ) : (
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="size-5" />
               )}
             </div>
             <div>
@@ -81,7 +82,7 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
             onClick={onClose}
             className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </button>
         </div>
 
@@ -138,12 +139,12 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
           >
             {app.isActive ? (
               <>
-                <Power className="mr-1.5 h-3.5 w-3.5" />
+                <Power className="mr-1.5 size-3.5" />
                 {UI_COPY.APPS.KILL_SWITCH.CONFIRM_TRIGGER}
               </>
             ) : (
               <>
-                <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+                <CheckCircle className="mr-1.5 size-3.5" />
                 {UI_COPY.APPS.KILL_SWITCH.CONFIRM_RESTORE}
               </>
             )}

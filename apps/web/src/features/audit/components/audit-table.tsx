@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from "react";
-import { ShieldAlert, Eye, Terminal } from "lucide-react";
+import { Eye, Terminal } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
 import { UI_COPY } from "../../../lib/ui-copy/index";
 import { AuditAction } from "../../../lib/constants/enums";
@@ -100,7 +100,7 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
                         onClick={() => setSelectedLog(log)}
                         className="text-primary hover:bg-primary/10 h-7 px-2 text-xs"
                       >
-                        <Eye className="mr-1 h-3.5 w-3.5" />
+                        <Eye className="mr-1 size-3.5" />
                         {UI_COPY.COMMON.ACTIONS.INSPECT}
                       </Button>
                     </td>
@@ -113,8 +113,8 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
       ) : (
         /* Empty State */
         <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
-          <div className="bg-background border-border text-muted-foreground mb-3 flex h-12 w-12 items-center justify-center rounded-full border">
-            <Terminal className="h-6 w-6" />
+          <div className="bg-background border-border text-muted-foreground mb-3 flex size-12 items-center justify-center rounded-full border">
+            <Terminal className="size-6" />
           </div>
           <h4 className="text-foreground text-sm font-semibold">
             {UI_COPY.AUDIT.TABLE.EMPTY_TEXT}

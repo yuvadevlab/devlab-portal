@@ -20,8 +20,8 @@ export const Navbar: React.FC<NavbarProps> = ({ healthyCount, totalApps }) => {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Brand identity */}
         <div className="flex items-center gap-3">
-          <div className="bg-primary text-primary-foreground shadow-primary/20 flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold shadow-lg">
-            <ShieldCheck className="h-5 w-5" />
+          <div className="bg-primary text-primary-foreground shadow-primary/20 flex size-10 items-center justify-center rounded-xl text-lg font-bold shadow-lg">
+            <ShieldCheck className="size-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -48,19 +48,19 @@ export const Navbar: React.FC<NavbarProps> = ({ healthyCount, totalApps }) => {
         <div className="flex items-center gap-4">
           {/* Heartbeat pill */}
           <div className="hidden items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-400 sm:flex">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
             </span>
             <span className="font-mono text-[11px]">
               {healthyCount}/{totalApps} {UI_COPY.APPS.CARD.STATUS_ACTIVE}
             </span>
-            <Activity className="h-3 w-3 text-emerald-400" />
+            <Activity className="size-3 text-emerald-400" />
           </div>
 
           {/* User profile capsule */}
           <div className="border-border bg-background flex items-center gap-2.5 rounded-full border px-3 py-1.5">
-            <div className="bg-primary text-primary-foreground flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold">
+            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full text-xs font-bold">
               A
             </div>
             <div className="hidden text-left md:block">

@@ -7,6 +7,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { logger } from "../lib/logger";
 import { Navbar } from "../components/layout/navbar";
 import { TabNav } from "../components/layout/tab-nav";
 import { TabKey, AppStatus } from "../lib/constants/enums";
@@ -71,7 +72,7 @@ export default function DashboardPage() {
       setJwks(fetchedJwks);
       setOidc(fetchedOidc);
     } catch (err) {
-      console.error("Failed to load control plane data:", err);
+      logger.error("Failed to load control plane data:", err);
     }
   }, []);
 

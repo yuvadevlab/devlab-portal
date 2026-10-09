@@ -4,7 +4,7 @@
  * @module @devlab/portal-api/api-keys
  */
 
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import crypto from "node:crypto";
 import { PrismaService } from "../../prisma/prisma.service.js";
 import { RedisService } from "../redis/redis.service.js";

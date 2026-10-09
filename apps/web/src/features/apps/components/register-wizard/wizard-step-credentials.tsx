@@ -23,7 +23,7 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
     <div className="space-y-5">
       {/* Success banner */}
       <div className="flex items-center gap-2.5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-emerald-400">
-        <CheckCircle2 className="h-5 w-5 shrink-0" />
+        <CheckCircle2 className="size-5 shrink-0" />
         <div>
           <p className="text-xs leading-none font-semibold">Application Registered Successfully</p>
           <p className="mt-1 text-[11px] text-emerald-300/80">
@@ -57,7 +57,7 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
 
       {/* Security notice */}
       <div className="flex items-start gap-2 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-300">
-        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+        <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-400" />
         <p className="text-[11px] leading-relaxed">
           {UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}
         </p>

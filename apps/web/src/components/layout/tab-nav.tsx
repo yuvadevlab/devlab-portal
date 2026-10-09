@@ -73,7 +73,7 @@ export const TabNav: React.FC<TabNavProps> = ({
                   : "text-muted-foreground hover:bg-card hover:text-foreground"
               }`}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="size-4" />
               <span>{tab.label}</span>
               {tab.count !== undefined && (
                 <span

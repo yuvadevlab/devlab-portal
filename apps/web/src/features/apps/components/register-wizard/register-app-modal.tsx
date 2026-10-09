@@ -7,6 +7,7 @@
 import React, { useState } from "react";
 import { X, ArrowRight, ArrowLeft, Check, Sparkles } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
+import { logger } from "../../../../lib/logger";
 import { UI_COPY } from "../../../../lib/ui-copy/index";
 import { AppEnvironment } from "../../../../lib/constants/enums";
 import { WizardStepIdentity } from "./wizard-step-identity";
@@ -84,7 +85,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
         setCurrentStep(3);
         onSuccess();
       } catch (err) {
-        console.error("Failed to register app:", err);
+        logger.error("Failed to register app:", err);
       } finally {
         setIsSubmitting(false);
       }
@@ -113,8 +114,8 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
         {/* Header & Step progress indicator */}
         <div className="border-border flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex h-9 w-9 items-center justify-center rounded-xl">
-              <Sparkles className="h-5 w-5" />
+            <div className="bg-primary/15 text-primary flex size-9 items-center justify-center rounded-xl">
+              <Sparkles className="size-5" />
             </div>
             <div>
               <h3 className="text-foreground text-base font-bold">
@@ -132,7 +133,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
             onClick={handleClose}
             className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </button>
         </div>
 
@@ -171,7 +172,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
               onClick={() => setCurrentStep(1)}
               className="border-border h-9 text-xs"
             >
-              <ArrowLeft className="mr-1 h-3.5 w-3.5" />
+              <ArrowLeft className="mr-1 size-3.5" />
               {UI_COPY.COMMON.ACTIONS.BACK}
             </Button>
           ) : (
@@ -205,12 +206,12 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
                   ) : currentStep === 2 ? (
                     <>
                       {UI_COPY.COMMON.ACTIONS.REGISTER}
-                      <Check className="ml-1 h-3.5 w-3.5" />
+                      <Check className="ml-1 size-3.5" />
                     </>
                   ) : (
                     <>
                       {UI_COPY.COMMON.ACTIONS.NEXT}
-                      <ArrowRight className="ml-1 h-3.5 w-3.5" />
+                      <ArrowRight className="ml-1 size-3.5" />
                     </>
                   )}
                 </Button>

@@ -9,6 +9,7 @@ import { Key, X, AlertTriangle } from "lucide-react";
 import { Button, Input, SecretRevealCard } from "@yuva-devlab/ui";
 import { UI_COPY } from "../../../lib/ui-copy/index";
 import { ApiKeyScope } from "../../../lib/constants/enums";
+import { logger } from "../../../lib/logger";
 import { api, RegisteredApp } from "../../../lib/api-client";
 
 interface ApiKeyModalProps {
@@ -64,7 +65,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
       setGeneratedKey(res.rawKey);
       onSuccess();
     } catch (err) {
-      console.error("Failed to generate API key:", err);
+      logger.error("Failed to generate API key:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -85,8 +86,8 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
         {/* Header */}
         <div className="border-border flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex h-9 w-9 items-center justify-center rounded-xl">
-              <Key className="h-5 w-5" />
+            <div className="bg-primary/15 text-primary flex size-9 items-center justify-center rounded-xl">
+              <Key className="size-5" />
             </div>
             <div>
               <h3 className="text-foreground text-base font-bold">{UI_COPY.IAM.MODAL.TITLE}</h3>
@@ -98,7 +99,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
             onClick={handleClose}
             className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </button>
         </div>
 
@@ -113,7 +114,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
                 copyLabel={UI_COPY.COMMON.ACTIONS.COPY}
               />
               <div className="flex items-start gap-2 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-300">
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+                <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-400" />
                 <p className="text-[11px] leading-relaxed">{UI_COPY.IAM.MODAL.SECRET_WARNING}</p>
               </div>
             </div>

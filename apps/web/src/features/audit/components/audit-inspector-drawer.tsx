@@ -30,13 +30,13 @@ export const AuditInspectorDrawer: React.FC<AuditInspectorDrawerProps> = ({
 
   return (
     <div className="animate-in fade-in fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
-      <div className="border-border bg-card flex h-full w-full max-w-lg flex-col justify-between border-l p-6 shadow-2xl">
+      <div className="border-border bg-card flex size-full max-w-lg flex-col justify-between border-l p-6 shadow-2xl">
         {/* Drawer Header */}
         <div>
           <div className="border-border flex items-center justify-between border-b pb-4">
             <div className="flex items-center gap-2.5">
-              <div className="bg-primary/15 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
-                <ShieldCheck className="h-4 w-4" />
+              <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
+                <ShieldCheck className="size-4" />
               </div>
               <div>
                 <h3 className="text-foreground text-base font-bold">
@@ -50,7 +50,7 @@ export const AuditInspectorDrawer: React.FC<AuditInspectorDrawerProps> = ({
               onClick={onClose}
               className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
             >
-              <X className="h-4 w-4" />
+              <X className="size-4" />
             </button>
           </div>
 

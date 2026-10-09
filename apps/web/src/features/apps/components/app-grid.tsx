@@ -53,7 +53,7 @@ export const AppGrid: React.FC<AppGridProps> = ({
       <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex flex-1 items-center gap-3">
           <div className="relative max-w-md flex-1">
-            <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
+            <Search className="text-muted-foreground absolute top-2.5 left-3 size-4" />
             <Input
               type="text"
               placeholder={UI_COPY.COMMON.ACTIONS.SEARCH}
@@ -87,7 +87,7 @@ export const AppGrid: React.FC<AppGridProps> = ({
           onClick={onOpenRegisterModal}
           className="bg-primary text-primary-foreground h-9 shrink-0 px-4 text-xs font-medium shadow-sm hover:opacity-90"
         >
-          <Plus className="mr-1.5 h-4 w-4" />
+          <Plus className="mr-1.5 size-4" />
           {UI_COPY.APPS.HEADER.ADD_APP_BTN}
         </Button>
       </div>
@@ -107,8 +107,8 @@ export const AppGrid: React.FC<AppGridProps> = ({
       ) : (
         /* Empty filter result display */
         <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
-          <div className="bg-background border-border text-muted-foreground mb-3 flex h-12 w-12 items-center justify-center rounded-full border">
-            <ServerOff className="h-6 w-6" />
+          <div className="bg-background border-border text-muted-foreground mb-3 flex size-12 items-center justify-center rounded-full border">
+            <ServerOff className="size-6" />
           </div>
           <h4 className="text-foreground text-sm font-semibold">{UI_COPY.COMMON.EMPTY.NO_DATA}</h4>
           <p className="text-muted-foreground mt-1 max-w-sm text-xs">

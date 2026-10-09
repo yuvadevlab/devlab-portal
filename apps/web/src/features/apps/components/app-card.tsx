@@ -36,7 +36,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div
-              className={`flex h-11 w-11 items-center justify-center rounded-xl text-base font-bold transition-colors ${
+              className={`flex size-11 items-center justify-center rounded-xl text-base font-bold transition-colors ${
                 isRoutingActive
                   ? "bg-primary/15 text-primary border-primary/30 border"
                   : "border border-red-500/30 bg-red-500/20 text-red-400"
@@ -74,9 +74,9 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
             <div className="flex items-center gap-1.5 font-mono text-[11px]">
               {isHealthy ? (
                 <>
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
                   </span>
                   <span className="text-emerald-400">
                     {UI_COPY.COMMON.STATUS.HEALTHY}
@@ -87,12 +87,12 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
                 </>
               ) : isRoutingActive ? (
                 <span className="flex items-center gap-1 text-amber-400">
-                  <ShieldAlert className="h-3 w-3" />
+                  <ShieldAlert className="size-3" />
                   {UI_COPY.COMMON.STATUS.UNREACHABLE}
                 </span>
               ) : (
                 <span className="flex items-center gap-1 text-red-400">
-                  <Power className="h-3 w-3" />
+                  <Power className="size-3" />
                   {UI_COPY.COMMON.STATUS.MAINTENANCE}
                 </span>
               )}
@@ -129,7 +129,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
             className="text-muted-foreground hover:text-foreground h-8 px-2 text-xs"
             title={UI_COPY.APPS.CARD.SETTINGS_TOOLTIP}
           >
-            <Settings className="mr-1 h-3.5 w-3.5" />
+            <Settings className="mr-1 size-3.5" />
             {UI_COPY.COMMON.ACTIONS.SETTINGS}
           </Button>
 
@@ -140,7 +140,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
             className="text-muted-foreground hover:text-foreground h-8 px-2 text-xs"
             title={UI_COPY.APPS.CARD.LAUNCH_TOOLTIP}
           >
-            <ExternalLink className="mr-1 h-3.5 w-3.5" />
+            <ExternalLink className="mr-1 size-3.5" />
             {UI_COPY.COMMON.ACTIONS.LAUNCH}
           </Button>
         </div>
@@ -158,12 +158,12 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
         >
           {isRoutingActive ? (
             <>
-              <Power className="mr-1 h-3.5 w-3.5" />
+              <Power className="mr-1 size-3.5" />
               {UI_COPY.APPS.CARD.DEACTIVATE_BTN}
             </>
           ) : (
             <>
-              <CheckCircle2 className="mr-1 h-3.5 w-3.5" />
+              <CheckCircle2 className="mr-1 size-3.5" />
               {UI_COPY.APPS.CARD.ACTIVATE_BTN}
             </>
           )}

@@ -5,6 +5,7 @@
  */
 
 import { Injectable, NotFoundException, ConflictException } from "@nestjs/common";
+import type { AppEnvironment } from "@prisma/client";
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { PrismaService } from "../../prisma/prisma.service.js";
@@ -97,7 +98,7 @@ export class AppsService {
         callbackUrls:
           dto.callbackUrls && dto.callbackUrls.length > 0 ? dto.callbackUrls : [dto.originUrl],
         healthUrl: dto.healthUrl || `${dto.originUrl}/api/health`,
-        environment: (dto.environment as any) || "local_dev",
+        environment: (dto.environment as AppEnvironment) || "local_dev",
         isActive: true,
         clientSecretHash: secretHash,
       },

@@ -33,8 +33,8 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
       {/* OIDC Discovery Endpoints Card */}
       <div className="border-border bg-card space-y-4 rounded-xl border p-6">
         <div className="flex items-center gap-2.5">
-          <div className="bg-primary/15 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
-            <Globe className="h-4 w-4" />
+          <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
+            <Globe className="size-4" />
           </div>
           <div>
             <h3 className="text-foreground text-sm font-bold">{UI_COPY.SETTINGS.OIDC.TITLE}</h3>
@@ -49,7 +49,7 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
               <span className="text-muted-foreground text-[11px] font-medium">
                 {UI_COPY.SETTINGS.OIDC.DISCOVERY_URL}
               </span>
-              <CopyButton textToCopy={oidcUrl} />
+              <CopyButton textToCopy={oidc ? JSON.stringify(oidc, null, 2) : oidcUrl} />
             </div>
             <p className="text-foreground truncate font-mono text-xs">{oidcUrl}</p>
           </div>
@@ -71,8 +71,8 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
       <div className="border-border bg-card space-y-5 rounded-xl border p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
-              <KeyRound className="h-4 w-4" />
+            <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
+              <KeyRound className="size-4" />
             </div>
             <div>
               <h3 className="text-foreground text-sm font-bold">{UI_COPY.SETTINGS.JWKS.TITLE}</h3>
@@ -80,7 +80,7 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
             </div>
           </div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
-            <CheckCircle2 className="h-3.5 w-3.5" />
+            <CheckCircle2 className="size-3.5" />
             {UI_COPY.SETTINGS.JWKS.STATUS_ACTIVE}
           </span>
         </div>
@@ -93,7 +93,7 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="text-primary h-4 w-4" />
+                <ShieldCheck className="text-primary size-4" />
                 <span className="text-foreground font-mono text-xs font-bold">kid: {key.kid}</span>
                 <Badge variant="outline" className="border-border font-mono text-[10px]">
                   {key.alg}

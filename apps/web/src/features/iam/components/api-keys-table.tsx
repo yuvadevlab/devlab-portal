@@ -36,7 +36,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
           onClick={onOpenCreateModal}
           className="bg-primary text-primary-foreground h-9 shrink-0 px-4 text-xs font-medium shadow-sm hover:opacity-90"
         >
-          <Plus className="mr-1.5 h-4 w-4" />
+          <Plus className="mr-1.5 size-4" />
           {UI_COPY.IAM.HEADER.CREATE_BTN}
         </Button>
       </div>
@@ -65,7 +65,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                     {/* Name */}
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-2">
-                        <Key className="text-primary h-3.5 w-3.5 shrink-0" />
+                        <Key className="text-primary size-3.5 shrink-0" />
                         <span className="text-foreground font-semibold">{k.name}</span>
                       </div>
                     </td>
@@ -107,12 +107,12 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                     <td className="px-4 py-3.5">
                       {k.isRevoked ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold text-red-400">
-                          <Ban className="h-3 w-3" />
+                          <Ban className="size-3" />
                           {UI_COPY.COMMON.STATUS.REVOKED}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
-                          <ShieldCheck className="h-3 w-3" />
+                          <ShieldCheck className="size-3" />
                           {UI_COPY.COMMON.STATUS.ACTIVE}
                         </span>
                       )}
@@ -127,7 +127,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                           onClick={() => onRevokeKey(k.id)}
                           className="h-7 px-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
                         >
-                          <Trash2 className="mr-1 h-3.5 w-3.5" />
+                          <Trash2 className="mr-1 size-3.5" />
                           {UI_COPY.COMMON.ACTIONS.REVOKE}
                         </Button>
                       )}
@@ -141,8 +141,8 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
       ) : (
         /* Empty State */
         <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
-          <div className="bg-background border-border text-muted-foreground mb-3 flex h-12 w-12 items-center justify-center rounded-full border">
-            <Key className="h-6 w-6" />
+          <div className="bg-background border-border text-muted-foreground mb-3 flex size-12 items-center justify-center rounded-full border">
+            <Key className="size-6" />
           </div>
           <h4 className="text-foreground text-sm font-semibold">{UI_COPY.IAM.TABLE.EMPTY_TEXT}</h4>
         </div>

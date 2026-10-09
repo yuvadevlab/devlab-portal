@@ -58,6 +58,6 @@ async function bootstrap(): Promise<void> {
 }
 
 bootstrap().catch((err) => {
-  console.error("FATAL BOOTSTRAP ERROR:", err);
+  new Logger("Bootstrap").error("FATAL BOOTSTRAP ERROR:", err);
   process.exit(1);
 });

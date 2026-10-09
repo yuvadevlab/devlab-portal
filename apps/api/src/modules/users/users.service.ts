@@ -52,7 +52,7 @@ export class UsersService {
       data: {
         email: dto.email.toLowerCase().trim(),
         name: dto.name,
-        role: (dto.role as any) || UserRoleEnum.DEVELOPER,
+        role: (dto.role as unknown as UserRoleEnum) || UserRoleEnum.DEVELOPER,
         passwordHash,
         isActive: true,
       },
