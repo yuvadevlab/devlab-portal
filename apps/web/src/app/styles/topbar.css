@@ -151,20 +151,34 @@
   font-size: 12px;
   color: var(--muted-foreground);
   border-bottom: 2px solid transparent;
-  text-decoration: none;
-  transition: color 0.2s;
-  cursor: pointer;
-  background: none;
   border-top: none;
   border-left: none;
   border-right: none;
+  border-radius: 0;
+  text-decoration: none;
+  transition:
+    color 0.2s,
+    border-bottom-color 0.2s;
+  cursor: pointer;
+  background: transparent;
+  height: 100%;
+  padding: 0;
+  box-shadow: none;
+  outline: none;
 }
 
 .nav-link:hover {
   color: var(--foreground);
+  background: transparent;
 }
 
 .nav-link.active {
   color: var(--primary);
   border-bottom-color: var(--primary);
+}
+
+.nav-link svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
 }

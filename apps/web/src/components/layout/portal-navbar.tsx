@@ -3,12 +3,11 @@
 /**
  * @file apps/web/src/components/layout/portal-navbar.tsx
  * @description Primary sub-navigation tabs bar rendered dynamically from database navigation items.
- * Strictly adheres to server-driven navigation requirements with zero hardcoded menus.
+ * Strictly adheres to Lovable console specification with full height stretching and bottom border indicators.
  * @module @devlab/portal-web/components/layout/portal-navbar
  */
 
 import React from "react";
-import { Button } from "@yuva-devlab/ui";
 import type { NavigationItem } from "@/lib/api-client";
 import { getNavIcon } from "./nav-icon";
 
@@ -38,17 +37,16 @@ export const PortalNavbar: React.FC<PortalNavbarProps> = ({
         const count = tab.key === "apps" ? appsCount : undefined;
 
         return (
-          <Button
+          <button
             key={tab.id || tab.key}
             type="button"
-            variant="ghost"
-            className={`nav-link h-auto rounded-none bg-transparent p-0 hover:bg-transparent ${isActive ? "active" : ""}`}
+            className={`nav-link ${isActive ? "active" : ""}`}
             onClick={() => onSelectTab(tab.key)}
           >
-            <IconComponent className="size-3.5" />
+            <IconComponent className="size-[15px]" />
             <span>{tab.label}</span>
             {count !== undefined && <span className="tag py-0!">{count}</span>}
-          </Button>
+          </button>
         );
       })}
     </nav>
