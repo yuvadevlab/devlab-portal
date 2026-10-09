@@ -3,11 +3,13 @@
 /**
  * @file apps/web/src/components/layout/tab-nav.tsx
  * @description Horizontal control plane navigation tabs with badge counts and icon highlights.
+ * Fully built with @yuva-devlab/ui Tabs, TabsList, and TabsTrigger primitives.
  * @module @devlab/portal-web/components/layout/tab-nav
  */
 
 import React from "react";
 import { LayoutGrid, Key, ShieldAlert, Users, Cpu } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@yuva-devlab/ui";
 import { TabKey } from "@/lib/constants";
 import { UI_COPY } from "@/lib/ui-copy";
 
@@ -59,38 +61,30 @@ export const TabNav: React.FC<TabNavProps> = ({
 
   return (
     <div className="border-border bg-background border-b px-6">
-      <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto py-2">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.key;
+      <div className="mx-auto flex max-w-7xl items-center overflow-x-auto py-2">
+        <Tabs value={activeTab} onValueChange={(val) => onSelectTab(val as TabKey)}>
+          <TabsList className="h-auto gap-2 border-0 bg-transparent p-0">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
 
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => onSelectTab(tab.key)}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-medium transition-all ${
-                isActive
-                  ? "bg-primary text-primary-foreground font-semibold shadow-sm"
-                  : "text-muted-foreground hover:bg-card hover:text-foreground"
-              }`}
-            >
-              <Icon className="size-4" />
-              <span>{tab.label}</span>
-              {tab.count !== undefined && (
-                <span
-                  className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] leading-none ${
-                    isActive
-                      ? "text-primary-foreground bg-black/20"
-                      : "bg-card text-muted-foreground border-border border"
-                  }`}
+              return (
+                <TabsTrigger
+                  key={tab.key}
+                  value={tab.key}
+                  className="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-medium"
                 >
-                  {tab.count}
-                </span>
-              )}
-            </button>
-          );
-        })}
+                  <Icon className="size-4" />
+                  <span>{tab.label}</span>
+                  {tab.count !== undefined && (
+                    <span className="border-border bg-card text-muted-foreground rounded-full border px-1.5 py-0.5 font-mono text-[10px] leading-none">
+                      {tab.count}
+                    </span>
+                  )}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </Tabs>
       </div>
     </div>
   );

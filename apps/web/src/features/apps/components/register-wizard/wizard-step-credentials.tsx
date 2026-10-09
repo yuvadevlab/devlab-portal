@@ -3,13 +3,13 @@
 /**
  * @file apps/web/src/features/apps/components/register-wizard/wizard-step-credentials.tsx
  * @description Step 3 of App Registration Wizard: Reveal generated Client ID and one-time secret.
- * Consumes @yuva-devlab/ui SecretRevealCard and CopyButton primitives.
+ * Fully built with @yuva-devlab/ui SecretRevealCard, Label, and CopyButton primitives.
  * @module @devlab/portal-web/features/apps/components/register-wizard/step3
  */
 
 import React from "react";
 import { CheckCircle2, AlertTriangle } from "lucide-react";
-import { SecretRevealCard, CopyButton } from "@yuva-devlab/ui";
+import { SecretRevealCard, CopyButton, Label } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 
 interface WizardStepCredentialsProps {
@@ -22,9 +22,9 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
   clientSecret,
 }) => {
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Success banner */}
-      <div className="border-success/20 bg-success/10 text-success flex items-center gap-2.5 rounded-xl border p-4">
+      <div className="border-success/20 bg-success/10 text-success flex items-center gap-2.5 rounded-xl border p-3.5">
         <CheckCircle2 className="size-5 shrink-0" />
         <div>
           <p className="text-xs leading-none font-semibold">Application Registered Successfully</p>
@@ -35,21 +35,19 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
       </div>
 
       {/* Client ID field */}
-      <div>
-        <label className="text-foreground mb-1.5 block text-xs font-semibold">
-          {UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_ID}
-        </label>
-        <div className="border-border bg-background flex items-center justify-between rounded-lg border px-3 py-2">
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold">{UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_ID}</Label>
+        <div className="border-border bg-card flex items-center justify-between rounded-lg border px-3 py-2">
           <span className="text-foreground font-mono text-xs">{appId}</span>
           <CopyButton textToCopy={appId} />
         </div>
       </div>
 
       {/* Secret Reveal Card */}
-      <div>
-        <label className="text-foreground mb-1.5 block text-xs font-semibold">
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold">
           {UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_SECRET}
-        </label>
+        </Label>
         <SecretRevealCard
           secret={clientSecret}
           warningMessage={UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}

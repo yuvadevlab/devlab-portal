@@ -3,12 +3,24 @@
 /**
  * @file apps/web/src/features/apps/components/kill-switch-modal.tsx
  * @description Confirmation modal for severing or restoring microservice routing and tokens.
+ * Fully built with @yuva-devlab/ui Dialog, Label, Textarea, and Button components.
  * @module @devlab/portal-web/features/apps/components/kill-switch-modal
  */
 
 import React, { useState } from "react";
-import { AlertTriangle, Power, CheckCircle, X } from "lucide-react";
-import { Button, Textarea } from "@yuva-devlab/ui";
+import { AlertTriangle, Power, CheckCircle } from "lucide-react";
+import {
+  Button,
+  Label,
+  Textarea,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+} from "@yuva-devlab/ui";
 import { logger } from "@/lib/logger";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { RegisteredApp } from "@/features/apps/types";
@@ -50,13 +62,12 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
   };
 
   return (
-    <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-      <div className="border-border bg-card w-full max-w-md rounded-2xl border p-6 shadow-2xl">
-        {/* Header */}
-        <div className="flex items-start justify-between">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent size="md">
+        <DialogHeader>
           <div className="flex items-center gap-3">
             <div
-              className={`flex size-11 items-center justify-center rounded-xl ${
+              className={`flex size-10 items-center justify-center rounded-xl ${
                 app.isActive
                   ? "border-destructive/30 bg-destructive/15 text-destructive border"
                   : "border-success/30 bg-success/15 text-success border"
@@ -69,62 +80,52 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
               )}
             </div>
             <div>
-              <h3 className="text-foreground text-base font-bold">
+              <DialogTitle className="text-base font-bold">
                 {app.isActive
                   ? UI_COPY.APPS.KILL_SWITCH.TITLE_TRIGGER
                   : UI_COPY.APPS.KILL_SWITCH.TITLE_RESTORE}
-              </h3>
-              <p className="text-muted-foreground font-mono text-xs">
+              </DialogTitle>
+              <DialogDescription className="text-muted-foreground font-mono text-xs">
                 {app.name} ({app.appId})
-              </p>
+              </DialogDescription>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
+        </DialogHeader>
+
+        <DialogBody className="space-y-4 py-3">
+          {/* Warning Callout Banner */}
+          <div
+            className={`rounded-xl border p-3.5 text-xs leading-relaxed ${
+              app.isActive
+                ? "border-destructive/30 bg-destructive/10 text-destructive"
+                : "border-success/30 bg-success/10 text-success"
+            }`}
           >
-            <X className="size-4" />
-          </button>
-        </div>
-
-        {/* Warning Callout Banner */}
-        <div
-          className={`mt-4 rounded-xl border p-3.5 text-xs leading-relaxed ${
-            app.isActive
-              ? "border-destructive/30 bg-destructive/10 text-destructive"
-              : "border-success/30 bg-success/10 text-success"
-          }`}
-        >
-          {app.isActive
-            ? UI_COPY.APPS.KILL_SWITCH.WARNING_TRIGGER
-            : UI_COPY.APPS.KILL_SWITCH.WARNING_RESTORE}
-        </div>
-
-        {/* Optional Incident / Maintenance Note input */}
-        {app.isActive && (
-          <div className="mt-4">
-            <label className="text-foreground mb-1.5 block text-xs font-semibold">
-              {UI_COPY.APPS.KILL_SWITCH.REASON_LABEL}
-            </label>
-            <Textarea
-              rows={3}
-              value={maintenanceNote}
-              onChange={(e) => setMaintenanceNote(e.target.value)}
-              placeholder={UI_COPY.APPS.KILL_SWITCH.REASON_PLACEHOLDER}
-              className="bg-background border-border resize-none text-xs"
-            />
+            {app.isActive
+              ? UI_COPY.APPS.KILL_SWITCH.WARNING_TRIGGER
+              : UI_COPY.APPS.KILL_SWITCH.WARNING_RESTORE}
           </div>
-        )}
 
-        {/* Footer actions */}
-        <div className="border-border mt-6 flex items-center justify-end gap-3 border-t pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="border-border h-9 text-xs"
-          >
+          {/* Optional Incident / Maintenance Note input */}
+          {app.isActive && (
+            <div className="space-y-1.5">
+              <Label htmlFor="kill-switch-reason" className="text-xs font-semibold">
+                {UI_COPY.APPS.KILL_SWITCH.REASON_LABEL}
+              </Label>
+              <Textarea
+                id="kill-switch-reason"
+                rows={3}
+                value={maintenanceNote}
+                onChange={(e) => setMaintenanceNote(e.target.value)}
+                placeholder={UI_COPY.APPS.KILL_SWITCH.REASON_PLACEHOLDER}
+                className="resize-none text-xs"
+              />
+            </div>
+          )}
+        </DialogBody>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={onClose} className="h-9 text-xs">
             {UI_COPY.COMMON.ACTIONS.CANCEL}
           </Button>
 
@@ -151,8 +152,8 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
               </>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };

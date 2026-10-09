@@ -3,12 +3,31 @@
 /**
  * @file apps/web/src/features/iam/components/api-key-modal.tsx
  * @description Modal dialog generating cryptographically random API keys with SecretRevealCard.
+ * Fully built with @yuva-devlab/ui Dialog, Input, Label, Select, and Checkbox components.
  * @module @devlab/portal-web/features/iam/components/api-key-modal
  */
 
 import React, { useState } from "react";
-import { Key, X, AlertTriangle } from "lucide-react";
-import { Button, Input, SecretRevealCard } from "@yuva-devlab/ui";
+import { Key, AlertTriangle } from "lucide-react";
+import {
+  Button,
+  Input,
+  Label,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  Checkbox,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  SecretRevealCard,
+} from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { ApiKeyScope } from "@/lib/constants";
 import { logger } from "@/lib/logger";
@@ -30,10 +49,6 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
 
   const createApiKeyMutation = useCreateApiKey();
-
-  if (!isOpen) {
-    return null;
-  }
 
   const scopeOptions = [
     { id: ApiKeyScope.ORCHESTRAI_READ, label: "orchestrai:read" },
@@ -82,32 +97,24 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
   };
 
   return (
-    <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-      <div className="border-border bg-card flex max-h-[90vh] w-full max-w-lg flex-col rounded-2xl border p-6 shadow-2xl">
-        {/* Header */}
-        <div className="border-border flex items-center justify-between border-b pb-4">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <DialogContent size="lg">
+        <DialogHeader>
           <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex size-9 items-center justify-center rounded-xl">
-              <Key className="size-5" />
+            <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
+              <Key className="size-4" />
             </div>
             <div>
-              <h3 className="text-foreground text-base font-bold">{UI_COPY.IAM.MODAL.TITLE}</h3>
-              <p className="text-muted-foreground text-xs">{UI_COPY.IAM.MODAL.DESCRIPTION}</p>
+              <DialogTitle className="text-base font-bold">{UI_COPY.IAM.MODAL.TITLE}</DialogTitle>
+              <DialogDescription className="text-muted-foreground text-xs">
+                {UI_COPY.IAM.MODAL.DESCRIPTION}
+              </DialogDescription>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={handleClose}
-            className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
+        </DialogHeader>
 
-        {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto py-4 pr-1">
+        <DialogBody className="space-y-4 py-3">
           {generatedKey ? (
-            /* Reveal Mode */
             <div className="space-y-4">
               <SecretRevealCard
                 secret={generatedKey}
@@ -120,59 +127,56 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
               </div>
             </div>
           ) : (
-            /* Form Mode */
             <form id="api-key-form" onSubmit={handleCreate} className="space-y-4">
-              <div>
-                <label className="text-foreground mb-1 block text-xs font-semibold">
+              <div className="space-y-1.5">
+                <Label htmlFor="api-key-name" className="text-xs font-semibold">
                   {UI_COPY.IAM.MODAL.NAME_LABEL} *
-                </label>
+                </Label>
                 <Input
+                  id="api-key-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={UI_COPY.IAM.MODAL.NAME_PLACEHOLDER}
                   required
-                  className="bg-background border-border h-9 text-xs"
+                  className="h-9 text-xs"
                 />
               </div>
 
-              <div>
-                <label className="text-foreground mb-1 block text-xs font-semibold">
+              <div className="space-y-1.5">
+                <Label htmlFor="api-key-app" className="text-xs font-semibold">
                   {UI_COPY.IAM.MODAL.APP_LABEL} *
-                </label>
-                <select
-                  value={appId}
-                  onChange={(e) => setAppId(e.target.value)}
-                  className="border-border bg-background text-foreground focus:ring-primary h-9 w-full rounded-md border px-3 py-1.5 text-xs focus:ring-1"
-                >
-                  <option value="">Select target application...</option>
-                  {apps.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.name} ({a.appId})
-                    </option>
-                  ))}
-                </select>
+                </Label>
+                <Select value={appId} onValueChange={setAppId}>
+                  <SelectTrigger id="api-key-app" className="h-9 w-full text-xs">
+                    <SelectValue placeholder="Select target application..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {apps.map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.name} ({a.appId})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div>
-                <label className="text-foreground mb-1.5 block text-xs font-semibold">
-                  {UI_COPY.IAM.MODAL.SCOPES_LABEL}
-                </label>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold">{UI_COPY.IAM.MODAL.SCOPES_LABEL}</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {scopeOptions.map((s) => (
                     <div
                       key={s.id}
                       onClick={() => handleToggleScope(s.id)}
-                      className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${
+                      className={`flex cursor-pointer items-center gap-2.5 rounded-lg border p-2 transition-colors ${
                         selectedScopes.includes(s.id)
                           ? "border-primary bg-primary/10 text-foreground"
-                          : "border-border bg-background text-muted-foreground"
+                          : "border-border bg-card text-muted-foreground"
                       }`}
                     >
-                      <input
-                        type="checkbox"
+                      <Checkbox
+                        id={`scope-${s.id}`}
                         checked={selectedScopes.includes(s.id)}
-                        onChange={() => {}}
-                        className="border-border text-primary rounded"
+                        onCheckedChange={() => handleToggleScope(s.id)}
                       />
                       <span className="font-mono text-xs">{s.label}</span>
                     </div>
@@ -180,25 +184,25 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
                 </div>
               </div>
 
-              <div>
-                <label className="text-foreground mb-1 block text-xs font-semibold">
+              <div className="space-y-1.5">
+                <Label htmlFor="api-key-rate-limit" className="text-xs font-semibold">
                   {UI_COPY.IAM.MODAL.RATE_LIMIT_LABEL}
-                </label>
+                </Label>
                 <Input
+                  id="api-key-rate-limit"
                   type="number"
                   value={rateLimit}
                   onChange={(e) => setRateLimit(Number(e.target.value))}
                   min={60}
                   max={10000}
-                  className="bg-background border-border h-9 font-mono text-xs"
+                  className="h-9 font-mono text-xs"
                 />
               </div>
             </form>
           )}
-        </div>
+        </DialogBody>
 
-        {/* Footer */}
-        <div className="border-border mt-2 flex items-center justify-end gap-3 border-t pt-4">
+        <DialogFooter>
           {generatedKey ? (
             <Button
               type="button"
@@ -209,12 +213,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
             </Button>
           ) : (
             <>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                className="border-border h-9 text-xs"
-              >
+              <Button type="button" variant="outline" onClick={handleClose} className="h-9 text-xs">
                 {UI_COPY.COMMON.ACTIONS.CANCEL}
               </Button>
               <Button
@@ -227,8 +226,8 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
               </Button>
             </>
           )}
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };

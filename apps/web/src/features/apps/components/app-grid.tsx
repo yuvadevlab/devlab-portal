@@ -3,12 +3,13 @@
 /**
  * @file apps/web/src/features/apps/components/app-grid.tsx
  * @description Catalog grid toolbar with search filtering, environment toggles, and app cards.
+ * Fully built with @yuva-devlab/ui Button, Input, Tabs, and TabsList components.
  * @module @devlab/portal-web/features/apps/components/app-grid
  */
 
 import React, { useState, useMemo } from "react";
 import { Search, Plus, ServerOff } from "lucide-react";
-import { Button, Input } from "@yuva-devlab/ui";
+import { Button, Input, Tabs, TabsList, TabsTrigger } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { AppCard } from "./app-card";
 import type { RegisteredApp } from "@/features/apps/types";
@@ -65,22 +66,17 @@ export const AppGrid: React.FC<AppGridProps> = ({
             />
           </div>
 
-          {/* Environment filter pills */}
-          <div className="border-border bg-background hidden items-center gap-1 rounded-lg border p-1 lg:flex">
-            {envOptions.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setEnvFilter(opt.value)}
-                className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
-                  envFilter === opt.value
-                    ? "bg-card text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
+          {/* Environment filter segmented tabs */}
+          <div className="hidden lg:block">
+            <Tabs value={envFilter} onValueChange={setEnvFilter}>
+              <TabsList className="h-9">
+                {envOptions.map((opt) => (
+                  <TabsTrigger key={opt.value} value={opt.value} className="text-xs">
+                    {opt.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
           </div>
         </div>
 

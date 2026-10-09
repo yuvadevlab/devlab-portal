@@ -3,12 +3,21 @@
 /**
  * @file apps/web/src/features/team/components/team-table.tsx
  * @description Organization members and RBAC role assignments table.
+ * Fully built with @yuva-devlab/ui Table and Button components.
  * @module @devlab/portal-web/features/team/components/team-table
  */
 
 import React from "react";
 import { Users, Plus, ShieldCheck } from "lucide-react";
-import { Button } from "@yuva-devlab/ui";
+import {
+  Button,
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { UserRole } from "@/lib/constants";
 import type { UserMember } from "@/features/team/types";
@@ -54,61 +63,67 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
       {/* Table */}
       {members.length > 0 ? (
         <div className="border-border bg-card overflow-hidden rounded-xl border shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="border-border bg-background/75 text-muted-foreground border-b font-mono text-[10px] uppercase">
-                <tr>
-                  <th className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.MEMBER}</th>
-                  <th className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.EMAIL}</th>
-                  <th className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.ROLE}</th>
-                  <th className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.STATUS}</th>
-                  <th className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.JOINED}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-border divide-y">
-                {members.map((m) => (
-                  <tr key={m.id} className="hover:bg-background/40 transition-colors">
-                    {/* Member */}
-                    <td className="px-4 py-3.5">
-                      <div className="flex items-center gap-2.5">
-                        <div className="bg-primary/15 text-primary flex size-7 items-center justify-center rounded-full text-xs font-bold">
-                          {m.name.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="text-foreground font-semibold">{m.name}</span>
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border bg-background/75 text-muted-foreground font-mono text-[10px] uppercase">
+                <TableHead className="px-4 py-3 font-semibold">
+                  {UI_COPY.TEAM.TABLE.MEMBER}
+                </TableHead>
+                <TableHead className="px-4 py-3 font-semibold">
+                  {UI_COPY.TEAM.TABLE.EMAIL}
+                </TableHead>
+                <TableHead className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.ROLE}</TableHead>
+                <TableHead className="px-4 py-3 font-semibold">
+                  {UI_COPY.TEAM.TABLE.STATUS}
+                </TableHead>
+                <TableHead className="px-4 py-3 font-semibold">
+                  {UI_COPY.TEAM.TABLE.JOINED}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="divide-border divide-y">
+              {members.map((m) => (
+                <TableRow key={m.id} className="hover:bg-background/40 transition-colors">
+                  {/* Member */}
+                  <TableCell className="px-4 py-3.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="bg-primary/15 text-primary flex size-7 items-center justify-center rounded-full text-xs font-bold">
+                        {m.name.charAt(0).toUpperCase()}
                       </div>
-                    </td>
+                      <span className="text-foreground font-semibold">{m.name}</span>
+                    </div>
+                  </TableCell>
 
-                    {/* Email */}
-                    <td className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
-                      {m.email}
-                    </td>
+                  {/* Email */}
+                  <TableCell className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
+                    {m.email}
+                  </TableCell>
 
-                    {/* Role */}
-                    <td className="px-4 py-3.5">
-                      <span
-                        className={`inline-block rounded-md px-2 py-0.5 font-mono text-[10px] font-semibold ${getRoleBadgeVariant(m.role)}`}
-                      >
-                        {m.role}
-                      </span>
-                    </td>
+                  {/* Role */}
+                  <TableCell className="px-4 py-3.5">
+                    <span
+                      className={`inline-block rounded-md px-2 py-0.5 font-mono text-[10px] font-semibold ${getRoleBadgeVariant(m.role)}`}
+                    >
+                      {m.role}
+                    </span>
+                  </TableCell>
 
-                    {/* Status */}
-                    <td className="px-4 py-3.5">
-                      <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold">
-                        <ShieldCheck className="size-3" />
-                        {UI_COPY.COMMON.STATUS.ACTIVE}
-                      </span>
-                    </td>
+                  {/* Status */}
+                  <TableCell className="px-4 py-3.5">
+                    <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold">
+                      <ShieldCheck className="size-3" />
+                      {UI_COPY.COMMON.STATUS.ACTIVE}
+                    </span>
+                  </TableCell>
 
-                    {/* Joined */}
-                    <td className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
-                      {new Date(m.createdAt).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  {/* Joined */}
+                  <TableCell className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
+                    {new Date(m.createdAt).toLocaleDateString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       ) : (
         <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">

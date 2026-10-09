@@ -3,11 +3,12 @@
 /**
  * @file apps/web/src/features/apps/components/register-wizard/wizard-step-security.tsx
  * @description Step 2 of App Registration Wizard: OAuth2 redirect URIs, CORS origins, and scope grants.
+ * Fully built with @yuva-devlab/ui Label, Textarea, and Checkbox components.
  * @module @devlab/portal-web/features/apps/components/register-wizard/step2
  */
 
 import React from "react";
-import { Textarea } from "@yuva-devlab/ui";
+import { Label, Textarea, Checkbox } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { ApiKeyScope } from "@/lib/constants";
 import type { RegisterWizardFormState } from "@/features/apps/types";
@@ -43,46 +44,40 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
 
   return (
     <div className="space-y-4">
-      <div>
-        <label className="text-foreground mb-1 block text-xs font-semibold">
+      <div className="space-y-1.5">
+        <Label htmlFor="callback-urls" className="text-xs font-semibold">
           {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_URLS} *
-        </label>
-        <p className="text-muted-foreground mb-2 text-[11px]">
+        </Label>
+        <p className="text-muted-foreground text-[11px]">
           Authorized OIDC redirect targets for OAuth2 authorization code flows. One per line.
         </p>
         <Textarea
+          id="callback-urls"
           rows={3}
           value={form.callbackUrls}
           onChange={(e) => onChange({ callbackUrls: e.target.value })}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_PLACEHOLDER}
           required
-          className="bg-background border-border resize-none font-mono text-xs"
+          className="resize-none font-mono text-xs"
         />
       </div>
 
-      <div>
-        <label className="text-foreground mb-1.5 block text-xs font-semibold">
-          Ecosystem Permission Scopes
-        </label>
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold">Ecosystem Permission Scopes</Label>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {commonScopes.map((scope) => (
             <div
               key={scope.id}
-              className="border-border bg-background flex items-start gap-2.5 rounded-lg border p-2.5"
+              className="border-border bg-card flex items-start gap-2.5 rounded-lg border p-2.5"
             >
-              <input
-                type="checkbox"
-                id={scope.id}
-                defaultChecked={true}
-                className="border-border text-primary focus:ring-primary mt-0.5 rounded"
-              />
+              <Checkbox id={scope.id} defaultChecked={true} className="mt-0.5" />
               <div>
-                <label
+                <Label
                   htmlFor={scope.id}
                   className="text-foreground cursor-pointer font-mono text-xs font-medium"
                 >
                   {scope.label}
-                </label>
+                </Label>
                 <p className="text-muted-foreground mt-0.5 text-[10px] leading-tight">
                   {scope.desc}
                 </p>
