@@ -47,16 +47,16 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in">
-      <div className="w-full max-w-md rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-2xl">
+    <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+      <div className="border-border bg-card w-full max-w-md rounded-2xl border p-6 shadow-2xl">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div
               className={`flex h-11 w-11 items-center justify-center rounded-xl ${
                 app.isActive
-                  ? "bg-red-500/15 text-red-400 border border-red-500/30"
-                  : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                  ? "border border-red-500/30 bg-red-500/15 text-red-400"
+                  : "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400"
               }`}
             >
               {app.isActive ? (
@@ -66,12 +66,12 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
               )}
             </div>
             <div>
-              <h3 className="font-bold text-base text-[var(--foreground)]">
+              <h3 className="text-foreground text-base font-bold">
                 {app.isActive
                   ? UI_COPY.APPS.KILL_SWITCH.TITLE_TRIGGER
                   : UI_COPY.APPS.KILL_SWITCH.TITLE_RESTORE}
               </h3>
-              <p className="font-mono text-xs text-[var(--muted-foreground)]">
+              <p className="text-muted-foreground font-mono text-xs">
                 {app.name} ({app.appId})
               </p>
             </div>
@@ -79,7 +79,7 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
+            className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
           >
             <X className="h-4 w-4" />
           </button>
@@ -101,7 +101,7 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
         {/* Optional Incident / Maintenance Note input */}
         {app.isActive && (
           <div className="mt-4">
-            <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">
+            <label className="text-foreground mb-1.5 block text-xs font-semibold">
               {UI_COPY.APPS.KILL_SWITCH.REASON_LABEL}
             </label>
             <Textarea
@@ -109,18 +109,18 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
               value={maintenanceNote}
               onChange={(e) => setMaintenanceNote(e.target.value)}
               placeholder={UI_COPY.APPS.KILL_SWITCH.REASON_PLACEHOLDER}
-              className="bg-[var(--background)] border-[var(--border)] text-xs resize-none"
+              className="bg-background border-border resize-none text-xs"
             />
           </div>
         )}
 
         {/* Footer actions */}
-        <div className="mt-6 flex items-center justify-end gap-3 border-t border-[var(--border)] pt-4">
+        <div className="border-border mt-6 flex items-center justify-end gap-3 border-t pt-4">
           <Button
             type="button"
             variant="outline"
             onClick={onClose}
-            className="text-xs h-9 border-[var(--border)]"
+            className="border-border h-9 text-xs"
           >
             {UI_COPY.COMMON.ACTIONS.CANCEL}
           </Button>
@@ -130,20 +130,20 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
             onClick={handleAction}
             disabled={isSubmitting}
             variant={app.isActive ? "destructive" : "default"}
-            className={`text-xs h-9 font-semibold ${
+            className={`h-9 text-xs font-semibold ${
               app.isActive
-                ? "bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:opacity-90"
+                ? "bg-destructive text-destructive-foreground hover:opacity-90"
                 : "bg-emerald-600 text-white hover:bg-emerald-500"
             }`}
           >
             {app.isActive ? (
               <>
-                <Power className="h-3.5 w-3.5 mr-1.5" />
+                <Power className="mr-1.5 h-3.5 w-3.5" />
                 {UI_COPY.APPS.KILL_SWITCH.CONFIRM_TRIGGER}
               </>
             ) : (
               <>
-                <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
+                <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
                 {UI_COPY.APPS.KILL_SWITCH.CONFIRM_RESTORE}
               </>
             )}

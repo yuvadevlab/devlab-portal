@@ -79,26 +79,24 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in">
-      <div className="flex h-full w-full max-w-lg flex-col justify-between border-l border-[var(--border)] bg-[var(--card)] p-6 shadow-2xl">
+    <div className="animate-in fade-in fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
+      <div className="border-border bg-card flex h-full w-full max-w-lg flex-col justify-between border-l p-6 shadow-2xl">
         {/* Drawer Header */}
         <div>
-          <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
+          <div className="border-border flex items-center justify-between border-b pb-4">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)]/15 text-[var(--primary)]">
+              <div className="bg-primary/15 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
                 <Sliders className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="font-bold text-base text-[var(--foreground)]">
-                  {UI_COPY.APPS.DRAWER.TITLE}
-                </h3>
-                <p className="font-mono text-xs text-[var(--muted-foreground)]">{app.appId}</p>
+                <h3 className="text-foreground text-base font-bold">{UI_COPY.APPS.DRAWER.TITLE}</h3>
+                <p className="text-muted-foreground font-mono text-xs">{app.appId}</p>
               </div>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
+              className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
             >
               <X className="h-4 w-4" />
             </button>
@@ -108,7 +106,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
           <form
             id="app-settings-form"
             onSubmit={handleSubmit}
-            className="mt-5 space-y-4 overflow-y-auto max-h-[calc(100vh-180px)] pr-1"
+            className="mt-5 max-h-[calc(100vh-180px)] space-y-4 overflow-y-auto pr-1"
           >
             {savedSuccess && (
               <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs text-emerald-400">
@@ -118,85 +116,85 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
             )}
 
             <div>
-              <label className="text-xs font-semibold text-[var(--foreground)] block mb-1.5">
+              <label className="text-foreground mb-1.5 block text-xs font-semibold">
                 {UI_COPY.APPS.DRAWER.NAME_LABEL}
               </label>
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="bg-[var(--background)] border-[var(--border)] text-xs h-9"
+                className="bg-background border-border h-9 text-xs"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[var(--foreground)] block mb-1.5">
+              <label className="text-foreground mb-1.5 block text-xs font-semibold">
                 {UI_COPY.APPS.DRAWER.DESC_LABEL}
               </label>
               <Input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="bg-[var(--background)] border-[var(--border)] text-xs h-9"
+                className="bg-background border-border h-9 text-xs"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[var(--foreground)] block mb-1.5">
+              <label className="text-foreground mb-1.5 block text-xs font-semibold">
                 {UI_COPY.APPS.DRAWER.ORIGIN_LABEL}
               </label>
               <Input
                 value={originUrl}
                 onChange={(e) => setOriginUrl(e.target.value)}
                 required
-                className="bg-[var(--background)] border-[var(--border)] text-xs h-9 font-mono"
+                className="bg-background border-border h-9 font-mono text-xs"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[var(--foreground)] block mb-1.5">
+              <label className="text-foreground mb-1.5 block text-xs font-semibold">
                 {UI_COPY.APPS.DRAWER.HEALTH_LABEL}
               </label>
               <Input
                 value={healthUrl}
                 onChange={(e) => setHealthUrl(e.target.value)}
                 required
-                className="bg-[var(--background)] border-[var(--border)] text-xs h-9 font-mono"
+                className="bg-background border-border h-9 font-mono text-xs"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[var(--foreground)] block mb-1.5">
+              <label className="text-foreground mb-1.5 block text-xs font-semibold">
                 {UI_COPY.APPS.DRAWER.CALLBACKS_LABEL}
               </label>
               <Textarea
                 rows={4}
                 value={callbackUrls}
                 onChange={(e) => setCallbackUrls(e.target.value)}
-                className="bg-[var(--background)] border-[var(--border)] text-xs font-mono resize-none"
+                className="bg-background border-border resize-none font-mono text-xs"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[var(--foreground)] block mb-1.5">
+              <label className="text-foreground mb-1.5 block text-xs font-semibold">
                 {UI_COPY.APPS.DRAWER.NOTE_LABEL}
               </label>
               <Input
                 value={maintenanceNote}
                 onChange={(e) => setMaintenanceNote(e.target.value)}
                 placeholder={UI_COPY.APPS.KILL_SWITCH.REASON_PLACEHOLDER}
-                className="bg-[var(--background)] border-[var(--border)] text-xs h-9"
+                className="bg-background border-border h-9 text-xs"
               />
             </div>
           </form>
         </div>
 
         {/* Action Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-[var(--border)] pt-4 mt-4">
+        <div className="border-border mt-4 flex items-center justify-end gap-3 border-t pt-4">
           <Button
             type="button"
             variant="outline"
             onClick={onClose}
-            className="text-xs h-9 border-[var(--border)]"
+            className="border-border h-9 text-xs"
           >
             {UI_COPY.COMMON.ACTIONS.CANCEL}
           </Button>
@@ -204,9 +202,9 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
             type="submit"
             form="app-settings-form"
             disabled={isSubmitting}
-            className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 text-xs h-9 font-medium"
+            className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
           >
-            <Save className="h-3.5 w-3.5 mr-1.5" />
+            <Save className="mr-1.5 h-3.5 w-3.5" />
             {UI_COPY.APPS.DRAWER.SAVE_BTN}
           </Button>
         </div>

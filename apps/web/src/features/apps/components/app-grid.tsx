@@ -50,21 +50,21 @@ export const AppGrid: React.FC<AppGridProps> = ({
   return (
     <div className="space-y-6">
       {/* Control bar: search, environment filter, register CTA */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+      <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex flex-1 items-center gap-3">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--muted-foreground)]" />
+          <div className="relative max-w-md flex-1">
+            <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
             <Input
               type="text"
               placeholder={UI_COPY.COMMON.ACTIONS.SEARCH}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-[var(--card)] border-[var(--border)] text-xs h-9"
+              className="bg-card border-border h-9 pl-9 text-xs"
             />
           </div>
 
           {/* Environment filter pills */}
-          <div className="hidden lg:flex items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--background)] p-1">
+          <div className="border-border bg-background hidden items-center gap-1 rounded-lg border p-1 lg:flex">
             {envOptions.map((opt) => (
               <button
                 key={opt.value}
@@ -72,8 +72,8 @@ export const AppGrid: React.FC<AppGridProps> = ({
                 onClick={() => setEnvFilter(opt.value)}
                 className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
                   envFilter === opt.value
-                    ? "bg-[var(--card)] text-[var(--foreground)] shadow-xs"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                    ? "bg-card text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {opt.label}
@@ -85,16 +85,16 @@ export const AppGrid: React.FC<AppGridProps> = ({
         {/* Register App Button */}
         <Button
           onClick={onOpenRegisterModal}
-          className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 font-medium text-xs h-9 px-4 shrink-0 shadow-sm"
+          className="bg-primary text-primary-foreground h-9 shrink-0 px-4 text-xs font-medium shadow-sm hover:opacity-90"
         >
-          <Plus className="h-4 w-4 mr-1.5" />
+          <Plus className="mr-1.5 h-4 w-4" />
           {UI_COPY.APPS.HEADER.ADD_APP_BTN}
         </Button>
       </div>
 
       {/* Grid of registered application cards */}
       {filteredApps.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredApps.map((app) => (
             <AppCard
               key={app.id}
@@ -106,14 +106,12 @@ export const AppGrid: React.FC<AppGridProps> = ({
         </div>
       ) : (
         /* Empty filter result display */
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border)] p-12 text-center bg-[var(--card)]/40">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] mb-3">
+        <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
+          <div className="bg-background border-border text-muted-foreground mb-3 flex h-12 w-12 items-center justify-center rounded-full border">
             <ServerOff className="h-6 w-6" />
           </div>
-          <h4 className="font-semibold text-sm text-[var(--foreground)]">
-            {UI_COPY.COMMON.EMPTY.NO_DATA}
-          </h4>
-          <p className="mt-1 text-xs text-[var(--muted-foreground)] max-w-sm">
+          <h4 className="text-foreground text-sm font-semibold">{UI_COPY.COMMON.EMPTY.NO_DATA}</h4>
+          <p className="text-muted-foreground mt-1 max-w-sm text-xs">
             {UI_COPY.COMMON.EMPTY.NO_DATA_DESC}
           </p>
         </div>

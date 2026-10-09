@@ -29,7 +29,7 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
       <MetricCard
         label={UI_COPY.APPS.METRICS.TOTAL_APPS}
         value={totalCount}
-        icon={<Server className="h-4 w-4 text-[var(--primary)]" />}
+        icon={<Server className="text-primary h-4 w-4" />}
       />
       <MetricCard
         label={UI_COPY.APPS.METRICS.HEALTHY}
@@ -47,7 +47,7 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
         value={offlineCount}
         note={offlineCount > 0 ? "Severed traffic" : "All active"}
         positive={offlineCount === 0}
-        icon={<AlertOctagon className="h-4 w-4 text-[var(--destructive)]" />}
+        icon={<AlertOctagon className="text-destructive h-4 w-4" />}
       />
       <MetricCard
         label={UI_COPY.APPS.METRICS.TOKEN_OPS}

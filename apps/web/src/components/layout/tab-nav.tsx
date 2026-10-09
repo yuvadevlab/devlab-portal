@@ -56,7 +56,7 @@ export const TabNav: React.FC<TabNavProps> = ({
   ];
 
   return (
-    <div className="border-b border-[var(--border)] bg-[var(--background)] px-6">
+    <div className="border-border bg-background border-b px-6">
       <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto py-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -69,18 +69,18 @@ export const TabNav: React.FC<TabNavProps> = ({
               onClick={() => onSelectTab(tab.key)}
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-medium transition-all ${
                 isActive
-                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm font-semibold"
-                  : "text-[var(--muted-foreground)] hover:bg-[var(--card)] hover:text-[var(--foreground)]"
+                  ? "bg-primary text-primary-foreground font-semibold shadow-sm"
+                  : "text-muted-foreground hover:bg-card hover:text-foreground"
               }`}
             >
               <Icon className="h-4 w-4" />
               <span>{tab.label}</span>
               {tab.count !== undefined && (
                 <span
-                  className={`rounded-full px-1.5 py-0.5 text-[10px] font-mono leading-none ${
+                  className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] leading-none ${
                     isActive
-                      ? "bg-black/20 text-[var(--primary-foreground)]"
-                      : "bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]"
+                      ? "text-primary-foreground bg-black/20"
+                      : "bg-card text-muted-foreground border-border border"
                   }`}
                 >
                   {tab.count}

@@ -19,7 +19,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+        <label className="text-foreground mb-1 block text-xs font-semibold">
           {UI_COPY.APPS.WIZARD.FIELDS.NAME} *
         </label>
         <Input
@@ -36,13 +36,13 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
           }}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.NAME_PLACEHOLDER}
           required
-          className="bg-[var(--background)] border-[var(--border)] text-xs h-9"
+          className="bg-background border-border h-9 text-xs"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+          <label className="text-foreground mb-1 block text-xs font-semibold">
             {UI_COPY.APPS.WIZARD.FIELDS.APP_ID} *
           </label>
           <Input
@@ -55,18 +55,18 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
             }
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.APP_ID_PLACEHOLDER}
             required
-            className="bg-[var(--background)] border-[var(--border)] text-xs h-9 font-mono"
+            className="bg-background border-border h-9 font-mono text-xs"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+          <label className="text-foreground mb-1 block text-xs font-semibold">
             {UI_COPY.APPS.WIZARD.FIELDS.ENVIRONMENT}
           </label>
           <select
             value={form.environment}
             onChange={(e) => onChange({ environment: e.target.value as AppEnvironment })}
-            className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-1.5 text-xs text-[var(--foreground)] h-9 focus:ring-1 focus:ring-[var(--primary)]"
+            className="border-border bg-background text-foreground focus:ring-primary h-9 w-full rounded-md border px-3 py-1.5 text-xs focus:ring-1"
           >
             <option value={AppEnvironment.LOCAL_DEV}>
               {UI_COPY.COMMON.ENVIRONMENTS.LOCAL_DEV}
@@ -80,7 +80,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+        <label className="text-foreground mb-1 block text-xs font-semibold">
           {UI_COPY.APPS.WIZARD.FIELDS.DESCRIPTION}
         </label>
         <Textarea
@@ -88,13 +88,13 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
           value={form.description}
           onChange={(e) => onChange({ description: e.target.value })}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.DESCRIPTION_PLACEHOLDER}
-          className="bg-[var(--background)] border-[var(--border)] text-xs resize-none"
+          className="bg-background border-border resize-none text-xs"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+          <label className="text-foreground mb-1 block text-xs font-semibold">
             {UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_URL} *
           </label>
           <Input
@@ -109,12 +109,12 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
             }}
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_PLACEHOLDER}
             required
-            className="bg-[var(--background)] border-[var(--border)] text-xs h-9 font-mono"
+            className="bg-background border-border h-9 font-mono text-xs"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+          <label className="text-foreground mb-1 block text-xs font-semibold">
             {UI_COPY.APPS.WIZARD.FIELDS.HEALTH_URL} *
           </label>
           <Input
@@ -122,7 +122,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
             onChange={(e) => onChange({ healthUrl: e.target.value })}
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.HEALTH_PLACEHOLDER}
             required
-            className="bg-[var(--background)] border-[var(--border)] text-xs h-9 font-mono"
+            className="bg-background border-border h-9 font-mono text-xs"
           />
         </div>
       </div>

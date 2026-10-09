@@ -38,21 +38,19 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
   return (
     <div className="space-y-6">
       {/* Section Header */}
-      <div className="border-b border-[var(--border)] pb-5">
-        <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">
+      <div className="border-border border-b pb-5">
+        <h2 className="text-foreground text-xl font-bold tracking-tight">
           {UI_COPY.AUDIT.HEADER.TITLE}
         </h2>
-        <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-          {UI_COPY.AUDIT.HEADER.DESCRIPTION}
-        </p>
+        <p className="text-muted-foreground mt-1 text-xs">{UI_COPY.AUDIT.HEADER.DESCRIPTION}</p>
       </div>
 
       {/* Audit Log Table */}
       {logs.length > 0 ? (
-        <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-xs">
+        <div className="border-border bg-card overflow-hidden rounded-xl border shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-[var(--border)] bg-[var(--background)]/75 text-[var(--muted-foreground)] uppercase font-mono text-[10px]">
+              <thead className="border-border bg-background/75 text-muted-foreground border-b font-mono text-[10px] uppercase">
                 <tr>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.AUDIT.TABLE.TIMESTAMP}</th>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.AUDIT.TABLE.ACTION}</th>
@@ -64,11 +62,11 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--border)] font-mono text-[11px]">
+              <tbody className="divide-border divide-y font-mono text-[11px]">
                 {logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-[var(--background)]/40 transition-colors">
+                  <tr key={log.id} className="hover:bg-background/40 transition-colors">
                     {/* Timestamp */}
-                    <td className="px-4 py-3 text-[var(--muted-foreground)] whitespace-nowrap">
+                    <td className="text-muted-foreground px-4 py-3 whitespace-nowrap">
                       {new Date(log.createdAt).toLocaleString()}
                     </td>
 
@@ -82,17 +80,15 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
                     </td>
 
                     {/* Actor */}
-                    <td className="px-4 py-3 text-[var(--foreground)]">
-                      {log.actor?.email || log.actorId}
-                    </td>
+                    <td className="text-foreground px-4 py-3">{log.actor?.email || log.actorId}</td>
 
                     {/* Target */}
-                    <td className="px-4 py-3 text-[var(--muted-foreground)]">
+                    <td className="text-muted-foreground px-4 py-3">
                       {log.targetType}: {log.targetId.slice(0, 10)}...
                     </td>
 
                     {/* Details Snippet */}
-                    <td className="px-4 py-3 text-[var(--muted-foreground)] max-w-xs truncate">
+                    <td className="text-muted-foreground max-w-xs truncate px-4 py-3">
                       {log.metadata ? JSON.stringify(log.metadata) : "-"}
                     </td>
 
@@ -102,9 +98,9 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
                         variant="ghost"
                         size="sm"
                         onClick={() => setSelectedLog(log)}
-                        className="h-7 px-2 text-xs text-[var(--primary)] hover:bg-[var(--primary)]/10"
+                        className="text-primary hover:bg-primary/10 h-7 px-2 text-xs"
                       >
-                        <Eye className="h-3.5 w-3.5 mr-1" />
+                        <Eye className="mr-1 h-3.5 w-3.5" />
                         {UI_COPY.COMMON.ACTIONS.INSPECT}
                       </Button>
                     </td>
@@ -116,11 +112,11 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
         </div>
       ) : (
         /* Empty State */
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border)] p-12 text-center bg-[var(--card)]/40">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] mb-3">
+        <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
+          <div className="bg-background border-border text-muted-foreground mb-3 flex h-12 w-12 items-center justify-center rounded-full border">
             <Terminal className="h-6 w-6" />
           </div>
-          <h4 className="font-semibold text-sm text-[var(--foreground)]">
+          <h4 className="text-foreground text-sm font-semibold">
             {UI_COPY.AUDIT.TABLE.EMPTY_TEXT}
           </h4>
         </div>

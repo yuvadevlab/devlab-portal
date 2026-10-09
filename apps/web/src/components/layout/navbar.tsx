@@ -16,29 +16,29 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ healthyCount, totalApps }) => {
   return (
-    <header className="border-b border-[var(--border)] bg-[var(--card)]/90 backdrop-blur-md sticky top-0 z-40">
+    <header className="border-border bg-card/90 sticky top-0 z-40 border-b backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Brand identity */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] shadow-lg shadow-[var(--primary)]/20 font-bold text-lg">
+          <div className="bg-primary text-primary-foreground shadow-primary/20 flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold shadow-lg">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold tracking-tight text-lg text-[var(--foreground)]">
+              <span className="text-foreground text-lg font-extrabold tracking-tight">
                 {UI_COPY.COMMON.BRAND.NAME}
               </span>
-              <span className="font-medium text-xs text-[var(--muted-foreground)]">
+              <span className="text-muted-foreground text-xs font-medium">
                 {UI_COPY.COMMON.BRAND.TITLE}
               </span>
               <Badge
                 variant="outline"
-                className="text-[10px] font-mono border-[var(--border)] text-[var(--muted-foreground)]"
+                className="border-border text-muted-foreground font-mono text-[10px]"
               >
                 {UI_COPY.COMMON.BRAND.VERSION}
               </Badge>
             </div>
-            <p className="text-[11px] text-[var(--muted-foreground)] leading-none">
+            <p className="text-muted-foreground text-[11px] leading-none">
               {UI_COPY.COMMON.BRAND.SUBTITLE}
             </p>
           </div>
@@ -47,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({ healthyCount, totalApps }) => {
         {/* Live cluster status & user identity */}
         <div className="flex items-center gap-4">
           {/* Heartbeat pill */}
-          <div className="hidden sm:flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-400">
+          <div className="hidden items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-400 sm:flex">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
@@ -59,15 +59,15 @@ export const Navbar: React.FC<NavbarProps> = ({ healthyCount, totalApps }) => {
           </div>
 
           {/* User profile capsule */}
-          <div className="flex items-center gap-2.5 rounded-full border border-[var(--border)] bg-[var(--background)] px-3 py-1.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-xs">
+          <div className="border-border bg-background flex items-center gap-2.5 rounded-full border px-3 py-1.5">
+            <div className="bg-primary text-primary-foreground flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold">
               A
             </div>
-            <div className="text-left hidden md:block">
-              <p className="text-xs font-medium text-[var(--foreground)] leading-none">
+            <div className="hidden text-left md:block">
+              <p className="text-foreground text-xs leading-none font-medium">
                 Platform Super Admin
               </p>
-              <p className="text-[10px] font-mono text-[var(--muted-foreground)] leading-none mt-0.5">
+              <p className="text-muted-foreground mt-0.5 font-mono text-[10px] leading-none">
                 admin@devlab.internal
               </p>
             </div>

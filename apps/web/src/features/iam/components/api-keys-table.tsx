@@ -25,30 +25,28 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
   return (
     <div className="space-y-6">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border)] pb-5">
+      <div className="border-border flex flex-col justify-between gap-4 border-b pb-5 sm:flex-row sm:items-center">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">
+          <h2 className="text-foreground text-xl font-bold tracking-tight">
             {UI_COPY.IAM.HEADER.TITLE}
           </h2>
-          <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-            {UI_COPY.IAM.HEADER.DESCRIPTION}
-          </p>
+          <p className="text-muted-foreground mt-1 text-xs">{UI_COPY.IAM.HEADER.DESCRIPTION}</p>
         </div>
         <Button
           onClick={onOpenCreateModal}
-          className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 font-medium text-xs h-9 px-4 shrink-0 shadow-sm"
+          className="bg-primary text-primary-foreground h-9 shrink-0 px-4 text-xs font-medium shadow-sm hover:opacity-90"
         >
-          <Plus className="h-4 w-4 mr-1.5" />
+          <Plus className="mr-1.5 h-4 w-4" />
           {UI_COPY.IAM.HEADER.CREATE_BTN}
         </Button>
       </div>
 
       {/* Table Container */}
       {keys.length > 0 ? (
-        <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-xs">
+        <div className="border-border bg-card overflow-hidden rounded-xl border shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-[var(--border)] bg-[var(--background)]/75 text-[var(--muted-foreground)] uppercase font-mono text-[10px]">
+              <thead className="border-border bg-background/75 text-muted-foreground border-b font-mono text-[10px] uppercase">
                 <tr>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.NAME}</th>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.PREFIX}</th>
@@ -61,19 +59,19 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--border)]">
+              <tbody className="divide-border divide-y">
                 {keys.map((k) => (
-                  <tr key={k.id} className="hover:bg-[var(--background)]/40 transition-colors">
+                  <tr key={k.id} className="hover:bg-background/40 transition-colors">
                     {/* Name */}
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-2">
-                        <Key className="h-3.5 w-3.5 text-[var(--primary)] shrink-0" />
-                        <span className="font-semibold text-[var(--foreground)]">{k.name}</span>
+                        <Key className="text-primary h-3.5 w-3.5 shrink-0" />
+                        <span className="text-foreground font-semibold">{k.name}</span>
                       </div>
                     </td>
 
                     {/* Key Prefix preview */}
-                    <td className="px-4 py-3.5 font-mono text-[11px] text-[var(--muted-foreground)]">
+                    <td className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
                       <div className="flex items-center gap-1">
                         <span>{k.keyPrefix}</span>
                         <CopyButton textToCopy={k.keyPrefix} />
@@ -82,12 +80,12 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
 
                     {/* Scopes Badges */}
                     <td className="px-4 py-3.5">
-                      <div className="flex flex-wrap gap-1 max-w-xs">
+                      <div className="flex max-w-xs flex-wrap gap-1">
                         {k.scopes.map((scope) => (
                           <Badge
                             key={scope}
                             variant="outline"
-                            className="text-[10px] font-mono border-[var(--border)] text-[var(--foreground)]"
+                            className="border-border text-foreground font-mono text-[10px]"
                           >
                             {scope}
                           </Badge>
@@ -96,12 +94,12 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                     </td>
 
                     {/* Rate Limit */}
-                    <td className="px-4 py-3.5 font-mono text-[11px] text-[var(--foreground)]">
+                    <td className="text-foreground px-4 py-3.5 font-mono text-[11px]">
                       {k.rateLimitRpm} rpm
                     </td>
 
                     {/* Created Date */}
-                    <td className="px-4 py-3.5 font-mono text-[11px] text-[var(--muted-foreground)]">
+                    <td className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
                       {new Date(k.createdAt).toLocaleDateString()}
                     </td>
 
@@ -129,7 +127,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                           onClick={() => onRevokeKey(k.id)}
                           className="h-7 px-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
                         >
-                          <Trash2 className="h-3.5 w-3.5 mr-1" />
+                          <Trash2 className="mr-1 h-3.5 w-3.5" />
                           {UI_COPY.COMMON.ACTIONS.REVOKE}
                         </Button>
                       )}
@@ -142,13 +140,11 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
         </div>
       ) : (
         /* Empty State */
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border)] p-12 text-center bg-[var(--card)]/40">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] mb-3">
+        <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
+          <div className="bg-background border-border text-muted-foreground mb-3 flex h-12 w-12 items-center justify-center rounded-full border">
             <Key className="h-6 w-6" />
           </div>
-          <h4 className="font-semibold text-sm text-[var(--foreground)]">
-            {UI_COPY.IAM.TABLE.EMPTY_TEXT}
-          </h4>
+          <h4 className="text-foreground text-sm font-semibold">{UI_COPY.IAM.TABLE.EMPTY_TEXT}</h4>
         </div>
       )}
     </div>

@@ -135,7 +135,7 @@ export default function DashboardPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
+    <div className="bg-background text-foreground flex min-h-screen flex-col">
       <Navbar healthyCount={healthyCount} totalApps={apps.length} />
       <TabNav
         activeTab={activeTab}

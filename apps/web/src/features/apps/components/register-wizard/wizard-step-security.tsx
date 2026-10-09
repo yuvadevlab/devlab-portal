@@ -42,10 +42,10 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+        <label className="text-foreground mb-1 block text-xs font-semibold">
           {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_URLS} *
         </label>
-        <p className="text-[11px] text-[var(--muted-foreground)] mb-2">
+        <p className="text-muted-foreground mb-2 text-[11px]">
           Authorized OIDC redirect targets for OAuth2 authorization code flows. One per line.
         </p>
         <Textarea
@@ -54,34 +54,34 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
           onChange={(e) => onChange({ callbackUrls: e.target.value })}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_PLACEHOLDER}
           required
-          className="bg-[var(--background)] border-[var(--border)] text-xs font-mono resize-none"
+          className="bg-background border-border resize-none font-mono text-xs"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">
+        <label className="text-foreground mb-1.5 block text-xs font-semibold">
           Ecosystem Permission Scopes
         </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {commonScopes.map((scope) => (
             <div
               key={scope.id}
-              className="flex items-start gap-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] p-2.5"
+              className="border-border bg-background flex items-start gap-2.5 rounded-lg border p-2.5"
             >
               <input
                 type="checkbox"
                 id={scope.id}
                 defaultChecked={true}
-                className="mt-0.5 rounded border-[var(--border)] text-[var(--primary)] focus:ring-[var(--primary)]"
+                className="border-border text-primary focus:ring-primary mt-0.5 rounded"
               />
               <div>
                 <label
                   htmlFor={scope.id}
-                  className="text-xs font-mono font-medium text-[var(--foreground)] cursor-pointer"
+                  className="text-foreground cursor-pointer font-mono text-xs font-medium"
                 >
                   {scope.label}
                 </label>
-                <p className="text-[10px] text-[var(--muted-foreground)] leading-tight mt-0.5">
+                <p className="text-muted-foreground mt-0.5 text-[10px] leading-tight">
                   {scope.desc}
                 </p>
               </div>

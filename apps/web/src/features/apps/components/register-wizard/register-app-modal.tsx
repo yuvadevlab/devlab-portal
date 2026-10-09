@@ -108,19 +108,19 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in">
-      <div className="w-full max-w-xl rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-2xl flex flex-col max-h-[90vh]">
+    <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+      <div className="border-border bg-card flex max-h-[90vh] w-full max-w-xl flex-col rounded-2xl border p-6 shadow-2xl">
         {/* Header & Step progress indicator */}
-        <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
+        <div className="border-border flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--primary)]/15 text-[var(--primary)]">
+            <div className="bg-primary/15 text-primary flex h-9 w-9 items-center justify-center rounded-xl">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-[var(--foreground)]">
+              <h3 className="text-foreground text-base font-bold">
                 {UI_COPY.APPS.WIZARD.MODAL_TITLE}
               </h3>
-              <p className="text-xs text-[var(--muted-foreground)]">
+              <p className="text-muted-foreground text-xs">
                 {currentStep === 1 && UI_COPY.APPS.WIZARD.STEP_1_TITLE}
                 {currentStep === 2 && UI_COPY.APPS.WIZARD.STEP_2_TITLE}
                 {currentStep === 3 && UI_COPY.APPS.WIZARD.STEP_3_TITLE}
@@ -130,30 +130,30 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-lg p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
+            className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Step dots */}
-        <div className="flex items-center justify-center gap-2 py-3 border-b border-[var(--border)]/50">
+        <div className="border-border/50 flex items-center justify-center gap-2 border-b py-3">
           {[1, 2, 3].map((step) => (
             <div
               key={step}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 currentStep === step
-                  ? "w-8 bg-[var(--primary)]"
+                  ? "bg-primary w-8"
                   : currentStep > step
                     ? "w-4 bg-emerald-500"
-                    : "w-4 bg-[var(--border)]"
+                    : "bg-border w-4"
               }`}
             />
           ))}
         </div>
 
         {/* Form Body View */}
-        <div className="py-4 overflow-y-auto flex-1 pr-1">
+        <div className="flex-1 overflow-y-auto py-4 pr-1">
           {currentStep === 1 && <WizardStepIdentity form={form} onChange={handleFieldChange} />}
           {currentStep === 2 && <WizardStepSecurity form={form} onChange={handleFieldChange} />}
           {currentStep === 3 && (
@@ -162,16 +162,16 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
         </div>
 
         {/* Wizard Footer Navigation */}
-        <div className="flex items-center justify-between border-t border-[var(--border)] pt-4 mt-2">
+        <div className="border-border mt-2 flex items-center justify-between border-t pt-4">
           {currentStep === 2 ? (
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={() => setCurrentStep(1)}
-              className="text-xs h-9 border-[var(--border)]"
+              className="border-border h-9 text-xs"
             >
-              <ArrowLeft className="h-3.5 w-3.5 mr-1" />
+              <ArrowLeft className="mr-1 h-3.5 w-3.5" />
               {UI_COPY.COMMON.ACTIONS.BACK}
             </Button>
           ) : (
@@ -186,7 +186,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleClose}
-                  className="text-xs h-9 border-[var(--border)]"
+                  className="border-border h-9 text-xs"
                 >
                   {UI_COPY.COMMON.ACTIONS.CANCEL}
                 </Button>
@@ -198,19 +198,19 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
                     isSubmitting ||
                     (currentStep === 1 && (!form.name || !form.appId || !form.originUrl))
                   }
-                  className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 text-xs h-9 font-medium"
+                  className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
                 >
                   {isSubmitting ? (
                     "Registering..."
                   ) : currentStep === 2 ? (
                     <>
                       {UI_COPY.COMMON.ACTIONS.REGISTER}
-                      <Check className="h-3.5 w-3.5 ml-1" />
+                      <Check className="ml-1 h-3.5 w-3.5" />
                     </>
                   ) : (
                     <>
                       {UI_COPY.COMMON.ACTIONS.NEXT}
-                      <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                      <ArrowRight className="ml-1 h-3.5 w-3.5" />
                     </>
                   )}
                 </Button>
@@ -220,7 +220,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
                 type="button"
                 size="sm"
                 onClick={handleClose}
-                className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 text-xs h-9 font-medium"
+                className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
               >
                 {UI_COPY.COMMON.ACTIONS.FINISH}
               </Button>

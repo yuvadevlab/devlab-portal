@@ -23,70 +23,60 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="border-b border-[var(--border)] pb-5">
-        <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">
+      <div className="border-border border-b pb-5">
+        <h2 className="text-foreground text-xl font-bold tracking-tight">
           {UI_COPY.SETTINGS.HEADER.TITLE}
         </h2>
-        <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-          {UI_COPY.SETTINGS.HEADER.DESCRIPTION}
-        </p>
+        <p className="text-muted-foreground mt-1 text-xs">{UI_COPY.SETTINGS.HEADER.DESCRIPTION}</p>
       </div>
 
       {/* OIDC Discovery Endpoints Card */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 space-y-4">
+      <div className="border-border bg-card space-y-4 rounded-xl border p-6">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)]/15 text-[var(--primary)]">
+          <div className="bg-primary/15 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
             <Globe className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="font-bold text-sm text-[var(--foreground)]">
-              {UI_COPY.SETTINGS.OIDC.TITLE}
-            </h3>
-            <p className="text-xs text-[var(--muted-foreground)]">
-              {UI_COPY.SETTINGS.OIDC.DESCRIPTION}
-            </p>
+            <h3 className="text-foreground text-sm font-bold">{UI_COPY.SETTINGS.OIDC.TITLE}</h3>
+            <p className="text-muted-foreground text-xs">{UI_COPY.SETTINGS.OIDC.DESCRIPTION}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-2">
+        <div className="grid grid-cols-1 gap-3 pt-2 text-xs md:grid-cols-2">
           {/* OIDC Config URI */}
-          <div className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-3 space-y-1">
+          <div className="border-border bg-background space-y-1 rounded-lg border p-3">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-[var(--muted-foreground)] text-[11px]">
+              <span className="text-muted-foreground text-[11px] font-medium">
                 {UI_COPY.SETTINGS.OIDC.DISCOVERY_URL}
               </span>
               <CopyButton textToCopy={oidcUrl} />
             </div>
-            <p className="font-mono text-xs text-[var(--foreground)] truncate">{oidcUrl}</p>
+            <p className="text-foreground truncate font-mono text-xs">{oidcUrl}</p>
           </div>
 
           {/* JWKS URI */}
-          <div className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-3 space-y-1">
+          <div className="border-border bg-background space-y-1 rounded-lg border p-3">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-[var(--muted-foreground)] text-[11px]">
+              <span className="text-muted-foreground text-[11px] font-medium">
                 {UI_COPY.SETTINGS.JWKS.ENDPOINT_LABEL}
               </span>
               <CopyButton textToCopy={jwksUrl} />
             </div>
-            <p className="font-mono text-xs text-[var(--foreground)] truncate">{jwksUrl}</p>
+            <p className="text-foreground truncate font-mono text-xs">{jwksUrl}</p>
           </div>
         </div>
       </div>
 
       {/* Active Public Key Sets */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 space-y-5">
+      <div className="border-border bg-card space-y-5 rounded-xl border p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)]/15 text-[var(--primary)]">
+            <div className="bg-primary/15 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
               <KeyRound className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-[var(--foreground)]">
-                {UI_COPY.SETTINGS.JWKS.TITLE}
-              </h3>
-              <p className="text-xs text-[var(--muted-foreground)]">
-                {UI_COPY.SETTINGS.JWKS.DESCRIPTION}
-              </p>
+              <h3 className="text-foreground text-sm font-bold">{UI_COPY.SETTINGS.JWKS.TITLE}</h3>
+              <p className="text-muted-foreground text-xs">{UI_COPY.SETTINGS.JWKS.DESCRIPTION}</p>
             </div>
           </div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
@@ -99,18 +89,16 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
         {jwks?.keys?.map((key) => (
           <div
             key={key.kid}
-            className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-4 space-y-3"
+            className="border-border bg-background space-y-3 rounded-lg border p-4"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-[var(--primary)]" />
-                <span className="font-mono text-xs font-bold text-[var(--foreground)]">
-                  kid: {key.kid}
-                </span>
-                <Badge variant="outline" className="text-[10px] font-mono border-[var(--border)]">
+                <ShieldCheck className="text-primary h-4 w-4" />
+                <span className="text-foreground font-mono text-xs font-bold">kid: {key.kid}</span>
+                <Badge variant="outline" className="border-border font-mono text-[10px]">
                   {key.alg}
                 </Badge>
-                <Badge variant="outline" className="text-[10px] font-mono border-[var(--border)]">
+                <Badge variant="outline" className="border-border font-mono text-[10px]">
                   {key.kty}
                 </Badge>
               </div>
@@ -119,10 +107,10 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
 
             {/* Modulus (n) preview */}
             <div>
-              <span className="text-[10px] uppercase font-mono text-[var(--muted-foreground)] block mb-1">
+              <span className="text-muted-foreground mb-1 block font-mono text-[10px] uppercase">
                 Public Modulus (RSA N)
               </span>
-              <pre className="overflow-x-auto rounded border border-[var(--border)] bg-[var(--card)] p-2 font-mono text-[10px] text-[var(--muted-foreground)] max-h-16">
+              <pre className="border-border bg-card text-muted-foreground max-h-16 overflow-x-auto rounded border p-2 font-mono text-[10px]">
                 {key.n}
               </pre>
             </div>

@@ -22,7 +22,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
       case UserRole.SUPER_ADMIN:
         return "bg-rose-500/10 text-rose-400 border border-rose-500/20";
       case UserRole.ADMIN:
-        return "bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20";
+        return "bg-primary/10 text-primary border border-primary/20";
       case UserRole.DEVELOPER:
         return "bg-sky-500/10 text-sky-400 border border-sky-500/20";
       default:
@@ -33,30 +33,28 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border)] pb-5">
+      <div className="border-border flex flex-col justify-between gap-4 border-b pb-5 sm:flex-row sm:items-center">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">
+          <h2 className="text-foreground text-xl font-bold tracking-tight">
             {UI_COPY.TEAM.HEADER.TITLE}
           </h2>
-          <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-            {UI_COPY.TEAM.HEADER.DESCRIPTION}
-          </p>
+          <p className="text-muted-foreground mt-1 text-xs">{UI_COPY.TEAM.HEADER.DESCRIPTION}</p>
         </div>
         <Button
           onClick={onOpenInviteModal}
-          className="bg-primary text-primary-foreground hover:opacity-90 font-medium text-xs h-9 px-4 shrink-0 shadow-sm"
+          className="bg-primary text-primary-foreground h-9 shrink-0 px-4 text-xs font-medium shadow-sm hover:opacity-90"
         >
-          <Plus className="h-4 w-4 mr-1.5" />
+          <Plus className="mr-1.5 h-4 w-4" />
           {UI_COPY.TEAM.HEADER.INVITE_BTN}
         </Button>
       </div>
 
       {/* Table */}
       {members.length > 0 ? (
-        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+        <div className="border-border bg-card overflow-hidden rounded-xl border shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-border bg-(--background)/75 text-muted-foreground uppercase font-mono text-[10px]">
+              <thead className="border-border bg-background/75 text-muted-foreground border-b font-mono text-[10px] uppercase">
                 <tr>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.MEMBER}</th>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.EMAIL}</th>
@@ -65,28 +63,28 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
                   <th className="px-4 py-3 font-semibold">{UI_COPY.TEAM.TABLE.JOINED}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-border divide-y">
                 {members.map((m) => (
-                  <tr key={m.id} className="hover:bg-(--background)/40 transition-colors">
+                  <tr key={m.id} className="hover:bg-background/40 transition-colors">
                     {/* Member */}
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-2.5">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-(--primary)/15 text-(--primary) font-bold text-xs">
+                        <div className="bg-primary/15 text-primary flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold">
                           {m.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-semibold text-foreground">{m.name}</span>
+                        <span className="text-foreground font-semibold">{m.name}</span>
                       </div>
                     </td>
 
                     {/* Email */}
-                    <td className="px-4 py-3.5 font-mono text-[11px] text-muted-foreground">
+                    <td className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
                       {m.email}
                     </td>
 
                     {/* Role */}
                     <td className="px-4 py-3.5">
                       <span
-                        className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-mono font-semibold ${getRoleBadgeVariant(m.role)}`}
+                        className={`inline-block rounded-md px-2 py-0.5 font-mono text-[10px] font-semibold ${getRoleBadgeVariant(m.role)}`}
                       >
                         {m.role}
                       </span>
@@ -101,7 +99,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
                     </td>
 
                     {/* Joined */}
-                    <td className="px-4 py-3.5 font-mono text-[11px] text-[var(--muted-foreground)]">
+                    <td className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
                       {new Date(m.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
@@ -111,13 +109,11 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border)] p-12 text-center bg-[var(--card)]/40">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] mb-3">
+        <div className="border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
+          <div className="bg-background border-border text-muted-foreground mb-3 flex h-12 w-12 items-center justify-center rounded-full border">
             <Users className="h-6 w-6" />
           </div>
-          <h4 className="font-semibold text-sm text-[var(--foreground)]">
-            {UI_COPY.TEAM.TABLE.EMPTY_TEXT}
-          </h4>
+          <h4 className="text-foreground text-sm font-semibold">{UI_COPY.TEAM.TABLE.EMPTY_TEXT}</h4>
         </div>
       )}
     </div>

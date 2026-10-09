@@ -63,27 +63,23 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in">
-      <div className="w-full max-w-md rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-2xl">
+    <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+      <div className="border-border bg-card w-full max-w-md rounded-2xl border p-6 shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
+        <div className="border-border flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--primary)]/15 text-[var(--primary)]">
+            <div className="bg-primary/15 text-primary flex h-9 w-9 items-center justify-center rounded-xl">
               <Users className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-[var(--foreground)]">
-                {UI_COPY.TEAM.MODAL.TITLE}
-              </h3>
-              <p className="text-xs text-[var(--muted-foreground)]">
-                {UI_COPY.TEAM.MODAL.DESCRIPTION}
-              </p>
+              <h3 className="text-foreground text-base font-bold">{UI_COPY.TEAM.MODAL.TITLE}</h3>
+              <p className="text-muted-foreground text-xs">{UI_COPY.TEAM.MODAL.DESCRIPTION}</p>
             </div>
           </div>
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-lg p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
+            className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
           >
             <X className="h-4 w-4" />
           </button>
@@ -99,7 +95,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+            <label className="text-foreground mb-1 block text-xs font-semibold">
               {UI_COPY.TEAM.MODAL.NAME_LABEL} *
             </label>
             <Input
@@ -107,12 +103,12 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
               onChange={(e) => setName(e.target.value)}
               placeholder={UI_COPY.TEAM.MODAL.NAME_PLACEHOLDER}
               required
-              className="bg-[var(--background)] border-[var(--border)] text-xs h-9"
+              className="bg-background border-border h-9 text-xs"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+            <label className="text-foreground mb-1 block text-xs font-semibold">
               {UI_COPY.TEAM.MODAL.EMAIL_LABEL} *
             </label>
             <Input
@@ -121,18 +117,18 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               placeholder={UI_COPY.TEAM.MODAL.EMAIL_PLACEHOLDER}
               required
-              className="bg-[var(--background)] border-[var(--border)] text-xs h-9 font-mono"
+              className="bg-background border-border h-9 font-mono text-xs"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
+            <label className="text-foreground mb-1 block text-xs font-semibold">
               {UI_COPY.TEAM.MODAL.ROLE_LABEL}
             </label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-1.5 text-xs text-[var(--foreground)] h-9 focus:ring-1 focus:ring-[var(--primary)]"
+              className="border-border bg-background text-foreground focus:ring-primary h-9 w-full rounded-md border px-3 py-1.5 text-xs focus:ring-1"
             >
               <option value={UserRole.DEVELOPER}>{UI_COPY.TEAM.ROLES.DEVELOPER}</option>
               <option value={UserRole.OPERATOR}>{UI_COPY.TEAM.ROLES.OPERATOR}</option>
@@ -143,12 +139,12 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
         </form>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-[var(--border)] pt-4 mt-6">
+        <div className="border-border mt-6 flex items-center justify-end gap-3 border-t pt-4">
           <Button
             type="button"
             variant="outline"
             onClick={handleClose}
-            className="text-xs h-9 border-[var(--border)]"
+            className="border-border h-9 text-xs"
           >
             {UI_COPY.COMMON.ACTIONS.CANCEL}
           </Button>
@@ -156,9 +152,9 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             type="submit"
             form="invite-member-form"
             disabled={isSubmitting || !name || !email}
-            className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 text-xs h-9 font-medium"
+            className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
           >
-            <UserPlus className="h-3.5 w-3.5 mr-1.5" />
+            <UserPlus className="mr-1.5 h-3.5 w-3.5" />
             {isSubmitting ? "Inviting..." : UI_COPY.COMMON.ACTIONS.INVITE}
           </Button>
         </div>

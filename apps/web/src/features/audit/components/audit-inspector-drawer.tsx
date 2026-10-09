@@ -29,74 +29,68 @@ export const AuditInspectorDrawer: React.FC<AuditInspectorDrawerProps> = ({
   const jsonFormatted = JSON.stringify(log, null, 2);
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in">
-      <div className="flex h-full w-full max-w-lg flex-col justify-between border-l border-[var(--border)] bg-[var(--card)] p-6 shadow-2xl">
+    <div className="animate-in fade-in fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
+      <div className="border-border bg-card flex h-full w-full max-w-lg flex-col justify-between border-l p-6 shadow-2xl">
         {/* Drawer Header */}
         <div>
-          <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
+          <div className="border-border flex items-center justify-between border-b pb-4">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)]/15 text-[var(--primary)]">
+              <div className="bg-primary/15 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
                 <ShieldCheck className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="font-bold text-base text-[var(--foreground)]">
+                <h3 className="text-foreground text-base font-bold">
                   {UI_COPY.AUDIT.DRAWER.TITLE}
                 </h3>
-                <p className="font-mono text-xs text-[var(--muted-foreground)]">{log.action}</p>
+                <p className="text-muted-foreground font-mono text-xs">{log.action}</p>
               </div>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
+              className="text-muted-foreground hover:bg-background hover:text-foreground rounded-lg p-1.5"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
           {/* Key Facts Summary */}
-          <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--background)]/60 p-3 space-y-2 text-xs">
+          <div className="border-border bg-background/60 mt-4 space-y-2 rounded-xl border p-3 text-xs">
             <div className="flex justify-between">
-              <span className="text-[var(--muted-foreground)]">
-                {UI_COPY.AUDIT.DRAWER.EVENT_ID}:
-              </span>
-              <span className="font-mono text-[var(--foreground)]">{log.id}</span>
+              <span className="text-muted-foreground">{UI_COPY.AUDIT.DRAWER.EVENT_ID}:</span>
+              <span className="text-foreground font-mono">{log.id}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[var(--muted-foreground)]">{UI_COPY.AUDIT.DRAWER.ACTOR}:</span>
-              <span className="font-mono text-[var(--foreground)]">
-                {log.actor?.email || log.actorId}
-              </span>
+              <span className="text-muted-foreground">{UI_COPY.AUDIT.DRAWER.ACTOR}:</span>
+              <span className="text-foreground font-mono">{log.actor?.email || log.actorId}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[var(--muted-foreground)]">
-                {UI_COPY.AUDIT.DRAWER.TARGET_TYPE}:
-              </span>
-              <span className="font-mono text-[var(--foreground)]">{log.targetType}</span>
+              <span className="text-muted-foreground">{UI_COPY.AUDIT.DRAWER.TARGET_TYPE}:</span>
+              <span className="text-foreground font-mono">{log.targetType}</span>
             </div>
           </div>
 
           {/* Raw JSON viewer */}
           <div className="mt-4">
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-semibold text-[var(--foreground)]">
+            <div className="mb-1.5 flex items-center justify-between">
+              <label className="text-foreground text-xs font-semibold">
                 {UI_COPY.AUDIT.DRAWER.PAYLOAD_JSON}
               </label>
               <CopyButton textToCopy={jsonFormatted} />
             </div>
-            <pre className="max-h-[calc(100vh-280px)] overflow-auto rounded-lg border border-[var(--border)] bg-[var(--background)] p-3 font-mono text-[11px] text-slate-200">
+            <pre className="border-border bg-background max-h-[calc(100vh-280px)] overflow-auto rounded-lg border p-3 font-mono text-[11px] text-slate-200">
               {jsonFormatted}
             </pre>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end border-t border-[var(--border)] pt-4 mt-4">
+        <div className="border-border mt-4 flex justify-end border-t pt-4">
           <Button
             type="button"
             variant="outline"
             onClick={onClose}
-            className="text-xs h-9 border-[var(--border)]"
+            className="border-border h-9 text-xs"
           >
             {UI_COPY.COMMON.ACTIONS.CLOSE}
           </Button>

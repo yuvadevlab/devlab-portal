@@ -15,7 +15,10 @@
     "db:push": "prisma db push --schema=./prisma/schema.prisma",
     "db:seed": "node --loader ts-node/esm prisma/seed.ts",
     "postinstall": "prisma generate --schema=./prisma/schema.prisma",
-    "prepare": "husky"
+    "prepare": "husky",
+    "check": "pnpm lint && pnpm typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -40,6 +43,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "prisma": "^7.10.0",
     "ts-node": "^10.9.2",
     "turbo": "^2.11.1",

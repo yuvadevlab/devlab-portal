@@ -25,8 +25,8 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
       <div className="flex items-center gap-2.5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-emerald-400">
         <CheckCircle2 className="h-5 w-5 shrink-0" />
         <div>
-          <p className="font-semibold text-xs leading-none">Application Registered Successfully</p>
-          <p className="text-[11px] text-emerald-300/80 mt-1">
+          <p className="text-xs leading-none font-semibold">Application Registered Successfully</p>
+          <p className="mt-1 text-[11px] text-emerald-300/80">
             Client credentials have been generated and cryptographic hashes recorded.
           </p>
         </div>
@@ -34,18 +34,18 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
 
       {/* Client ID field */}
       <div>
-        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">
+        <label className="text-foreground mb-1.5 block text-xs font-semibold">
           {UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_ID}
         </label>
-        <div className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
-          <span className="font-mono text-xs text-[var(--foreground)]">{appId}</span>
+        <div className="border-border bg-background flex items-center justify-between rounded-lg border px-3 py-2">
+          <span className="text-foreground font-mono text-xs">{appId}</span>
           <CopyButton textToCopy={appId} />
         </div>
       </div>
 
       {/* Secret Reveal Card */}
       <div>
-        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">
+        <label className="text-foreground mb-1.5 block text-xs font-semibold">
           {UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_SECRET}
         </label>
         <SecretRevealCard
@@ -57,7 +57,7 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
 
       {/* Security notice */}
       <div className="flex items-start gap-2 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-300">
-        <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
+        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
         <p className="text-[11px] leading-relaxed">
           {UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}
         </p>
