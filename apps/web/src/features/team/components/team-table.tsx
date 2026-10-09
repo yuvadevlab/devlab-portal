@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/team/components/team-table.tsx
  * @description Organization members and RBAC role assignments table with hierarchy viewer.
- * Fully built with @yuva-devlab/ui Table and Button components.
+ * Fully built with @yuva-devlab/ui Table, Input, Select, Checkbox, Label, and Button components.
  * @module @devlab/portal-web/features/team/components/team-table
  */
 
@@ -11,17 +11,25 @@ import React, { useState } from "react";
 import { UserPlus, Trash2, Search } from "lucide-react";
 import {
   Button,
+  Input,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  Checkbox,
+  Label,
   Table,
   TableHeader,
   TableBody,
   TableHead,
   TableRow,
   TableCell,
-  Checkbox,
 } from "@yuva-devlab/ui";
 import { Heading } from "@/components/layout";
 import { RoleHierarchy } from "./role-hierarchy";
 import { UI_COPY } from "@/lib/ui-copy";
+import { UserRole } from "@/lib/constants/enums";
 import type { UserMember } from "@/features/team/types";
 
 interface TeamTableProps {
@@ -65,15 +73,16 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
       <div className="app-toolbar">
         <div className="search-field">
           <Search className="size-3.5" />
-          <input
-            placeholder="Search team members…"
+          <Input
+            placeholder={UI_COPY.TEAM.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search team members"
+            aria-label={UI_COPY.TEAM.TOOLBAR.SEARCH_PLACEHOLDER}
+            className="bg-card border-border h-9 w-72 pl-9 text-xs"
           />
         </div>
         <span className="text-muted-foreground text-xs whitespace-nowrap">
-          {filteredMembers.length} members
+          {filteredMembers.length} {UI_COPY.TEAM.TOOLBAR.MEMBERS_SUFFIX}
         </span>
       </div>
 
@@ -82,9 +91,9 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Member</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{UI_COPY.TEAM.TABLE.MEMBER}</TableHead>
+              <TableHead>{UI_COPY.TEAM.TABLE.ROLE}</TableHead>
+              <TableHead>{UI_COPY.TEAM.TABLE.STATUS}</TableHead>
               <TableHead className="text-right" />
             </TableRow>
           </TableHeader>
@@ -100,7 +109,9 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
                       <div>
                         <div className="text-foreground flex items-center text-xs font-semibold">
                           {m.name}
-                          {isSelf && <span className="tag ml-2 py-0!">You</span>}
+                          {isSelf && (
+                            <span className="tag ml-2 py-0!">{UI_COPY.TEAM.TABLE.YOU_TAG}</span>
+                          )}
                         </div>
                         <div className="text-muted-foreground mt-0.5 font-mono text-[11px]">
                           {m.email}
@@ -111,34 +122,43 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
 
                   {/* Role */}
                   <TableCell>
-                    <select
-                      className="filter-select h-8 py-1 text-xs"
-                      disabled={isSelf}
-                      value={m.role}
-                      aria-label={`Role for ${m.name}`}
-                      onChange={() => {}}
-                    >
-                      <option value="super_admin">super_admin</option>
-                      <option value="admin">admin</option>
-                      <option value="developer">developer</option>
-                      <option value="operator">operator</option>
-                      <option value="read_only">read_only</option>
-                    </select>
+                    <div className="w-36">
+                      <Select value={m.role} disabled={isSelf} onValueChange={() => {}}>
+                        <SelectTrigger className="bg-secondary h-8 font-mono text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={UserRole.SUPER_ADMIN}>
+                            {UserRole.SUPER_ADMIN}
+                          </SelectItem>
+                          <SelectItem value={UserRole.ADMIN}>{UserRole.ADMIN}</SelectItem>
+                          <SelectItem value={UserRole.DEVELOPER}>{UserRole.DEVELOPER}</SelectItem>
+                          <SelectItem value={UserRole.OPERATOR}>{UserRole.OPERATOR}</SelectItem>
+                          <SelectItem value={UserRole.READ_ONLY}>{UserRole.READ_ONLY}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </TableCell>
 
                   {/* Status toggle */}
                   <TableCell>
-                    <label className="flex cursor-pointer items-center gap-2 text-xs">
+                    <div className="flex items-center gap-2">
                       <Checkbox
+                        id={`status-${m.id}`}
                         checked={m.isActive}
                         disabled={isSelf}
                         onCheckedChange={() => {}}
-                        aria-label={`Active status for ${m.name}`}
+                        aria-label={`Status for ${m.name}`}
                       />
-                      <span className={m.isActive ? "text-success" : "text-muted-foreground"}>
-                        {m.isActive ? "Active" : "Disabled"}
-                      </span>
-                    </label>
+                      <Label
+                        htmlFor={`status-${m.id}`}
+                        className={`cursor-pointer text-xs font-normal ${
+                          m.isActive ? "text-success" : "text-muted-foreground"
+                        }`}
+                      >
+                        {m.isActive ? UI_COPY.TEAM.TABLE.ACTIVE : UI_COPY.TEAM.TABLE.DISABLED}
+                      </Label>
+                    </div>
                   </TableCell>
 
                   {/* Action */}
@@ -160,7 +180,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
         </Table>
 
         {filteredMembers.length === 0 && (
-          <div className="empty-state">No team members match your search.</div>
+          <div className="empty-state">{UI_COPY.TEAM.TABLE.EMPTY_TEXT}</div>
         )}
       </div>
     </>

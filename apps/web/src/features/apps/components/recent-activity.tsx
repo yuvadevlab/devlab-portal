@@ -10,6 +10,7 @@ import React from "react";
 import { Activity, ArrowUpRight, KeyRound, ShieldAlert, Plus, ChevronRight } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
 import { TabKey } from "@/lib/constants/enums";
+import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
 
 interface RecentActivityProps {
@@ -27,10 +28,10 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
   };
 
   const getRelativeTime = (index: number) => {
-    if (index === 0) return "5 minutes ago";
-    if (index === 1) return "17 minutes ago";
-    if (index === 2) return "28 minutes ago";
-    return `${(index + 1) * 15} minutes ago`;
+    if (index === 0) return `5 ${UI_COPY.APPS.RECENT_ACTIVITY.MINUTES_AGO}`;
+    if (index === 1) return `17 ${UI_COPY.APPS.RECENT_ACTIVITY.MINUTES_AGO}`;
+    if (index === 2) return `28 ${UI_COPY.APPS.RECENT_ACTIVITY.MINUTES_AGO}`;
+    return `${(index + 1) * 15} ${UI_COPY.APPS.RECENT_ACTIVITY.MINUTES_AGO}`;
   };
 
   return (
@@ -38,8 +39,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
       <div className="section-heading">
         <h2>
           <Activity className="text-muted-foreground size-4" />
-          Recent activity
-          <span className="tag py-0!">Live</span>
+          {UI_COPY.APPS.RECENT_ACTIVITY.TITLE}
+          <span className="tag py-0!">{UI_COPY.APPS.RECENT_ACTIVITY.LIVE_BADGE}</span>
         </h2>
         <Button
           variant="ghost"
@@ -47,7 +48,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
           className="text-muted-foreground hover:text-foreground gap-1 text-xs"
           onClick={() => onNavigateTab(TabKey.AUDIT)}
         >
-          View audit ledger
+          {UI_COPY.APPS.RECENT_ACTIVITY.VIEW_LEDGER}
           <ArrowUpRight className="size-3" />
         </Button>
       </div>
@@ -58,7 +59,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
             <span className="text-muted-foreground">{getEventIcon(event.action)}</span>
             <span>
               <span className="text-foreground font-medium">
-                {event.actorId || "Yuvaraj Pattabi"}
+                {event.actorId || UI_COPY.COMMON.HEADER.USER_NAME}
               </span>{" "}
               <span className="text-muted-foreground">
                 {event.action
@@ -77,7 +78,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
 
         {auditLogs.length === 0 && (
           <div className="text-muted-foreground p-4 text-center text-xs">
-            No recent operational events recorded yet.
+            {UI_COPY.APPS.RECENT_ACTIVITY.EMPTY}
           </div>
         )}
       </div>

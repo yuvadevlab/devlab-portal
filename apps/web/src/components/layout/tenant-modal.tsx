@@ -3,6 +3,7 @@
 /**
  * @file apps/web/src/components/layout/tenant-modal.tsx
  * @description Modal dialog for creating and switching to a new workspace tenant identity.
+ * Fully built with @yuva-devlab/ui Dialog, Label, Input, and Button primitives.
  * @module @devlab/portal-web/components/layout/tenant-modal
  */
 
@@ -47,19 +48,17 @@ export const TenantModal: React.FC<TenantModalProps> = ({ isOpen, onClose, onCre
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Plus className="text-primary size-4" />
-              Create New Tenant
+              {UI_COPY.COMMON.TENANT_MODAL.TITLE}
             </DialogTitle>
-            <DialogDescription>
-              Provision a new isolated workspace tenant identity for agentic swarms.
-            </DialogDescription>
+            <DialogDescription>{UI_COPY.COMMON.TENANT_MODAL.DESCRIPTION}</DialogDescription>
           </DialogHeader>
 
           <DialogBody className="space-y-4 py-4">
             <div className="space-y-1.5">
-              <Label htmlFor="tenant-name-input">Tenant Name</Label>
+              <Label htmlFor="tenant-name-input">{UI_COPY.COMMON.TENANT_MODAL.NAME_LABEL}</Label>
               <Input
                 id="tenant-name-input"
-                placeholder="e.g., Production Swarm Cluster"
+                placeholder={UI_COPY.COMMON.TENANT_MODAL.NAME_PLACEHOLDER}
                 value={tenantName}
                 onChange={(e) => setTenantName(e.target.value)}
                 required
@@ -74,7 +73,7 @@ export const TenantModal: React.FC<TenantModalProps> = ({ isOpen, onClose, onCre
             </Button>
             <Button type="submit" disabled={!tenantName.trim()}>
               <Plus className="mr-1.5 size-4" />
-              Create Tenant
+              {UI_COPY.COMMON.TENANT_MODAL.SUBMIT_BTN}
             </Button>
           </DialogFooter>
         </form>

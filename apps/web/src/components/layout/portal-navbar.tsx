@@ -8,6 +8,7 @@
 
 import React from "react";
 import { Grid2X2, KeyRound, ShieldCheck, Users, Settings2 } from "lucide-react";
+import { Button } from "@yuva-devlab/ui";
 import { TabKey } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
 
@@ -25,28 +26,28 @@ export const PortalNavbar: React.FC<PortalNavbarProps> = ({
   const tabs = [
     {
       key: TabKey.APPS,
-      label: UI_COPY.APPS.HEADER.TITLE,
+      label: UI_COPY.COMMON.TABS.APPS,
       icon: Grid2X2,
       count: appsCount,
     },
     {
       key: TabKey.IAM,
-      label: UI_COPY.IAM.HEADER.TITLE,
+      label: UI_COPY.COMMON.TABS.IAM,
       icon: KeyRound,
     },
     {
       key: TabKey.AUDIT,
-      label: UI_COPY.AUDIT.HEADER.TITLE,
+      label: UI_COPY.COMMON.TABS.AUDIT,
       icon: ShieldCheck,
     },
     {
       key: TabKey.TEAM,
-      label: UI_COPY.TEAM.HEADER.TITLE,
+      label: UI_COPY.COMMON.TABS.TEAM,
       icon: Users,
     },
     {
       key: TabKey.SETTINGS,
-      label: UI_COPY.SETTINGS.HEADER.TITLE,
+      label: UI_COPY.COMMON.TABS.SETTINGS,
       icon: Settings2,
     },
   ];
@@ -56,16 +57,17 @@ export const PortalNavbar: React.FC<PortalNavbarProps> = ({
       {tabs.map((tab) => {
         const isActive = activeTab === tab.key;
         return (
-          <button
+          <Button
             key={tab.key}
             type="button"
-            className={`nav-link ${isActive ? "active" : ""}`}
+            variant="ghost"
+            className={`nav-link h-auto rounded-none bg-transparent p-0 hover:bg-transparent ${isActive ? "active" : ""}`}
             onClick={() => onSelectTab(tab.key)}
           >
             <tab.icon className="size-3.5" />
             <span>{tab.label}</span>
             {tab.count !== undefined && <span className="tag py-0!">{tab.count}</span>}
-          </button>
+          </Button>
         );
       })}
     </nav>

@@ -8,6 +8,7 @@
 
 import React, { type ReactNode } from "react";
 import { Box } from "lucide-react";
+import { UI_COPY } from "@/lib/ui-copy";
 
 interface HeadingProps {
   title: string;
@@ -20,7 +21,7 @@ export const Heading: React.FC<HeadingProps> = ({ title, description, children }
     <>
       <div className="eyebrow">
         <Box className="size-3" />
-        <span>Workspace</span>
+        <span>{UI_COPY.COMMON.HEADER.WORKSPACE}</span>
         <span>/</span>
         <span className="text-foreground font-medium">{title}</span>
       </div>

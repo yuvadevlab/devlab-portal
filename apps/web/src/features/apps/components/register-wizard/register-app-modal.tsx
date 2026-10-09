@@ -202,7 +202,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
                   className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
                 >
                   {isSubmitting ? (
-                    "Registering..."
+                    UI_COPY.COMMON.ACTIONS.REGISTERING
                   ) : currentStep === 2 ? (
                     <>
                       {UI_COPY.COMMON.ACTIONS.REGISTER}

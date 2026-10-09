@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/audit/components/audit-table.tsx
  * @description Immutable security audit ledger table with forensic inspection and JSON export.
- * Fully built with @yuva-devlab/ui Table, Button, and Drawer components.
+ * Fully built with @yuva-devlab/ui Table, Input, Select, Button, and Drawer components.
  * @module @devlab/portal-web/features/audit/components/audit-table
  */
 
@@ -11,6 +11,12 @@ import React, { useState } from "react";
 import { Download, ShieldCheck, ArrowUpRight, Search } from "lucide-react";
 import {
   Button,
+  Input,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
   Table,
   TableHeader,
   TableBody,
@@ -66,7 +72,7 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
       <Heading title={UI_COPY.AUDIT.HEADER.TITLE} description={UI_COPY.AUDIT.HEADER.DESCRIPTION}>
         <Button variant="outline" onClick={exportLedger} className="gap-1.5">
           <Download className="size-4" />
-          Export ledger
+          {UI_COPY.AUDIT.HEADER.EXPORT_BTN}
         </Button>
       </Heading>
 
@@ -76,35 +82,38 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
       <div className="app-toolbar">
         <div className="search-field">
           <Search className="size-3.5" />
-          <input
-            placeholder="Search actor or target…"
+          <Input
+            placeholder={UI_COPY.AUDIT.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search audit events"
+            aria-label={UI_COPY.AUDIT.TOOLBAR.SEARCH_PLACEHOLDER}
+            className="bg-card border-border h-9 w-72 pl-9 text-xs"
           />
         </div>
 
         <div className="flex gap-2.5">
-          <select
-            className="filter-select text-xs"
-            value={actionFilter}
-            onChange={(e) => setActionFilter(e.target.value)}
-            aria-label="Filter action type"
-          >
-            <option value="All">All action types</option>
-            {actions.map((act) => (
-              <option key={act} value={act}>
-                {act}
-              </option>
-            ))}
-          </select>
+          <div className="w-44">
+            <Select value={actionFilter} onValueChange={setActionFilter}>
+              <SelectTrigger className="bg-card border-border h-9 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">{UI_COPY.AUDIT.TOOLBAR.ALL_ACTIONS}</SelectItem>
+                {actions.map((act) => (
+                  <SelectItem key={act} value={act}>
+                    {act}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <input
+          <Input
             type="date"
-            className="filter-select text-xs"
+            className="bg-card border-border h-9 w-40 text-xs"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            aria-label="Filter event date"
+            aria-label={UI_COPY.AUDIT.TOOLBAR.DATE_ARIA}
           />
         </div>
       </div>
@@ -114,11 +123,11 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Timestamp</TableHead>
-              <TableHead>Action</TableHead>
-              <TableHead>Actor</TableHead>
-              <TableHead>Target entity</TableHead>
-              <TableHead>IP address</TableHead>
+              <TableHead>{UI_COPY.AUDIT.TABLE.TIMESTAMP}</TableHead>
+              <TableHead>{UI_COPY.AUDIT.TABLE.ACTION}</TableHead>
+              <TableHead>{UI_COPY.AUDIT.TABLE.ACTOR}</TableHead>
+              <TableHead>{UI_COPY.AUDIT.TABLE.TARGET_ENTITY}</TableHead>
+              <TableHead>{UI_COPY.AUDIT.TABLE.IP_ADDRESS}</TableHead>
               <TableHead className="text-right" />
             </TableRow>
           </TableHeader>
@@ -153,7 +162,7 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
                       onClick={() => setSelectedLog(log)}
                       className="gap-1 text-xs"
                     >
-                      Inspect
+                      {UI_COPY.AUDIT.TABLE.INSPECT}
                       <ArrowUpRight className="size-3" />
                     </Button>
                   </TableCell>
@@ -164,7 +173,7 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
         </Table>
 
         {filteredLogs.length === 0 && (
-          <div className="empty-state">No events match your filters.</div>
+          <div className="empty-state">{UI_COPY.AUDIT.TABLE.EMPTY_TEXT}</div>
         )}
       </div>
 

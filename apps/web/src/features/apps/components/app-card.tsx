@@ -23,6 +23,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
+import { UI_COPY } from "@/lib/ui-copy";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppCardProps {
@@ -65,7 +66,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
         </div>
         <span className={`status ${!isRoutingActive ? "suspended" : ""}`}>
           <span className="status-dot" />
-          {isRoutingActive ? "Online" : "Suspended"}
+          {isRoutingActive ? UI_COPY.APPS.CARD.STATUS_ONLINE : UI_COPY.APPS.CARD.STATUS_SUSPENDED}
         </span>
       </div>
 
@@ -73,12 +74,12 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
       <h2>
         {app.name}
         <span className="env-badge">
-          {app.environment === "local_dev" ? "local dev" : app.environment}
+          {app.environment === "local_dev" ? UI_COPY.APPS.TOOLBAR.LOCAL_DEV : app.environment}
         </span>
       </h2>
 
       {/* Description */}
-      <p className="app-description">{app.description || "No description provided."}</p>
+      <p className="app-description">{app.description || UI_COPY.APPS.CARD.NO_DESC}</p>
 
       {/* Origin URL */}
       <div className="endpoint">
@@ -95,7 +96,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
             isRoutingActive ? "text-success" : "text-destructive"
           }`}
         >
-          {isRoutingActive ? "200 OK" : "503"}
+          {isRoutingActive ? UI_COPY.APPS.CARD.CODE_200 : UI_COPY.APPS.CARD.CODE_503}
         </span>
       </div>
 
@@ -108,7 +109,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
           onClick={() => window.open(app.originUrl, "_blank", "noopener,noreferrer")}
           disabled={!isRoutingActive}
         >
-          Open console
+          {UI_COPY.APPS.CARD.OPEN_CONSOLE}
           <ArrowUpRight className="size-3" />
         </Button>
 
@@ -116,8 +117,8 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
           <Button
             size="icon"
             variant="ghost"
-            title={`Settings for ${app.name}`}
-            aria-label={`Settings for ${app.name}`}
+            title={`${UI_COPY.COMMON.ACTIONS.SETTINGS}: ${app.name}`}
+            aria-label={`${UI_COPY.COMMON.ACTIONS.SETTINGS}: ${app.name}`}
             onClick={() => onOpenSettings(app)}
           >
             <Settings2 className="size-4" />
@@ -127,8 +128,8 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
             size="icon"
             variant="ghost"
             className="text-destructive hover:bg-destructive/10"
-            title={`${isRoutingActive ? "Kill-switch" : "Restore"} ${app.name}`}
-            aria-label={`Kill-switch ${app.name}`}
+            title={`${isRoutingActive ? UI_COPY.APPS.CARD.DEACTIVATE_BTN : UI_COPY.APPS.CARD.ACTIVATE_BTN}: ${app.name}`}
+            aria-label={`${isRoutingActive ? UI_COPY.APPS.CARD.DEACTIVATE_BTN : UI_COPY.APPS.CARD.ACTIVATE_BTN}: ${app.name}`}
             onClick={() => onToggleKillSwitch(app)}
           >
             <Power className="size-4" />

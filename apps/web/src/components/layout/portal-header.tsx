@@ -3,12 +3,13 @@
 /**
  * @file apps/web/src/components/layout/portal-header.tsx
  * @description Master control plane topbar with tenant switching and integration with header action menus.
+ * Fully built with @yuva-devlab/ui Button and Input primitives.
  * @module @devlab/portal-web/components/layout/portal-header
  */
 
 import React, { useState, useEffect } from "react";
 import { Layers, ChevronDown, Check, Plus } from "lucide-react";
-import { Button } from "@yuva-devlab/ui";
+import { Button, Input } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { TabKey } from "@/lib/constants/enums";
 import type { AuditLog } from "@/features/audit/types";
@@ -29,8 +30,8 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
 }) => {
   const [isLight, setIsLight] = useState(false);
   const [isTenantMenuOpen, setIsTenantMenuOpen] = useState(false);
-  const [activeTenant, setActiveTenant] = useState("Yuva DevLab");
-  const [tenants] = useState(["Yuva DevLab", "Staging Swarm Tenant", "Personal Sandbox"]);
+  const [activeTenant, setActiveTenant] = useState<string>(UI_COPY.COMMON.HEADER.TENANT_DEFAULT);
+  const [tenants] = useState<string[]>([...UI_COPY.COMMON.HEADER.TENANTS_LIST]);
   const [tenantSearch, setTenantSearch] = useState("");
 
   useEffect(() => {
@@ -61,16 +62,16 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           >
             <span className="tenant-avatar">YD</span>
             <span className="tenant-label">{activeTenant}</span>
-            <span className="plan-badge">Enterprise</span>
+            <span className="plan-badge">{UI_COPY.COMMON.HEADER.ENTERPRISE_PLAN}</span>
             <ChevronDown className="size-3" />
           </Button>
 
           {isTenantMenuOpen && (
             <div className="pop-menu tenant-menu">
-              <input
-                className="border-border bg-secondary mb-2 w-full rounded-md border p-2 text-xs"
-                placeholder="Search tenants…"
-                aria-label="Search tenants"
+              <Input
+                className="border-border bg-secondary mb-2 h-8 w-full p-2 text-xs"
+                placeholder={UI_COPY.COMMON.HEADER.SEARCH_TENANTS}
+                aria-label={UI_COPY.COMMON.HEADER.SEARCH_TENANTS}
                 value={tenantSearch}
                 onChange={(e) => setTenantSearch(e.target.value)}
               />
@@ -99,7 +100,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
                 }}
               >
                 <Plus className="mr-1 size-3" />
-                Create New Tenant
+                {UI_COPY.COMMON.HEADER.CREATE_TENANT}
               </Button>
             </div>
           )}

@@ -137,7 +137,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
               </Label>
               <Select value={role} onValueChange={setRole}>
                 <SelectTrigger id="invite-role" className="h-9 w-full text-xs">
-                  <SelectValue placeholder="Select role..." />
+                  <SelectValue placeholder={UI_COPY.TEAM.MODAL.ROLE_PLACEHOLDER} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={UserRole.DEVELOPER}>{UI_COPY.TEAM.ROLES.DEVELOPER}</SelectItem>
@@ -161,7 +161,9 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
           >
             <UserPlus className="mr-1.5 size-3.5" />
-            {inviteMemberMutation.isPending ? "Inviting..." : UI_COPY.COMMON.ACTIONS.INVITE}
+            {inviteMemberMutation.isPending
+              ? UI_COPY.COMMON.ACTIONS.INVITING
+              : UI_COPY.COMMON.ACTIONS.INVITE}
           </Button>
         </DialogFooter>
       </DialogContent>

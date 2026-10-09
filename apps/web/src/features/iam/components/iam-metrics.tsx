@@ -9,6 +9,7 @@
 import React from "react";
 import { KeyRound, Activity, ShieldCheck, Zap } from "lucide-react";
 import { MetricsBar, type MetricItem } from "@/components/layout";
+import { UI_COPY } from "@/lib/ui-copy";
 import type { ApiKey } from "@/features/iam/types";
 
 interface IamMetricsProps {
@@ -20,28 +21,28 @@ export const IamMetrics: React.FC<IamMetricsProps> = ({ apiKeys }) => {
 
   const items: MetricItem[] = [
     {
-      label: "Active API keys",
+      label: UI_COPY.IAM.METRICS.ACTIVE_KEYS,
       value: activeCount,
-      note: "Scoped to registered applications",
+      note: UI_COPY.IAM.METRICS.ACTIVE_NOTE,
       icon: KeyRound,
     },
     {
-      label: "24h M2M requests",
-      value: "412k",
-      note: "↗ 8.2% from yesterday",
+      label: UI_COPY.IAM.METRICS.M2M_LABEL,
+      value: UI_COPY.IAM.METRICS.M2M_VAL,
+      note: UI_COPY.IAM.METRICS.M2M_NOTE,
       positive: true,
       icon: Activity,
     },
     {
-      label: "Rate-limited blocks",
-      value: 18,
-      note: "Protected in the last 24 hours",
+      label: UI_COPY.IAM.METRICS.RATE_LIMIT_LABEL,
+      value: UI_COPY.IAM.METRICS.RATE_LIMIT_VAL,
+      note: UI_COPY.IAM.METRICS.RATE_LIMIT_NOTE,
       icon: Zap,
     },
     {
-      label: "Credential health",
-      value: "100%",
-      note: "No compromised credentials",
+      label: UI_COPY.IAM.METRICS.HEALTH_LABEL,
+      value: UI_COPY.IAM.METRICS.HEALTH_VAL,
+      note: UI_COPY.IAM.METRICS.HEALTH_NOTE,
       positive: true,
       icon: ShieldCheck,
     },

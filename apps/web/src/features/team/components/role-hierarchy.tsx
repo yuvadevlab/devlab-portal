@@ -8,33 +8,34 @@
 
 import React from "react";
 import { ShieldCheck } from "lucide-react";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export const RoleHierarchy: React.FC = () => {
   const roles = [
     {
-      index: "01",
-      role: "super_admin",
-      description: "Full ecosystem control and tenant ownership",
+      index: UI_COPY.TEAM.HIERARCHY.R01_INDEX,
+      role: UI_COPY.TEAM.HIERARCHY.R01_ROLE,
+      description: UI_COPY.TEAM.HIERARCHY.R01_DESC,
     },
     {
-      index: "02",
-      role: "admin",
-      description: "Manage applications, keys, and team members",
+      index: UI_COPY.TEAM.HIERARCHY.R02_INDEX,
+      role: UI_COPY.TEAM.HIERARCHY.R02_ROLE,
+      description: UI_COPY.TEAM.HIERARCHY.R02_DESC,
     },
     {
-      index: "03",
-      role: "developer",
-      description: "Build integrations and manage service credentials",
+      index: UI_COPY.TEAM.HIERARCHY.R03_INDEX,
+      role: UI_COPY.TEAM.HIERARCHY.R03_ROLE,
+      description: UI_COPY.TEAM.HIERARCHY.R03_DESC,
     },
     {
-      index: "04",
-      role: "operator",
-      description: "Monitor services and respond to incidents",
+      index: UI_COPY.TEAM.HIERARCHY.R04_INDEX,
+      role: UI_COPY.TEAM.HIERARCHY.R04_ROLE,
+      description: UI_COPY.TEAM.HIERARCHY.R04_DESC,
     },
     {
-      index: "05",
-      role: "read_only",
-      description: "View applications and audit records",
+      index: UI_COPY.TEAM.HIERARCHY.R05_INDEX,
+      role: UI_COPY.TEAM.HIERARCHY.R05_ROLE,
+      description: UI_COPY.TEAM.HIERARCHY.R05_DESC,
     },
   ];
 
@@ -42,7 +43,7 @@ export const RoleHierarchy: React.FC = () => {
     <div className="border-border mb-7 border-y py-6">
       <div className="text-foreground mb-5 flex items-center gap-2 text-sm font-semibold">
         <ShieldCheck className="text-primary size-4" />
-        Role hierarchy
+        {UI_COPY.TEAM.HIERARCHY.TITLE}
       </div>
       <div className="grid grid-cols-2 gap-5 md:grid-cols-5">
         {roles.map((item) => (

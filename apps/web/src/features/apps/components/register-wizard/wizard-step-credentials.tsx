@@ -27,9 +27,11 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
       <div className="border-success/20 bg-success/10 text-success flex items-center gap-2.5 rounded-xl border p-3.5">
         <CheckCircle2 className="size-5 shrink-0" />
         <div>
-          <p className="text-xs leading-none font-semibold">Application Registered Successfully</p>
+          <p className="text-xs leading-none font-semibold">
+            {UI_COPY.APPS.WIZARD.CREDENTIALS.SUCCESS_TITLE}
+          </p>
           <p className="text-success/80 mt-1 text-[11px]">
-            Client credentials have been generated and cryptographic hashes recorded.
+            {UI_COPY.APPS.WIZARD.CREDENTIALS.SUCCESS_SUBTITLE}
           </p>
         </div>
       </div>

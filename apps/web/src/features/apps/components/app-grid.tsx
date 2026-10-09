@@ -3,16 +3,17 @@
 /**
  * @file apps/web/src/features/apps/components/app-grid.tsx
  * @description Application catalog grid with search filtering, environment tabs, and register card.
- * Fully built with @yuva-devlab/ui primitives.
+ * Fully built with @yuva-devlab/ui Input, Button, and layout primitives.
  * @module @devlab/portal-web/features/apps/components/app-grid
  */
 
 import React, { useState } from "react";
 import { Search, Plus } from "lucide-react";
-import { Button } from "@yuva-devlab/ui";
+import { Button, Input } from "@yuva-devlab/ui";
 import { AppCard } from "./app-card";
 import { RecentActivity } from "./recent-activity";
 import { TabKey } from "@/lib/constants/enums";
+import { UI_COPY } from "@/lib/ui-copy";
 import type { RegisteredApp } from "@/features/apps/types";
 import type { AuditLog } from "@/features/audit/types";
 
@@ -37,10 +38,10 @@ export const AppGrid: React.FC<AppGridProps> = ({
   const [selectedEnv, setSelectedEnv] = useState<string>("All");
 
   const environments = [
-    { key: "All", label: "All environments" },
-    { key: "production", label: "Production" },
-    { key: "staging", label: "Staging" },
-    { key: "local_dev", label: "Local dev" },
+    { key: "All", label: UI_COPY.APPS.TOOLBAR.ALL_ENVIRONMENTS },
+    { key: "production", label: UI_COPY.APPS.TOOLBAR.PRODUCTION },
+    { key: "staging", label: UI_COPY.APPS.TOOLBAR.STAGING },
+    { key: "local_dev", label: UI_COPY.APPS.TOOLBAR.LOCAL_DEV },
   ];
 
   const filteredApps = apps.filter((app) => {
@@ -60,15 +61,16 @@ export const AppGrid: React.FC<AppGridProps> = ({
         <div className="flex items-center gap-3">
           <div className="search-field">
             <Search className="size-3.5" />
-            <input
-              placeholder="Search applications…"
+            <Input
+              placeholder={UI_COPY.APPS.TOOLBAR.SEARCH_PLACEHOLDER}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              aria-label="Search applications"
+              aria-label={UI_COPY.APPS.TOOLBAR.SEARCH_PLACEHOLDER}
+              className="bg-card border-border h-9 w-72 pl-9 text-xs"
             />
           </div>
           <span className="text-muted-foreground text-xs whitespace-nowrap">
-            {filteredApps.length} apps
+            {filteredApps.length} {UI_COPY.APPS.TOOLBAR.APPS_SUFFIX}
           </span>
         </div>
 
@@ -107,18 +109,16 @@ export const AppGrid: React.FC<AppGridProps> = ({
           <span className="register-symbol">
             <Plus className="text-muted-foreground size-5" />
           </span>
-          <strong>Bring your next idea into the ecosystem</strong>
-          <p>One identity. Every application.</p>
+          <strong>{UI_COPY.APPS.CARD.REGISTER_TITLE}</strong>
+          <p>{UI_COPY.APPS.CARD.REGISTER_DESC}</p>
           <Button variant="outline" size="sm" onClick={onOpenRegisterModal}>
             <Plus className="mr-1 size-3.5" />
-            Register application
+            {UI_COPY.APPS.CARD.REGISTER_BTN}
           </Button>
         </div>
       </div>
 
-      {filteredApps.length === 0 && (
-        <p className="empty-state">No applications match your search.</p>
-      )}
+      {filteredApps.length === 0 && <p className="empty-state">{UI_COPY.APPS.CARD.EMPTY_SEARCH}</p>}
 
       {/* Live Recent Activity Feed */}
       <RecentActivity auditLogs={auditLogs} onNavigateTab={onNavigateTab} />

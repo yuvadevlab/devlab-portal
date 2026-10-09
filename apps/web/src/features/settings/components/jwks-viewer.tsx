@@ -29,16 +29,16 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
   const endpoint = `${API_BASE_URL}/.well-known/jwks.json`;
 
   const identityConfig = [
-    ["Issuer", "devlab-portal"],
-    ["Signing algorithm", "RS256"],
-    ["Token lifetime", "60 minutes"],
-    ["Environment", "Demo workspace"],
+    [UI_COPY.SETTINGS.IDENTITY.ISSUER, UI_COPY.SETTINGS.IDENTITY.ISSUER_VAL],
+    [UI_COPY.SETTINGS.IDENTITY.ALGORITHM, UI_COPY.SETTINGS.IDENTITY.ALGORITHM_VAL],
+    [UI_COPY.SETTINGS.IDENTITY.LIFETIME, UI_COPY.SETTINGS.IDENTITY.LIFETIME_VAL],
+    [UI_COPY.SETTINGS.IDENTITY.ENV, UI_COPY.SETTINGS.IDENTITY.ENV_VAL],
   ];
 
   const latencyMetrics = [
-    ["0.31ms", "Median"],
-    ["0.67ms", "P95"],
-    ["0.89ms", "P99"],
+    [UI_COPY.SETTINGS.TELEMETRY.MEDIAN_VAL, UI_COPY.SETTINGS.TELEMETRY.MEDIAN],
+    [UI_COPY.SETTINGS.TELEMETRY.P95_VAL, UI_COPY.SETTINGS.TELEMETRY.P95],
+    [UI_COPY.SETTINGS.TELEMETRY.P99_VAL, UI_COPY.SETTINGS.TELEMETRY.P99],
   ];
 
   return (
@@ -54,25 +54,29 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
           <section className="settings-section mt-0! border-t-0! pt-0!">
             <div className="text-primary mb-2 flex items-center gap-2">
               <LockKeyhole className="size-5" />
-              <span className="tag">RS256</span>
+              <span className="tag">{UI_COPY.SETTINGS.KEYS.TAG}</span>
             </div>
-            <h2>Public signing keys</h2>
-            <p>Public keys used by ecosystem services to verify access tokens.</p>
+            <h2>{UI_COPY.SETTINGS.KEYS.TITLE}</h2>
+            <p>{UI_COPY.SETTINGS.KEYS.DESCRIPTION}</p>
 
             <div className="mt-6">
-              <div className="text-foreground mb-2 text-xs font-medium">JWKS endpoint</div>
+              <div className="text-foreground mb-2 text-xs font-medium">
+                {UI_COPY.SETTINGS.KEYS.JWKS_LABEL}
+              </div>
               <div className="secret-box flex items-center justify-between gap-3">
                 <code className="break-all">{endpoint}</code>
                 <CopyButton textToCopy={endpoint} />
               </div>
               <p className="text-muted-foreground mt-2 text-[11px]">
-                Cluster endpoint · Live identity provider active on port 3015
+                {UI_COPY.SETTINGS.KEYS.JWKS_NOTE}
               </p>
             </div>
 
             <div className="mt-6">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-foreground text-xs font-medium">Public key PEM</span>
+                <span className="text-foreground text-xs font-medium">
+                  {UI_COPY.SETTINGS.KEYS.PEM_LABEL}
+                </span>
                 <CopyButton textToCopy={samplePem} />
               </div>
               <pre className="secret-box text-muted-foreground overflow-x-auto font-mono text-xs leading-7">
@@ -82,7 +86,7 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
           </section>
 
           <section className="settings-section">
-            <h2>Identity configuration</h2>
+            <h2>{UI_COPY.SETTINGS.IDENTITY.TITLE}</h2>
             <div className="divide-border border-border mt-3 divide-y border-t">
               {identityConfig.map(([key, value]) => (
                 <div className="flex justify-between py-3.5 text-xs" key={key}>
@@ -99,17 +103,20 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
           <section className="settings-section mt-0! border-t-0! pt-0!">
             <div className="mb-2 flex items-center justify-between">
               <Radio className="text-primary size-5" />
-              <span className="tag">Live cluster telemetry</span>
+              <span className="tag">{UI_COPY.SETTINGS.TELEMETRY.TAG}</span>
             </div>
-            <h2>Pub/Sub propagation</h2>
-            <p>Cluster-wide kill-switch propagation latency.</p>
+            <h2>{UI_COPY.SETTINGS.TELEMETRY.TITLE}</h2>
+            <p>{UI_COPY.SETTINGS.TELEMETRY.DESCRIPTION}</p>
 
             <div className="latency-value">
-              0.42<span className="text-muted-foreground ml-2 text-lg">ms</span>
+              {UI_COPY.SETTINGS.TELEMETRY.LATENCY_VAL}
+              <span className="text-muted-foreground ml-2 text-lg">
+                {UI_COPY.SETTINGS.TELEMETRY.LATENCY_UNIT}
+              </span>
             </div>
             <span className="text-success flex items-center gap-2 text-xs font-medium">
               <ShieldCheck className="size-4" />
-              Below the 1ms target SLA
+              {UI_COPY.SETTINGS.TELEMETRY.SLA_NOTE}
             </span>
 
             <div className="benchmark">
@@ -118,8 +125,8 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
               ))}
             </div>
             <div className="text-muted-foreground mt-3 flex justify-between text-[10px]">
-              <span>60 minutes ago</span>
-              <span>Now</span>
+              <span>{UI_COPY.SETTINGS.TELEMETRY.RANGE_START}</span>
+              <span>{UI_COPY.SETTINGS.TELEMETRY.RANGE_END}</span>
             </div>
 
             <div className="border-border mt-6 grid grid-cols-3 border-t pt-5 text-center">
@@ -135,22 +142,24 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
           <section className="settings-section">
             <h2 className="flex items-center gap-2">
               <Globe className="text-primary size-4" />
-              Cluster connection
+              {UI_COPY.SETTINGS.CONNECTION.TITLE}
             </h2>
             <div className="divide-border border-border mt-3 divide-y border-t">
               <div className="flex justify-between py-3 text-xs">
-                <span className="text-muted-foreground">Gateway port</span>
-                <code className="text-foreground">:3015</code>
+                <span className="text-muted-foreground">{UI_COPY.SETTINGS.CONNECTION.PORT}</span>
+                <code className="text-foreground">{UI_COPY.SETTINGS.CONNECTION.PORT_VAL}</code>
               </div>
               <div className="flex justify-between py-3 text-xs">
-                <span className="text-muted-foreground">Transport</span>
-                <span className="text-foreground font-medium">Redis Pub/Sub</span>
+                <span className="text-muted-foreground">
+                  {UI_COPY.SETTINGS.CONNECTION.TRANSPORT}
+                </span>
+                <span className="text-foreground font-medium">
+                  {UI_COPY.SETTINGS.CONNECTION.TRANSPORT_VAL}
+                </span>
               </div>
             </div>
 
-            <div className="warning-box mt-4">
-              Protected by DevLab RBAC and cryptographic key verification.
-            </div>
+            <div className="warning-box mt-4">{UI_COPY.SETTINGS.CONNECTION.WARNING}</div>
           </section>
         </div>
       </div>

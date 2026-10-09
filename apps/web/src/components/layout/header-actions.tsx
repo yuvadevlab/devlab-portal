@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
 import { TabKey } from "@/lib/constants/enums";
+import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
 
 interface HeaderActionsProps {
@@ -58,15 +59,15 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
     <div className="flex items-center gap-2">
       <span className="health-pill top-health">
         <span className="status-dot pulse" />
-        Cluster online
+        {UI_COPY.COMMON.HEADER.CLUSTER_ONLINE}
         <ChevronDown className="size-2.5" />
       </span>
 
       <Button
         variant="ghost"
         size="icon"
-        title="Search (⌘K)"
-        aria-label="Search portal"
+        title={UI_COPY.COMMON.HEADER.SEARCH_TOOLTIP}
+        aria-label={UI_COPY.COMMON.HEADER.SEARCH_LABEL}
         onClick={onOpenCommand}
       >
         <Search className="size-4" />
@@ -77,8 +78,8 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          title="Ecosystem launcher"
-          aria-label="Ecosystem launcher"
+          title={UI_COPY.COMMON.HEADER.ECOSYSTEM_LAUNCHER}
+          aria-label={UI_COPY.COMMON.HEADER.ECOSYSTEM_LAUNCHER}
           onClick={() => toggle("apps")}
         >
           <Grid2X2 className="size-4" />
@@ -86,7 +87,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         {activeMenu === "apps" && (
           <div className="pop-menu">
             <p className="text-muted-foreground px-2 py-1 text-[10px] font-semibold tracking-wider uppercase">
-              DevLab Ecosystem
+              {UI_COPY.COMMON.HEADER.ECOSYSTEM_HEADER}
             </p>
             <div className="mt-1 grid grid-cols-2 gap-1">
               {ecosystemApps.map((app) => (
@@ -124,8 +125,8 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          title="Notifications"
-          aria-label="Notifications"
+          title={UI_COPY.COMMON.HEADER.NOTIFICATIONS}
+          aria-label={UI_COPY.COMMON.HEADER.NOTIFICATIONS}
           onClick={() => toggle("notifications")}
         >
           <Bell className="size-4" />
@@ -133,7 +134,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         {activeMenu === "notifications" && (
           <div className="pop-menu">
             <h3 className="flex items-center justify-between px-2 py-1.5 text-xs font-medium">
-              Notifications <span className="tag">{auditLogs.length}</span>
+              {UI_COPY.COMMON.HEADER.NOTIFICATIONS} <span className="tag">{auditLogs.length}</span>
             </h3>
             <div className="divide-border mt-1 divide-y">
               {auditLogs.slice(0, 3).map((item) => (
@@ -151,8 +152,8 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
       <Button
         variant="ghost"
         size="icon"
-        title={isLight ? "Switch to dark mode" : "Switch to light mode"}
-        aria-label="Toggle color theme"
+        title={isLight ? UI_COPY.COMMON.HEADER.DARK_MODE : UI_COPY.COMMON.HEADER.LIGHT_MODE}
+        aria-label={UI_COPY.COMMON.ACTIONS.FILTER}
         onClick={onToggleTheme}
       >
         {isLight ? <Moon className="size-4" /> : <Sun className="size-4" />}
@@ -165,7 +166,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         <Button
           variant="ghost"
           className="gap-2 px-1"
-          aria-label="User profile"
+          aria-label={UI_COPY.COMMON.HEADER.USER_NAME}
           onClick={() => toggle("profile")}
         >
           <span className="avatar">YP</span>
@@ -174,9 +175,13 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         {activeMenu === "profile" && (
           <div className="pop-menu">
             <div className="p-3">
-              <strong className="text-foreground text-sm font-semibold">Yuvaraj Pattabi</strong>
-              <p className="text-muted-foreground mt-0.5 text-xs">yuvaraj@devlab.io</p>
-              <span className="tag mt-2.5">super_admin</span>
+              <strong className="text-foreground text-sm font-semibold">
+                {UI_COPY.COMMON.HEADER.USER_NAME}
+              </strong>
+              <p className="text-muted-foreground mt-0.5 text-xs">
+                {UI_COPY.COMMON.HEADER.USER_EMAIL}
+              </p>
+              <span className="tag mt-2.5">{UI_COPY.COMMON.HEADER.USER_ROLE}</span>
             </div>
             <div className="border-border border-t pt-1">
               <Button
@@ -188,7 +193,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
                 }}
               >
                 <Settings2 className="mr-2 size-3.5" />
-                Account settings
+                {UI_COPY.COMMON.HEADER.ACCOUNT_SETTINGS}
               </Button>
               <Button
                 variant="ghost"
@@ -196,7 +201,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
                 onClick={() => setActiveMenu("")}
               >
                 <LogOut className="mr-2 size-3.5" />
-                Sign out
+                {UI_COPY.COMMON.HEADER.SIGN_OUT}
               </Button>
             </div>
           </div>

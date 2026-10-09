@@ -3,6 +3,7 @@
 /**
  * @file apps/web/src/components/layout/command-dialog.tsx
  * @description Quick command search modal (⌘K) for jumping across portal destinations.
+ * Fully built with @yuva-devlab/ui Dialog and Input primitives.
  * @module @devlab/portal-web/components/layout/command-dialog
  */
 
@@ -24,6 +25,7 @@ import {
   DialogDescription,
   DialogBody,
   Button,
+  Input,
 } from "@yuva-devlab/ui";
 import { TabKey } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -68,17 +70,15 @@ export const CommandDialog: React.FC<CommandDialogProps> = ({ isOpen, onClose, o
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Command className="text-primary size-4" />
-            Search DevLab Portal
+            {UI_COPY.COMMON.COMMAND.TITLE}
           </DialogTitle>
-          <DialogDescription>
-            Quickly navigate across ecosystem applications, keys, and security ledgers.
-          </DialogDescription>
+          <DialogDescription>{UI_COPY.COMMON.COMMAND.DESCRIPTION}</DialogDescription>
         </DialogHeader>
 
         <DialogBody className="space-y-4">
-          <input
+          <Input
             className="border-border bg-secondary text-foreground focus:border-primary w-full rounded-md border p-3 text-sm outline-none"
-            placeholder="Where would you like to go?"
+            placeholder={UI_COPY.COMMON.COMMAND.PLACEHOLDER}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -102,7 +102,7 @@ export const CommandDialog: React.FC<CommandDialogProps> = ({ isOpen, onClose, o
             ))}
             {filteredItems.length === 0 && (
               <p className="text-muted-foreground py-4 text-center text-xs">
-                No matching navigation destinations found.
+                {UI_COPY.COMMON.COMMAND.EMPTY}
               </p>
             )}
           </div>

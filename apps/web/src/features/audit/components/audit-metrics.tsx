@@ -9,6 +9,7 @@
 import React from "react";
 import { ShieldCheck, AlertTriangle, Shield, CheckCircle } from "lucide-react";
 import { MetricsBar, type MetricItem } from "@/components/layout";
+import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
 
 interface AuditMetricsProps {
@@ -22,28 +23,28 @@ export const AuditMetrics: React.FC<AuditMetricsProps> = ({ logs }) => {
 
   const items: MetricItem[] = [
     {
-      label: "Recorded events",
+      label: UI_COPY.AUDIT.METRICS.RECORDED,
       value: logs.length,
-      note: "Complete workspace history",
+      note: UI_COPY.AUDIT.METRICS.RECORDED_NOTE,
       icon: ShieldCheck,
     },
     {
-      label: "Critical events",
+      label: UI_COPY.AUDIT.METRICS.CRITICAL,
       value: criticalCount,
-      note: "Emergency actions recorded",
+      note: UI_COPY.AUDIT.METRICS.CRITICAL_NOTE,
       icon: AlertTriangle,
     },
     {
-      label: "Security posture",
-      value: "Healthy",
-      note: "No unresolved incidents",
+      label: UI_COPY.AUDIT.METRICS.POSTURE,
+      value: UI_COPY.AUDIT.METRICS.POSTURE_VAL,
+      note: UI_COPY.AUDIT.METRICS.POSTURE_NOTE,
       positive: true,
       icon: Shield,
     },
     {
-      label: "Audit integrity",
-      value: "100%",
-      note: "All actions traceable",
+      label: UI_COPY.AUDIT.METRICS.INTEGRITY,
+      value: UI_COPY.AUDIT.METRICS.INTEGRITY_VAL,
+      note: UI_COPY.AUDIT.METRICS.INTEGRITY_NOTE,
       positive: true,
       icon: CheckCircle,
     },

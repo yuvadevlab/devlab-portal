@@ -20,21 +20,21 @@ export const PortalFooter: React.FC = () => {
           {UI_COPY.COMMON.STATUS.HEALTHY}
         </span>
         <span>·</span>
-        <span>API :3015</span>
+        <span>{UI_COPY.COMMON.FOOTER.API_PORT}</span>
         <span>·</span>
-        <span>Redis PubSub active</span>
+        <span>{UI_COPY.COMMON.FOOTER.REDIS_PUBSUB}</span>
       </span>
 
       <span className="flex items-center gap-5">
-        <span>DevLab Portal v2.0.0</span>
-        <span className="tag text-[9px]!">Demo workspace</span>
+        <span>{UI_COPY.COMMON.FOOTER.VERSION}</span>
+        <span className="tag text-[9px]!">{UI_COPY.COMMON.FOOTER.DEMO_WORKSPACE}</span>
         <Button
           variant="link"
           size="sm"
           className="text-muted-foreground hover:text-foreground h-auto gap-1 p-0 text-xs"
           onClick={() => window.open("https://docs.devlab.io", "_blank", "noopener,noreferrer")}
         >
-          Documentation
+          {UI_COPY.COMMON.FOOTER.DOCS}
           <ArrowUpRight className="size-3" />
         </Button>
       </span>

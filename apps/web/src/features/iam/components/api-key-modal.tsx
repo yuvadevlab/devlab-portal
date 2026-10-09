@@ -148,7 +148,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
                 </Label>
                 <Select value={appId} onValueChange={setAppId}>
                   <SelectTrigger id="api-key-app" className="h-9 w-full text-xs">
-                    <SelectValue placeholder="Select target application..." />
+                    <SelectValue placeholder={UI_COPY.IAM.MODAL.APP_PLACEHOLDER} />
                   </SelectTrigger>
                   <SelectContent>
                     {apps.map((a) => (
@@ -222,7 +222,9 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
                 disabled={createApiKeyMutation.isPending || !name}
                 className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
               >
-                {createApiKeyMutation.isPending ? "Generating..." : UI_COPY.COMMON.ACTIONS.GENERATE}
+                {createApiKeyMutation.isPending
+                  ? UI_COPY.COMMON.ACTIONS.GENERATING
+                  : UI_COPY.COMMON.ACTIONS.GENERATE}
               </Button>
             </>
           )}

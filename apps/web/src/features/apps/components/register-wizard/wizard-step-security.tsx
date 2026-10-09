@@ -23,22 +23,22 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
     {
       id: ApiKeyScope.ORCHESTRAI_READ,
       label: "orchestrai:read",
-      desc: "Read-only access to agents and executions",
+      desc: UI_COPY.APPS.WIZARD.SCOPES.ORCHESTRAI_READ_DESC,
     },
     {
       id: ApiKeyScope.ORCHESTRAI_EXECUTE,
       label: "orchestrai:executions:create",
-      desc: "Trigger autonomous swarm runs",
+      desc: UI_COPY.APPS.WIZARD.SCOPES.ORCHESTRAI_EXECUTE_DESC,
     },
     {
       id: ApiKeyScope.FINAI_READ,
       label: "finai:read",
-      desc: "Read financial analytics and agent advice",
+      desc: UI_COPY.APPS.WIZARD.SCOPES.FINAI_READ_DESC,
     },
     {
       id: ApiKeyScope.LOGS_INGEST,
       label: "logs:ingest",
-      desc: "Direct telemetry and audit log ingestion",
+      desc: UI_COPY.APPS.WIZARD.SCOPES.LOGS_INGEST_DESC,
     },
   ];
 
@@ -49,7 +49,7 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
           {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_URLS} *
         </Label>
         <p className="text-muted-foreground text-[11px]">
-          Authorized OIDC redirect targets for OAuth2 authorization code flows. One per line.
+          {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_HELP}
         </p>
         <Textarea
           id="callback-urls"
@@ -63,7 +63,7 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs font-semibold">Ecosystem Permission Scopes</Label>
+        <Label className="text-xs font-semibold">{UI_COPY.APPS.WIZARD.FIELDS.SCOPES_TITLE}</Label>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {commonScopes.map((scope) => (
             <div

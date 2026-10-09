@@ -9,6 +9,7 @@
 import React from "react";
 import { Server, Activity, AlertOctagon, Zap } from "lucide-react";
 import { MetricsBar, type MetricItem } from "@/components/layout";
+import { UI_COPY } from "@/lib/ui-copy";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppMetricsProps {
@@ -22,29 +23,35 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
 
   const items: MetricItem[] = [
     {
-      label: "Registered applications",
+      label: UI_COPY.APPS.METRICS.TOTAL_APPS,
       value: totalCount,
-      note: "Across your DevLab ecosystem",
+      note: UI_COPY.APPS.METRICS.TOTAL_NOTE,
       icon: Server,
     },
     {
-      label: "Active services",
+      label: UI_COPY.APPS.METRICS.ACTIVE_SERVICES,
       value: activeCount,
-      note: suspendedCount > 0 ? "Services currently suspended" : "100% of services operational",
+      note:
+        suspendedCount > 0
+          ? UI_COPY.APPS.METRICS.SUSPENDED_NOTE
+          : UI_COPY.APPS.METRICS.HEALTHY_NOTE,
       positive: suspendedCount === 0,
       icon: Activity,
     },
     {
-      label: "Active kill-switches",
+      label: UI_COPY.APPS.METRICS.KILL_SWITCHES,
       value: suspendedCount,
-      note: suspendedCount > 0 ? "Emergency controls engaged" : "No active service disruptions",
+      note:
+        suspendedCount > 0
+          ? UI_COPY.APPS.METRICS.CONTROLS_ENGAGED
+          : UI_COPY.APPS.METRICS.NO_DISRUPTIONS,
       positive: suspendedCount === 0,
       icon: AlertOctagon,
     },
     {
-      label: "Monthly inter-service requests",
-      value: "1.2M",
-      note: "↗ 12.8% from last month",
+      label: UI_COPY.APPS.METRICS.REQUESTS_LABEL,
+      value: UI_COPY.APPS.METRICS.REQUESTS_VAL,
+      note: UI_COPY.APPS.METRICS.REQUESTS_NOTE,
       positive: true,
       icon: Zap,
     },

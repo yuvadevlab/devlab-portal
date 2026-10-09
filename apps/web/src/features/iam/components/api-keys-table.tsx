@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/iam/components/api-keys-table.tsx
  * @description Tabular view of scoped machine-to-machine credentials with search and filtering.
- * Fully built with @yuva-devlab/ui Table, Button, and layout primitives.
+ * Fully built with @yuva-devlab/ui Table, Input, Select, and Button primitives.
  * @module @devlab/portal-web/features/iam/components/api-keys-table
  */
 
@@ -11,6 +11,12 @@ import React, { useState } from "react";
 import { Plus, KeyRound, RefreshCw, Ban, Search } from "lucide-react";
 import {
   Button,
+  Input,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
   Table,
   TableHeader,
   TableBody,
@@ -62,27 +68,30 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
       <div className="app-toolbar">
         <div className="search-field">
           <Search className="size-3.5" />
-          <input
-            placeholder="Search key name or prefix…"
+          <Input
+            placeholder={UI_COPY.IAM.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search keys"
+            aria-label={UI_COPY.IAM.TOOLBAR.SEARCH_PLACEHOLDER}
+            className="bg-card border-border h-9 w-72 pl-9 text-xs"
           />
         </div>
 
-        <select
-          className="filter-select text-xs"
-          value={selectedApp}
-          onChange={(e) => setSelectedApp(e.target.value)}
-          aria-label="Filter keys by application"
-        >
-          <option value="All">All applications</option>
-          {appsInKeys.map((appId) => (
-            <option key={appId} value={appId}>
-              {appId}
-            </option>
-          ))}
-        </select>
+        <div className="w-48">
+          <Select value={selectedApp} onValueChange={setSelectedApp}>
+            <SelectTrigger className="bg-card border-border h-9 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">{UI_COPY.IAM.TOOLBAR.ALL_APPLICATIONS}</SelectItem>
+              {appsInKeys.map((appId) => (
+                <SelectItem key={appId} value={appId}>
+                  {appId}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Table */}
@@ -90,14 +99,14 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Key name</TableHead>
-              <TableHead>Target app</TableHead>
-              <TableHead>Key prefix</TableHead>
-              <TableHead>Scopes</TableHead>
-              <TableHead>Rate limit</TableHead>
-              <TableHead>Last used</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{UI_COPY.IAM.TABLE.NAME}</TableHead>
+              <TableHead>{UI_COPY.IAM.TABLE.APP}</TableHead>
+              <TableHead>{UI_COPY.IAM.TABLE.PREFIX}</TableHead>
+              <TableHead>{UI_COPY.IAM.TABLE.SCOPES}</TableHead>
+              <TableHead>{UI_COPY.IAM.TABLE.RATE_LIMIT}</TableHead>
+              <TableHead>{UI_COPY.IAM.TABLE.LAST_USED}</TableHead>
+              <TableHead>{UI_COPY.IAM.TABLE.STATUS}</TableHead>
+              <TableHead className="text-right">{UI_COPY.IAM.TABLE.ACTIONS}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -126,7 +135,9 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                 </TableCell>
                 <TableCell className="font-mono text-xs">
                   {k.rateLimitRpm.toLocaleString()}{" "}
-                  <span className="text-muted-foreground font-sans text-[10px]">RPM</span>
+                  <span className="text-muted-foreground font-sans text-[10px]">
+                    {UI_COPY.IAM.TABLE.RPM}
+                  </span>
                 </TableCell>
                 <TableCell className="text-muted-foreground text-xs">
                   {new Date(k.createdAt).toLocaleDateString()}
@@ -142,8 +153,8 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                     <Button
                       size="icon"
                       variant="ghost"
-                      title={`Rotate ${k.name}`}
-                      aria-label={`Rotate ${k.name}`}
+                      title={`${UI_COPY.COMMON.ACTIONS.REFRESH} ${k.name}`}
+                      aria-label={`${UI_COPY.COMMON.ACTIONS.REFRESH} ${k.name}`}
                       disabled={k.isRevoked}
                     >
                       <RefreshCw className="size-3.5" />
@@ -152,8 +163,8 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                       size="icon"
                       variant="ghost"
                       className="text-destructive hover:bg-destructive/10"
-                      title={`Revoke ${k.name}`}
-                      aria-label={`Revoke ${k.name}`}
+                      title={`${UI_COPY.COMMON.ACTIONS.REVOKE} ${k.name}`}
+                      aria-label={`${UI_COPY.COMMON.ACTIONS.REVOKE} ${k.name}`}
                       disabled={k.isRevoked}
                       onClick={() => onRevokeKey(k.id)}
                     >
@@ -166,13 +177,11 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
           </TableBody>
         </Table>
 
-        {filteredKeys.length === 0 && (
-          <p className="empty-state">No API keys match your filters.</p>
-        )}
+        {filteredKeys.length === 0 && <p className="empty-state">{UI_COPY.IAM.TABLE.EMPTY_TEXT}</p>}
       </div>
 
       <div className="text-muted-foreground mt-4 text-xs">
-        {filteredKeys.length} credentials · Secrets are only revealed once
+        {filteredKeys.length} {UI_COPY.IAM.TABLE.FOOTER_INFO}
       </div>
     </>
   );

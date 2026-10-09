@@ -1,6 +1,6 @@
 /**
  * @file apps/web/src/lib/ui-copy/common.ts
- * @description Universal UI copy, button labels, and system status badges.
+ * @description Universal UI copy, button labels, navigation titles, and system status badges.
  * Eliminates raw string literals across UI layouts and interactive controls.
  * @module @devlab/portal-web/ui-copy/common
  */
@@ -35,6 +35,10 @@ export const COMMON_COPY = {
     SETTINGS: "App Settings",
     INSPECT: "Inspect Payload",
     KILL_SWITCH: "Kill Switch",
+    GENERATING: "Generating...",
+    INVITING: "Inviting...",
+    REGISTERING: "Registering...",
+    WORKSPACE: "Workspace",
   },
   STATUS: {
     HEALTHY: "200 OK — Healthy",
@@ -51,11 +55,53 @@ export const COMMON_COPY = {
     PRODUCTION: "Production",
   },
   TABS: {
-    APPS: "Applications",
-    IAM: "IAM & Keys",
-    AUDIT: "Security Ledger",
-    TEAM: "Team & RBAC",
-    SETTINGS: "OIDC & JWKS",
+    APPS: "Ecosystem Apps & Services",
+    IAM: "IAM & API Keys",
+    AUDIT: "Security & Audit Ledger",
+    TEAM: "Team & Permissions",
+    SETTINGS: "Settings & JWKS",
+  },
+  HEADER: {
+    WORKSPACE: "Workspace",
+    TENANT_DEFAULT: "Yuva DevLab",
+    TENANTS_LIST: ["Yuva DevLab", "Staging Swarm Tenant", "Personal Sandbox"] as const,
+    SEARCH_TENANTS: "Search tenants…",
+    CREATE_TENANT: "Create New Tenant",
+    CLUSTER_ONLINE: "Cluster online",
+    SEARCH_TOOLTIP: "Search (⌘K)",
+    SEARCH_LABEL: "Search portal",
+    ECOSYSTEM_LAUNCHER: "Ecosystem launcher",
+    ECOSYSTEM_HEADER: "DevLab Ecosystem",
+    NOTIFICATIONS: "Notifications",
+    DARK_MODE: "Switch to dark mode",
+    LIGHT_MODE: "Switch to light mode",
+    ENTERPRISE_PLAN: "Enterprise",
+    ACCOUNT_SETTINGS: "Account settings",
+    SIGN_OUT: "Sign out",
+    USER_NAME: "Yuvaraj Pattabi",
+    USER_EMAIL: "yuvaraj@devlab.io",
+    USER_ROLE: "super_admin",
+  },
+  COMMAND: {
+    TITLE: "Search DevLab Portal",
+    DESCRIPTION: "Quickly navigate across ecosystem applications, keys, and security ledgers.",
+    PLACEHOLDER: "Where would you like to go?",
+    EMPTY: "No matching navigation destinations found.",
+  },
+  TENANT_MODAL: {
+    TITLE: "Create New Tenant",
+    DESCRIPTION: "Provision a new isolated workspace tenant identity for agentic swarms.",
+    NAME_LABEL: "Tenant Name",
+    NAME_PLACEHOLDER: "e.g., Production Swarm Cluster",
+    SUBMIT_BTN: "Create Tenant",
+  },
+  FOOTER: {
+    ALL_SYSTEMS: "All systems operational",
+    API_PORT: "API :3015",
+    REDIS_PUBSUB: "Redis PubSub active",
+    VERSION: "DevLab Portal v2.0.0",
+    DEMO_WORKSPACE: "Demo workspace",
+    DOCS: "Documentation",
   },
   EMPTY: {
     NO_DATA: "No items found",
