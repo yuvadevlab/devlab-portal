@@ -8,3 +8,5 @@ allowBuilds:
   msgpackr-extract: true
   prisma: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - "@yuva-devlab/logger@1.2.0"

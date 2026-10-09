@@ -24,7 +24,7 @@
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "link:../../prisma/generated",
     "@prisma/client-runtime-utils": "7.10.0",
-    "@yuva-devlab/logger": "link:../../../devlab-shared/packages/logger",
+    "@yuva-devlab/logger": "^1.2.0",
     "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
