@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/settings/components/jwks-viewer.tsx
  * @description OIDC identity metadata and active RFC 7517 JWKS key inspector.
@@ -8,8 +10,8 @@
 import React from "react";
 import { KeyRound, Globe, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { Badge, CopyButton } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import { API_BASE_URL, JwksData, OpenIdConfig } from "../../../lib/api-client";
+import { UI_COPY } from "@/lib/ui-copy";
+import { API_BASE_URL, JwksData, OpenIdConfig } from "@/lib/api-client";
 
 interface JwksViewerProps {
   jwks: JwksData | null;
@@ -79,7 +81,7 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc }) => {
               <p className="text-muted-foreground text-xs">{UI_COPY.SETTINGS.JWKS.DESCRIPTION}</p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
+          <span className="border-success/20 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold">
             <CheckCircle2 className="size-3.5" />
             {UI_COPY.SETTINGS.JWKS.STATUS_ACTIVE}
           </span>

@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/team/components/team-table.tsx
  * @description Organization members and RBAC role assignments table.
@@ -7,9 +9,9 @@
 import React from "react";
 import { Users, Plus, ShieldCheck } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import { UserRole } from "../../../lib/constants/enums";
-import type { UserMember } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
+import { UserRole } from "@/lib/constants";
+import type { UserMember } from "@/features/team/types";
 
 interface TeamTableProps {
   members: UserMember[];
@@ -20,13 +22,13 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
       case UserRole.SUPER_ADMIN:
-        return "bg-rose-500/10 text-rose-400 border border-rose-500/20";
+        return "bg-destructive/10 text-destructive border border-destructive/20";
       case UserRole.ADMIN:
         return "bg-primary/10 text-primary border border-primary/20";
       case UserRole.DEVELOPER:
-        return "bg-sky-500/10 text-sky-400 border border-sky-500/20";
+        return "bg-info/10 text-info border border-info/20";
       default:
-        return "bg-slate-500/10 text-slate-300 border border-slate-500/20";
+        return "bg-muted text-muted-foreground border border-border";
     }
   };
 
@@ -92,7 +94,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
 
                     {/* Status */}
                     <td className="px-4 py-3.5">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                      <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold">
                         <ShieldCheck className="size-3" />
                         {UI_COPY.COMMON.STATUS.ACTIVE}
                       </span>

@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/iam/components/api-keys-table.tsx
  * @description Tabular view of active and revoked scoped API keys with prefix previews.
@@ -8,18 +10,18 @@
 import React from "react";
 import { Key, Plus, Trash2, ShieldCheck, Ban } from "lucide-react";
 import { Badge, Button, CopyButton } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import type { ApiKey } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
+import type { ApiKey } from "@/features/iam/types";
 
 interface ApiKeysTableProps {
-  keys: ApiKey[];
-  onOpenCreateModal: () => void;
+  apiKeys: ApiKey[];
+  onOpenGenerateModal: () => void;
   onRevokeKey: (id: string) => Promise<void>;
 }
 
 export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
-  keys,
-  onOpenCreateModal,
+  apiKeys,
+  onOpenGenerateModal,
   onRevokeKey,
 }) => {
   return (
@@ -33,7 +35,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
           <p className="text-muted-foreground mt-1 text-xs">{UI_COPY.IAM.HEADER.DESCRIPTION}</p>
         </div>
         <Button
-          onClick={onOpenCreateModal}
+          onClick={onOpenGenerateModal}
           className="bg-primary text-primary-foreground h-9 shrink-0 px-4 text-xs font-medium shadow-sm hover:opacity-90"
         >
           <Plus className="mr-1.5 size-4" />
@@ -41,14 +43,15 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
         </Button>
       </div>
 
-      {/* Table Container */}
-      {keys.length > 0 ? (
+      {/* Keys Table */}
+      {apiKeys.length > 0 ? (
         <div className="border-border bg-card overflow-hidden rounded-xl border shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="border-border bg-background/75 text-muted-foreground border-b font-mono text-[10px] uppercase">
                 <tr>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.NAME}</th>
+                  <th className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.APP}</th>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.PREFIX}</th>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.SCOPES}</th>
                   <th className="px-4 py-3 font-semibold">{UI_COPY.IAM.TABLE.RATE_LIMIT}</th>
@@ -60,32 +63,32 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-border divide-y">
-                {keys.map((k) => (
+                {apiKeys.map((k) => (
                   <tr key={k.id} className="hover:bg-background/40 transition-colors">
                     {/* Name */}
+                    <td className="text-foreground px-4 py-3.5 font-semibold">{k.name}</td>
+
+                    {/* App badge */}
                     <td className="px-4 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <Key className="text-primary size-3.5 shrink-0" />
-                        <span className="text-foreground font-semibold">{k.name}</span>
-                      </div>
+                      <span className="text-muted-foreground font-mono text-xs">{k.appId}</span>
                     </td>
 
-                    {/* Key Prefix preview */}
-                    <td className="text-muted-foreground px-4 py-3.5 font-mono text-[11px]">
-                      <div className="flex items-center gap-1">
-                        <span>{k.keyPrefix}</span>
+                    {/* Prefix Preview */}
+                    <td className="px-4 py-3.5 font-mono text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-foreground">{k.keyPrefix}...</span>
                         <CopyButton textToCopy={k.keyPrefix} />
                       </div>
                     </td>
 
-                    {/* Scopes Badges */}
+                    {/* Scopes */}
                     <td className="px-4 py-3.5">
-                      <div className="flex max-w-xs flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1">
                         {k.scopes.map((scope) => (
                           <Badge
                             key={scope}
-                            variant="outline"
-                            className="border-border text-foreground font-mono text-[10px]"
+                            variant="secondary"
+                            className="bg-primary/10 text-primary border-primary/20 font-mono text-[9px]"
                           >
                             {scope}
                           </Badge>
@@ -106,12 +109,12 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                     {/* Status Badge */}
                     <td className="px-4 py-3.5">
                       {k.isRevoked ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold text-red-400">
+                        <span className="bg-destructive/10 text-destructive inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold">
                           <Ban className="size-3" />
                           {UI_COPY.COMMON.STATUS.REVOKED}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                        <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold">
                           <ShieldCheck className="size-3" />
                           {UI_COPY.COMMON.STATUS.ACTIVE}
                         </span>
@@ -125,7 +128,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                           variant="ghost"
                           size="sm"
                           onClick={() => onRevokeKey(k.id)}
-                          className="h-7 px-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                          className="text-destructive hover:bg-destructive/10 h-7 px-2 text-xs"
                         >
                           <Trash2 className="mr-1 size-3.5" />
                           {UI_COPY.COMMON.ACTIONS.REVOKE}

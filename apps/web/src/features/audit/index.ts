@@ -1,9 +1,10 @@
 /**
  * @file apps/web/src/features/audit/index.ts
- * @description Public exports for Security Audit feature module.
+ * @description Centralized barrel exporting audit ledger components, API hooks, and types.
  * @module @devlab/portal-web/features/audit
  */
 
 export * from "./types";
-export * from "./components/audit-table";
-export * from "./components/audit-inspector-drawer";
+export * from "./api";
+export { AuditTable } from "./components/audit-table";
+export { AuditInspectorDrawer } from "./components/audit-inspector-drawer";

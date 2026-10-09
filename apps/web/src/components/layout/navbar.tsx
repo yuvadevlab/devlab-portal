@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/components/layout/navbar.tsx
  * @description Top header bar with DevLab brand, live cluster heartbeat, and active session identity.
@@ -7,7 +9,7 @@
 import React from "react";
 import { ShieldCheck, Activity } from "lucide-react";
 import { Badge } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../lib/ui-copy/index";
+import { UI_COPY } from "@/lib/ui-copy";
 
 interface NavbarProps {
   healthyCount: number;
@@ -47,15 +49,15 @@ export const Navbar: React.FC<NavbarProps> = ({ healthyCount, totalApps }) => {
         {/* Live cluster status & user identity */}
         <div className="flex items-center gap-4">
           {/* Heartbeat pill */}
-          <div className="hidden items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-400 sm:flex">
+          <div className="border-success/20 bg-success/10 text-success hidden items-center gap-2 rounded-full border px-3 py-1 text-xs sm:flex">
             <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              <span className="bg-success absolute inline-flex size-full animate-ping rounded-full opacity-75" />
+              <span className="bg-success relative inline-flex size-2 rounded-full" />
             </span>
             <span className="font-mono text-[11px]">
               {healthyCount}/{totalApps} {UI_COPY.APPS.CARD.STATUS_ACTIVE}
             </span>
-            <Activity className="size-3 text-emerald-400" />
+            <Activity className="text-success size-3" />
           </div>
 
           {/* User profile capsule */}

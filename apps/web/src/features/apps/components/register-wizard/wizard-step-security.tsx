@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/register-wizard/wizard-step-security.tsx
  * @description Step 2 of App Registration Wizard: OAuth2 redirect URIs, CORS origins, and scope grants.
@@ -6,9 +8,9 @@
 
 import React from "react";
 import { Textarea } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../../lib/ui-copy/index";
-import { ApiKeyScope } from "../../../../lib/constants/enums";
-import type { RegisterWizardFormState } from "../../types";
+import { UI_COPY } from "@/lib/ui-copy";
+import { ApiKeyScope } from "@/lib/constants";
+import type { RegisterWizardFormState } from "@/features/apps/types";
 
 interface WizardStepSecurityProps {
   form: RegisterWizardFormState;

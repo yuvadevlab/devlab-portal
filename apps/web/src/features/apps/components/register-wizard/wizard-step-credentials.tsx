@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/register-wizard/wizard-step-credentials.tsx
  * @description Step 3 of App Registration Wizard: Reveal generated Client ID and one-time secret.
@@ -8,7 +10,7 @@
 import React from "react";
 import { CheckCircle2, AlertTriangle } from "lucide-react";
 import { SecretRevealCard, CopyButton } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../../lib/ui-copy/index";
+import { UI_COPY } from "@/lib/ui-copy";
 
 interface WizardStepCredentialsProps {
   appId: string;
@@ -22,11 +24,11 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
   return (
     <div className="space-y-5">
       {/* Success banner */}
-      <div className="flex items-center gap-2.5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-emerald-400">
+      <div className="border-success/20 bg-success/10 text-success flex items-center gap-2.5 rounded-xl border p-4">
         <CheckCircle2 className="size-5 shrink-0" />
         <div>
           <p className="text-xs leading-none font-semibold">Application Registered Successfully</p>
-          <p className="mt-1 text-[11px] text-emerald-300/80">
+          <p className="text-success/80 mt-1 text-[11px]">
             Client credentials have been generated and cryptographic hashes recorded.
           </p>
         </div>
@@ -56,8 +58,8 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
       </div>
 
       {/* Security notice */}
-      <div className="flex items-start gap-2 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-300">
-        <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-400" />
+      <div className="border-warning/20 bg-warning/10 text-warning flex items-start gap-2 rounded-lg border p-3 text-xs">
+        <AlertTriangle className="text-warning mt-0.5 size-4 shrink-0" />
         <p className="text-[11px] leading-relaxed">
           {UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}
         </p>

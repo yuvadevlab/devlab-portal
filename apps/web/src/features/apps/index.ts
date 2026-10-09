@@ -1,13 +1,14 @@
 /**
  * @file apps/web/src/features/apps/index.ts
- * @description Public exports for Ecosystem Apps feature module.
+ * @description Centralized barrel exporting apps feature components, API hooks, and types.
  * @module @devlab/portal-web/features/apps
  */
 
 export * from "./types";
-export * from "./components/app-card";
-export * from "./components/app-grid";
-export * from "./components/app-metrics";
-export * from "./components/app-settings-drawer";
-export * from "./components/kill-switch-modal";
-export * from "./components/register-wizard/register-app-modal";
+export * from "./api";
+export { AppCard } from "./components/app-card";
+export { AppGrid } from "./components/app-grid";
+export { AppMetrics } from "./components/app-metrics";
+export { AppSettingsDrawer } from "./components/app-settings-drawer";
+export { KillSwitchModal } from "./components/kill-switch-modal";
+export { RegisterAppModal } from "./components/register-wizard/register-app-modal";

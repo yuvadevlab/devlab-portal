@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/team/components/invite-member-modal.tsx
  * @description Modal dialog granting ecosystem control plane access and RBAC assignments.
@@ -7,10 +9,10 @@
 import React, { useState } from "react";
 import { Users, X, UserPlus, CheckCircle2 } from "lucide-react";
 import { Button, Input } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import { UserRole } from "../../../lib/constants/enums";
-import { logger } from "../../../lib/logger";
-import { api } from "../../../lib/api-client";
+import { UI_COPY } from "@/lib/ui-copy";
+import { UserRole } from "@/lib/constants";
+import { logger } from "@/lib/logger";
+import { api } from "@/lib/api-client";
 
 interface InviteMemberModalProps {
   isOpen: boolean;
@@ -89,7 +91,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
         {/* Form Body */}
         <form id="invite-member-form" onSubmit={handleSubmit} className="mt-4 space-y-4">
           {isSuccess && (
-            <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs text-emerald-400">
+            <div className="border-success/20 bg-success/10 text-success flex items-center gap-2 rounded-lg border p-3 text-xs">
               <CheckCircle2 className="size-4 shrink-0" />
               <span>{UI_COPY.TEAM.MODAL.SUCCESS_ALERT}</span>
             </div>

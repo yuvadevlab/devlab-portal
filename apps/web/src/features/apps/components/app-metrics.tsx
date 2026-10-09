@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/app-metrics.tsx
  * @description High-level KPI metrics bar displaying active swarms and routing health.
@@ -8,8 +10,8 @@
 import React from "react";
 import { Server, Activity, AlertOctagon, Cpu } from "lucide-react";
 import { MetricCard, MetricsGrid } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import type { RegisteredApp } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
+import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppMetricsProps {
   apps: RegisteredApp[];
@@ -40,7 +42,7 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
             : undefined
         }
         positive={true}
-        icon={<Activity className="size-4 text-emerald-400" />}
+        icon={<Activity className="text-success size-4" />}
       />
       <MetricCard
         label={UI_COPY.APPS.METRICS.OFFLINE}
@@ -53,7 +55,7 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
         label={UI_COPY.APPS.METRICS.TOKEN_OPS}
         value="2 Swarms"
         note="Federated nodes"
-        icon={<Cpu className="size-4 text-sky-400" />}
+        icon={<Cpu className="text-info size-4" />}
       />
     </MetricsGrid>
   );

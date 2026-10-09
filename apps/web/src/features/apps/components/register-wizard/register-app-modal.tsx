@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/register-wizard/register-app-modal.tsx
  * @description 3-step registration wizard orchestrator for onboarding new microservices into DevLab.
@@ -7,13 +9,13 @@
 import React, { useState } from "react";
 import { X, ArrowRight, ArrowLeft, Check, Sparkles } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
-import { logger } from "../../../../lib/logger";
-import { UI_COPY } from "../../../../lib/ui-copy/index";
-import { AppEnvironment } from "../../../../lib/constants/enums";
+import { logger } from "@/lib/logger";
+import { UI_COPY } from "@/lib/ui-copy";
+import { AppEnvironment } from "@/lib/constants";
 import { WizardStepIdentity } from "./wizard-step-identity";
 import { WizardStepSecurity } from "./wizard-step-security";
 import { WizardStepCredentials } from "./wizard-step-credentials";
-import type { RegisterWizardFormState, CreateAppPayload } from "../../types";
+import type { RegisterWizardFormState, CreateAppPayload } from "@/features/apps/types";
 
 interface RegisterAppModalProps {
   isOpen: boolean;
@@ -146,7 +148,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
                 currentStep === step
                   ? "bg-primary w-8"
                   : currentStep > step
-                    ? "w-4 bg-emerald-500"
+                    ? "bg-success w-4"
                     : "bg-border w-4"
               }`}
             />

@@ -1,9 +1,10 @@
 /**
  * @file apps/web/src/features/iam/index.ts
- * @description Public exports for IAM feature module.
+ * @description Centralized barrel exporting IAM feature components, API hooks, and types.
  * @module @devlab/portal-web/features/iam
  */
 
 export * from "./types";
-export * from "./components/api-keys-table";
-export * from "./components/api-key-modal";
+export * from "./api";
+export { ApiKeysTable } from "./components/api-keys-table";
+export { ApiKeyModal } from "./components/api-key-modal";

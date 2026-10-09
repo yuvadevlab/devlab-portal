@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/app-grid.tsx
  * @description Catalog grid toolbar with search filtering, environment toggles, and app cards.
@@ -7,9 +9,9 @@
 import React, { useState, useMemo } from "react";
 import { Search, Plus, ServerOff } from "lucide-react";
 import { Button, Input } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
+import { UI_COPY } from "@/lib/ui-copy";
 import { AppCard } from "./app-card";
-import type { RegisteredApp } from "../types";
+import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppGridProps {
   apps: RegisteredApp[];

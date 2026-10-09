@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/kill-switch-modal.tsx
  * @description Confirmation modal for severing or restoring microservice routing and tokens.
@@ -7,9 +9,9 @@
 import React, { useState } from "react";
 import { AlertTriangle, Power, CheckCircle, X } from "lucide-react";
 import { Button, Textarea } from "@yuva-devlab/ui";
-import { logger } from "../../../lib/logger";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import type { RegisteredApp } from "../types";
+import { logger } from "@/lib/logger";
+import { UI_COPY } from "@/lib/ui-copy";
+import type { RegisteredApp } from "@/features/apps/types";
 
 interface KillSwitchModalProps {
   app: RegisteredApp | null;
@@ -56,8 +58,8 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
             <div
               className={`flex size-11 items-center justify-center rounded-xl ${
                 app.isActive
-                  ? "border border-red-500/30 bg-red-500/15 text-red-400"
-                  : "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400"
+                  ? "border-destructive/30 bg-destructive/15 text-destructive border"
+                  : "border-success/30 bg-success/15 text-success border"
               }`}
             >
               {app.isActive ? (
@@ -90,8 +92,8 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
         <div
           className={`mt-4 rounded-xl border p-3.5 text-xs leading-relaxed ${
             app.isActive
-              ? "border-red-500/30 bg-red-500/10 text-red-200"
-              : "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+              ? "border-destructive/30 bg-destructive/10 text-destructive"
+              : "border-success/30 bg-success/10 text-success"
           }`}
         >
           {app.isActive
@@ -134,7 +136,7 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
             className={`h-9 text-xs font-semibold ${
               app.isActive
                 ? "bg-destructive text-destructive-foreground hover:opacity-90"
-                : "bg-emerald-600 text-white hover:bg-emerald-500"
+                : "bg-success text-success-foreground hover:opacity-90"
             }`}
           >
             {app.isActive ? (

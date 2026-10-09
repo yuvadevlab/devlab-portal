@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/app-card.tsx
  * @description Application catalog tile with real-time health indicator, latency, and kill-switch trigger.
@@ -7,9 +9,9 @@
 import React from "react";
 import { ExternalLink, Settings, Power, ShieldAlert, CheckCircle2 } from "lucide-react";
 import { Badge, Button, CopyButton } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import { AppStatus } from "../../../lib/constants/enums";
-import type { RegisteredApp } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
+import { AppStatus } from "@/lib/constants";
+import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppCardProps {
   app: RegisteredApp;
@@ -24,49 +26,55 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
   const isHealthy = isRoutingActive && app.healthStatus === AppStatus.HEALTHY;
 
   return (
-    <div
-      className={`group bg-card relative flex flex-col justify-between rounded-xl border p-5 transition-all duration-200 ${
-        isRoutingActive
-          ? "border-border hover:border-primary/50 hover:shadow-primary/5 hover:shadow-lg"
-          : "border-red-500/30 bg-red-950/10"
-      }`}
-    >
+    <div className="border-border bg-card hover:border-primary/40 flex flex-col justify-between rounded-xl border p-5 shadow-sm transition-all">
+      {/* Top Bar: Icon, Name, App ID */}
       <div>
-        {/* Header: Monogram, Name & Badges */}
-        <div className="mb-3 flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div
-              className={`flex size-11 items-center justify-center rounded-xl text-base font-bold transition-colors ${
-                isRoutingActive
-                  ? "bg-primary/15 text-primary border-primary/30 border"
-                  : "border border-red-500/30 bg-red-500/20 text-red-400"
-              }`}
-            >
-              {app.name.charAt(0).toUpperCase()}
-            </div>
+            {app.iconUrl ? (
+              <img
+                src={app.iconUrl}
+                alt={app.name}
+                className="border-border size-10 rounded-lg border object-cover"
+              />
+            ) : (
+              <div className="bg-primary/15 text-primary flex size-10 items-center justify-center rounded-lg text-sm font-bold">
+                {app.name.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div>
-              <h3 className="text-foreground text-base leading-tight font-semibold tracking-tight">
-                {app.name}
-              </h3>
-              <p className="text-muted-foreground font-mono text-xs">{app.appId}</p>
+              <h3 className="text-foreground text-sm font-bold">{app.name}</h3>
+              <span className="text-muted-foreground font-mono text-xs">{app.appId}</span>
             </div>
           </div>
 
-          <Badge
-            variant={app.environment === "production" ? "default" : "outline"}
-            className="font-mono text-[10px] uppercase"
-          >
+          {/* Environment Tag */}
+          <Badge variant="outline" className="border-border font-mono text-[10px] uppercase">
             {app.environment}
           </Badge>
         </div>
 
         {/* Description */}
-        <p className="text-muted-foreground mb-4 line-clamp-2 text-xs leading-relaxed">
-          {app.description || "Federated micro-frontend service in DevLab swarm."}
+        <p className="text-muted-foreground mt-3 line-clamp-2 text-xs">
+          {app.description || UI_COPY.COMMON.EMPTY.NO_DATA}
         </p>
 
-        {/* Operational Status & Latency Metrics */}
-        <div className="border-border bg-background/60 mb-4 space-y-2 rounded-lg border p-2.5">
+        {/* Telemetry and Endpoints */}
+        <div className="border-border mt-4 space-y-2 border-t pt-3 font-mono">
+          {/* Origin URL */}
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground text-[11px]">
+              {UI_COPY.APPS.CARD.ORIGIN_LABEL}:
+            </span>
+            <div className="flex items-center gap-1">
+              <span className="text-foreground max-w-35 truncate font-mono text-[11px]">
+                {app.originUrl}
+              </span>
+              <CopyButton textToCopy={app.originUrl} />
+            </div>
+          </div>
+
+          {/* Health & Live Telemetry */}
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground text-[11px]">
               {UI_COPY.APPS.CARD.HEALTH_LABEL}:
@@ -75,10 +83,10 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
               {isHealthy ? (
                 <>
                   <span className="relative flex size-2">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+                    <span className="bg-success absolute inline-flex size-full animate-ping rounded-full opacity-75" />
+                    <span className="bg-success relative inline-flex size-2 rounded-full" />
                   </span>
-                  <span className="text-emerald-400">
+                  <span className="text-success">
                     {UI_COPY.COMMON.STATUS.HEALTHY}
                     {app.latencyMs && app.latencyMs > 0
                       ? ` (${app.latencyMs}${UI_COPY.APPS.CARD.LATENCY_SUFFIX})`
@@ -86,62 +94,61 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
                   </span>
                 </>
               ) : isRoutingActive ? (
-                <span className="flex items-center gap-1 text-amber-400">
+                <span className="text-warning flex items-center gap-1">
                   <ShieldAlert className="size-3" />
                   {UI_COPY.COMMON.STATUS.UNREACHABLE}
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-red-400">
+                <span className="text-destructive flex items-center gap-1">
                   <Power className="size-3" />
-                  {UI_COPY.COMMON.STATUS.MAINTENANCE}
+                  {UI_COPY.APPS.CARD.STATUS_KILLED}
                 </span>
               )}
             </div>
           </div>
 
-          <div className="border-border/50 flex items-center justify-between border-t pt-1 text-xs">
-            <span className="text-muted-foreground text-[11px]">
-              {UI_COPY.APPS.CARD.CLIENT_ID_LABEL}:
-            </span>
-            <div className="text-foreground flex items-center gap-1 font-mono text-[11px]">
-              <span>{app.appId}</span>
-              <CopyButton textToCopy={app.appId} />
+          {/* Maintenance Note if kill-switch engaged */}
+          {!isRoutingActive && app.maintenanceNote && (
+            <div className="border-destructive/20 bg-destructive/10 text-destructive rounded p-2 text-[10px]">
+              {app.maintenanceNote}
             </div>
-          </div>
+          )}
         </div>
-
-        {/* Maintenance Note if kill-switched */}
-        {!isRoutingActive && app.maintenanceNote && (
-          <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/5 p-2 text-[11px] text-red-300">
-            <span className="font-semibold">{UI_COPY.APPS.DRAWER.NOTE_LABEL}: </span>
-            {app.maintenanceNote}
-          </div>
-        )}
       </div>
 
-      {/* Action Footer */}
-      <div className="border-border flex items-center justify-between gap-2 border-t pt-3">
-        <div className="flex items-center gap-1.5">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onOpenSettings(app)}
-            className="text-muted-foreground hover:text-foreground h-8 px-2 text-xs"
-            title={UI_COPY.APPS.CARD.SETTINGS_TOOLTIP}
-          >
-            <Settings className="mr-1 size-3.5" />
-            {UI_COPY.COMMON.ACTIONS.SETTINGS}
-          </Button>
+      {/* Action Footers */}
+      <div className="border-border mt-5 flex items-center justify-between border-t pt-4">
+        {/* Quick Launch & Configure */}
+        <div className="flex items-center gap-2">
+          {isRoutingActive ? (
+            <a
+              href={app.originUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="border-border text-foreground hover:bg-background/80 inline-flex h-8 items-center rounded-md border px-2.5 text-xs font-medium shadow-xs transition-colors"
+            >
+              <ExternalLink className="mr-1 size-3.5" />
+              {UI_COPY.COMMON.ACTIONS.LAUNCH}
+            </a>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled
+              className="border-border h-8 px-2.5 text-xs opacity-50"
+            >
+              <ExternalLink className="mr-1 size-3.5" />
+              {UI_COPY.COMMON.ACTIONS.LAUNCH}
+            </Button>
+          )}
 
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            onClick={() => window.open(app.originUrl, "_blank")}
-            className="text-muted-foreground hover:text-foreground h-8 px-2 text-xs"
-            title={UI_COPY.APPS.CARD.LAUNCH_TOOLTIP}
+            onClick={() => onOpenSettings(app)}
+            className="border-border h-8 px-2.5 text-xs"
           >
-            <ExternalLink className="mr-1 size-3.5" />
-            {UI_COPY.COMMON.ACTIONS.LAUNCH}
+            <Settings className="size-3.5" />
           </Button>
         </div>
 
@@ -153,7 +160,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
           className={`h-8 px-2.5 text-xs font-semibold ${
             isRoutingActive
               ? "bg-destructive text-destructive-foreground hover:opacity-90"
-              : "bg-emerald-600 text-white hover:bg-emerald-500"
+              : "bg-success text-success-foreground hover:opacity-90"
           }`}
         >
           {isRoutingActive ? (

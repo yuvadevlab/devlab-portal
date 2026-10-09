@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/audit/components/audit-table.tsx
  * @description Immutable security audit ledger table with severity badges and inspection trigger.
@@ -7,10 +9,10 @@
 import React, { useState } from "react";
 import { Eye, Terminal } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import { AuditAction } from "../../../lib/constants/enums";
+import { UI_COPY } from "@/lib/ui-copy";
+import { AuditAction } from "@/lib/constants";
 import { AuditInspectorDrawer } from "./audit-inspector-drawer";
-import type { AuditLog } from "../types";
+import type { AuditLog } from "@/features/audit/types";
 
 interface AuditTableProps {
   logs: AuditLog[];
@@ -22,16 +24,16 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
   const getActionBadgeClass = (action: string) => {
     switch (action) {
       case AuditAction.APP_ACTIVATED:
-        return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+        return "bg-success/10 text-success border border-success/20";
       case AuditAction.APP_DEACTIVATED:
-        return "bg-red-500/10 text-red-400 border border-red-500/20";
+        return "bg-destructive/10 text-destructive border border-destructive/20";
       case AuditAction.API_KEY_REVOKED:
-        return "bg-amber-500/10 text-amber-400 border border-amber-500/20";
+        return "bg-warning/10 text-warning border border-warning/20";
       case AuditAction.APP_REGISTERED:
       case AuditAction.USER_INVITED:
-        return "bg-sky-500/10 text-sky-400 border border-sky-500/20";
+        return "bg-info/10 text-info border border-info/20";
       default:
-        return "bg-slate-500/10 text-slate-300 border border-slate-500/20";
+        return "bg-muted text-muted-foreground border border-border";
     }
   };
 

@@ -5,9 +5,9 @@
  */
 
 import { io, Socket } from "socket.io-client";
-import { API_ROUTES } from "./constants/routes";
-import { HttpMethod } from "./constants/enums";
-import { logger } from "./logger";
+import { API_ROUTES } from "@/lib/constants/routes";
+import { HttpMethod } from "@/lib/constants/enums";
+import { logger } from "@/lib/logger";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3015";
 

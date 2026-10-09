@@ -4,7 +4,7 @@
  * @module @devlab/portal-web/features/iam/types
  */
 
-import type { ApiKey, RegisteredApp } from "../../lib/api-client";
+import type { ApiKey, RegisteredApp } from "@/lib/api-client";
 
 export type { ApiKey, RegisteredApp };
 

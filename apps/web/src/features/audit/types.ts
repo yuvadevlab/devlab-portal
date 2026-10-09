@@ -4,6 +4,6 @@
  * @module @devlab/portal-web/features/audit/types
  */
 
-import type { AuditLog } from "../../lib/api-client";
+import type { AuditLog } from "@/lib/api-client";
 
 export type { AuditLog };

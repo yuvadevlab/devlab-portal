@@ -4,7 +4,7 @@
  * @module @devlab/portal-web/features/team/types
  */
 
-import type { UserMember } from "../../lib/api-client";
+import type { UserMember } from "@/lib/api-client";
 
 export type { UserMember };
 

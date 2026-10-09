@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/register-wizard/wizard-step-identity.tsx
  * @description Step 1 of App Registration Wizard: Identity, names, environment, and base origins.
@@ -6,9 +8,9 @@
 
 import React from "react";
 import { Input, Textarea } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../../lib/ui-copy/index";
-import { AppEnvironment } from "../../../../lib/constants/enums";
-import type { RegisterWizardFormState } from "../../types";
+import { UI_COPY } from "@/lib/ui-copy";
+import { AppEnvironment } from "@/lib/constants";
+import type { RegisterWizardFormState } from "@/features/apps/types";
 
 interface WizardStepIdentityProps {
   form: RegisterWizardFormState;

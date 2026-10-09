@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/audit/components/audit-inspector-drawer.tsx
  * @description Slide-over inspection drawer for deep forensic analysis of raw JSON event payloads.
@@ -8,8 +10,8 @@
 import React from "react";
 import { X, ShieldCheck } from "lucide-react";
 import { Button, CopyButton } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import type { AuditLog } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
+import type { AuditLog } from "@/features/audit/types";
 
 interface AuditInspectorDrawerProps {
   log: AuditLog | null;
@@ -78,7 +80,7 @@ export const AuditInspectorDrawer: React.FC<AuditInspectorDrawerProps> = ({
               </label>
               <CopyButton textToCopy={jsonFormatted} />
             </div>
-            <pre className="border-border bg-background max-h-[calc(100vh-280px)] overflow-auto rounded-lg border p-3 font-mono text-[11px] text-slate-200">
+            <pre className="border-border bg-background text-foreground max-h-[calc(100vh-280px)] overflow-auto rounded-lg border p-3 font-mono text-[11px]">
               {jsonFormatted}
             </pre>
           </div>

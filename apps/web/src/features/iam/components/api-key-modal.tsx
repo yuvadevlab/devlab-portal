@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/iam/components/api-key-modal.tsx
  * @description Modal dialog generating cryptographically random API keys with SecretRevealCard.
@@ -7,10 +9,11 @@
 import React, { useState } from "react";
 import { Key, X, AlertTriangle } from "lucide-react";
 import { Button, Input, SecretRevealCard } from "@yuva-devlab/ui";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import { ApiKeyScope } from "../../../lib/constants/enums";
-import { logger } from "../../../lib/logger";
-import { api, RegisteredApp } from "../../../lib/api-client";
+import { UI_COPY } from "@/lib/ui-copy";
+import { ApiKeyScope } from "@/lib/constants";
+import { logger } from "@/lib/logger";
+import type { RegisteredApp } from "@/lib/api-client";
+import { useCreateApiKey } from "@/features/iam/api";
 
 interface ApiKeyModalProps {
   apps: RegisteredApp[];
@@ -25,7 +28,8 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
   const [selectedScopes, setSelectedScopes] = useState<string[]>([ApiKeyScope.ORCHESTRAI_READ]);
   const [rateLimit, setRateLimit] = useState(600);
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const createApiKeyMutation = useCreateApiKey();
 
   if (!isOpen) {
     return null;
@@ -52,10 +56,9 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
       return;
     }
 
-    setIsSubmitting(true);
     try {
       const targetAppId = appId || (apps[0]?.id ?? "");
-      const res = await api.createApiKey({
+      const res = await createApiKeyMutation.mutateAsync({
         name,
         appId: targetAppId,
         scopes: selectedScopes,
@@ -66,8 +69,6 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
       onSuccess();
     } catch (err) {
       logger.error("Failed to generate API key:", err);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -113,8 +114,8 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
                 warningMessage={UI_COPY.IAM.MODAL.SECRET_WARNING}
                 copyLabel={UI_COPY.COMMON.ACTIONS.COPY}
               />
-              <div className="flex items-start gap-2 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-300">
-                <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-400" />
+              <div className="border-warning/20 bg-warning/10 text-warning flex items-start gap-2 rounded-lg border p-3 text-xs">
+                <AlertTriangle className="text-warning mt-0.5 size-4 shrink-0" />
                 <p className="text-[11px] leading-relaxed">{UI_COPY.IAM.MODAL.SECRET_WARNING}</p>
               </div>
             </div>
@@ -219,10 +220,10 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
               <Button
                 type="submit"
                 form="api-key-form"
-                disabled={isSubmitting || !name}
+                disabled={createApiKeyMutation.isPending || !name}
                 className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
               >
-                {isSubmitting ? "Generating..." : UI_COPY.COMMON.ACTIONS.GENERATE}
+                {createApiKeyMutation.isPending ? "Generating..." : UI_COPY.COMMON.ACTIONS.GENERATE}
               </Button>
             </>
           )}

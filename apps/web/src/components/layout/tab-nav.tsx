@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/components/layout/tab-nav.tsx
  * @description Horizontal control plane navigation tabs with badge counts and icon highlights.
@@ -6,8 +8,8 @@
 
 import React from "react";
 import { LayoutGrid, Key, ShieldAlert, Users, Cpu } from "lucide-react";
-import { TabKey } from "../../lib/constants/enums";
-import { UI_COPY } from "../../lib/ui-copy/index";
+import { TabKey } from "@/lib/constants";
+import { UI_COPY } from "@/lib/ui-copy";
 
 interface TabNavProps {
   activeTab: TabKey;

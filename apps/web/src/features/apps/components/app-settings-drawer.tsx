@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/apps/components/app-settings-drawer.tsx
  * @description Slide-over settings panel for configuring origin URLs, OAuth callbacks, and health endpoints.
@@ -7,9 +9,9 @@
 import React, { useState, useEffect } from "react";
 import { X, Save, Sliders, CheckCircle2 } from "lucide-react";
 import { Button, Input, Textarea } from "@yuva-devlab/ui";
-import { logger } from "../../../lib/logger";
-import { UI_COPY } from "../../../lib/ui-copy/index";
-import type { RegisteredApp, UpdateAppSettingsPayload } from "../types";
+import { logger } from "@/lib/logger";
+import { UI_COPY } from "@/lib/ui-copy";
+import type { RegisteredApp, UpdateAppSettingsPayload } from "@/features/apps/types";
 
 interface AppSettingsDrawerProps {
   app: RegisteredApp | null;
@@ -110,7 +112,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
             className="mt-5 max-h-[calc(100vh-180px)] space-y-4 overflow-y-auto pr-1"
           >
             {savedSuccess && (
-              <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs text-emerald-400">
+              <div className="border-success/20 bg-success/10 text-success flex items-center gap-2 rounded-lg border p-3 text-xs">
                 <CheckCircle2 className="size-4 shrink-0" />
                 <span>{UI_COPY.APPS.DRAWER.SUCCESS_ALERT}</span>
               </div>
