@@ -170,7 +170,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
                       aria-label={`Remove ${m.name}`}
                       className="text-destructive hover:bg-destructive/10"
                     >
-                      <Trash2 className="size-3.5" />
+                      <Trash2 className="text-destructive size-3.5" />
                     </Button>
                   </TableCell>
                 </TableRow>

@@ -104,7 +104,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
           <form id="invite-member-form" onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="invite-name" className="text-xs font-semibold">
-                {UI_COPY.TEAM.MODAL.NAME_LABEL} *
+                {UI_COPY.TEAM.MODAL.NAME_LABEL}
               </Label>
               <Input
                 id="invite-name"
@@ -118,7 +118,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
 
             <div className="space-y-1.5">
               <Label htmlFor="invite-email" className="text-xs font-semibold">
-                {UI_COPY.TEAM.MODAL.EMAIL_LABEL} *
+                {UI_COPY.TEAM.MODAL.EMAIL_LABEL}
               </Label>
               <Input
                 id="invite-email"

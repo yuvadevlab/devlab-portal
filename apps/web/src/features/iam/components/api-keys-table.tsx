@@ -168,7 +168,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                       disabled={k.isRevoked}
                       onClick={() => onRevokeKey(k.id)}
                     >
-                      <Ban className="size-3.5" />
+                      <Ban className="text-destructive size-3.5" />
                     </Button>
                   </div>
                 </TableCell>

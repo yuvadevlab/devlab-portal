@@ -32,7 +32,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
     <div className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="app-name" className="text-xs font-semibold">
-          {UI_COPY.APPS.WIZARD.FIELDS.NAME} *
+          {UI_COPY.APPS.WIZARD.FIELDS.NAME}
         </Label>
         <Input
           id="app-name"
@@ -56,7 +56,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label htmlFor="app-id" className="text-xs font-semibold">
-            {UI_COPY.APPS.WIZARD.FIELDS.APP_ID} *
+            {UI_COPY.APPS.WIZARD.FIELDS.APP_ID}
           </Label>
           <Input
             id="app-id"
@@ -116,7 +116,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label htmlFor="app-origin" className="text-xs font-semibold">
-            {UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_URL} *
+            {UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_URL}
           </Label>
           <Input
             id="app-origin"
@@ -137,7 +137,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
 
         <div className="space-y-1.5">
           <Label htmlFor="app-health" className="text-xs font-semibold">
-            {UI_COPY.APPS.WIZARD.FIELDS.HEALTH_URL} *
+            {UI_COPY.APPS.WIZARD.FIELDS.HEALTH_URL}
           </Label>
           <Input
             id="app-health"

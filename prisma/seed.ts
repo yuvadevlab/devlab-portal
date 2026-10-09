@@ -1,10 +1,11 @@
 /**
  * @file prisma/seed.ts
- * @description Database seeder populating initial super admin and application blueprints.
+ * @description Database seeder populating initial super admin and server-driven navigation items.
+ * Adheres strictly to Rule 7 (zero synthetic app entities) and Rule 8 (dynamic navigation configuration).
  * @module devlab-portal/prisma
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "./generated/index.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import bcrypt from "bcryptjs";
@@ -50,67 +51,102 @@ async function main(): Promise<void> {
 
   console.log(`✅ Seeded Super Admin: ${superAdmin.email} (${superAdmin.id})`);
 
-  // 2. Seed Registered Apps
-  const apps = [
+  // 2. Seed Dynamic Navigation Items (DB-Driven Menus)
+  const navigationItems = [
     {
-      appId: "finai",
-      name: "FinAI Studio",
-      slug: "finai",
-      description: "Financial Intelligence Agentic Assistant",
-      originUrl: "http://localhost:3000",
-      callbackUrls: ["http://localhost:3000/api/auth/callback", "http://localhost:3000"],
-      healthUrl: "http://localhost:3002/api/v1/health",
-      environment: "local_dev" as const,
-      isActive: true,
-      clientSecret: "devlab_finai_secret_2026",
+      key: "apps",
+      label: "Ecosystem Apps & Services",
+      icon: "Grid2X2",
+      order: 1,
+      isEnabled: true,
     },
     {
-      appId: "orchestrai",
-      name: "OrchestrAI",
-      slug: "orchestrai",
-      description: "Distributed Autonomous Multi-Agent Swarm Orchestrator",
-      originUrl: "http://localhost:3001",
-      callbackUrls: ["http://localhost:3001/api/auth/callback", "http://localhost:3001"],
-      healthUrl: "http://localhost:3000/api/v1/health",
-      environment: "local_dev" as const,
-      isActive: true,
-      clientSecret: "devlab_orchestrai_secret_2026",
+      key: "iam",
+      label: "IAM & API Keys",
+      icon: "KeyRound",
+      order: 2,
+      isEnabled: true,
+    },
+    {
+      key: "audit",
+      label: "Security & Audit Ledger",
+      icon: "ShieldCheck",
+      order: 3,
+      isEnabled: true,
+    },
+    {
+      key: "team",
+      label: "Team & Permissions",
+      icon: "Users",
+      order: 4,
+      isEnabled: true,
+    },
+    {
+      key: "settings",
+      label: "Settings & JWKS",
+      icon: "Settings2",
+      order: 5,
+      isEnabled: true,
     },
   ];
 
-  for (const app of apps) {
-    const secretHash = await bcrypt.hash(app.clientSecret, 10);
-
-    const record = await prisma.registeredApp.upsert({
-      where: { appId: app.appId },
+  for (const item of navigationItems) {
+    const record = await prisma.navigationItem.upsert({
+      where: { key: item.key },
       update: {
-        name: app.name,
-        slug: app.slug,
-        description: app.description,
-        originUrl: app.originUrl,
-        callbackUrls: app.callbackUrls,
-        healthUrl: app.healthUrl,
-        environment: app.environment,
-        isActive: app.isActive,
+        label: item.label,
+        icon: item.icon,
+        order: item.order,
+        isEnabled: item.isEnabled,
       },
       create: {
-        appId: app.appId,
-        name: app.name,
-        slug: app.slug,
-        description: app.description,
-        originUrl: app.originUrl,
-        callbackUrls: app.callbackUrls,
-        healthUrl: app.healthUrl,
-        environment: app.environment,
-        isActive: app.isActive,
-        clientSecretHash: secretHash,
+        key: item.key,
+        label: item.label,
+        icon: item.icon,
+        order: item.order,
+        isEnabled: item.isEnabled,
       },
     });
-
-    console.log(`✅ Seeded Registered App: ${record.name} [${record.appId}]`);
+    console.log(
+      `✅ Seeded Navigation Item: [${record.key}] ${record.label} (order: ${record.order})`,
+    );
   }
 
-  console.log("🌱 Database seeding completed successfully.");
+  // 3. Seed Initial Audit Logs
+  const initialAuditLogs = [
+    {
+      action: "system.bootstrapped",
+      targetType: "system",
+      targetId: "Control Plane",
+      metadata: { environment: "development", initializedBy: superAdmin.email },
+    },
+    {
+      action: "navigation.configured",
+      targetType: "navigation",
+      targetId: "Navigation Items",
+      metadata: { count: navigationItems.length },
+    },
+  ];
+
+  for (const log of initialAuditLogs) {
+    const existing = await prisma.auditLog.findFirst({
+      where: { action: log.action, targetId: log.targetId },
+    });
+    if (!existing) {
+      await prisma.auditLog.create({
+        data: {
+          action: log.action,
+          actorId: superAdmin.id,
+          targetType: log.targetType,
+          targetId: log.targetId,
+          metadata: log.metadata,
+        },
+      });
+      console.log(`✅ Seeded Audit Log: ${log.action} on ${log.targetId}`);
+    }
+  }
+
+  console.log("🌱 Database seeding completed successfully. Zero synthetic apps seeded.");
 }
 
 main()

@@ -32,7 +32,7 @@ interface HeaderActionsProps {
   isLight: boolean;
   onToggleTheme: () => void;
   onOpenCommand: () => void;
-  onNavigateTab: (tab: TabKey) => void;
+  onNavigateTab: (tabKey: string) => void;
 }
 
 export const HeaderActions: React.FC<HeaderActionsProps> = ({

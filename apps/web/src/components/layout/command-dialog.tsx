@@ -2,21 +2,13 @@
 
 /**
  * @file apps/web/src/components/layout/command-dialog.tsx
- * @description Quick command search modal (⌘K) for jumping across portal destinations.
- * Fully built with @yuva-devlab/ui Dialog and Input primitives.
+ * @description Quick command search modal (⌘K) for jumping across DB-driven portal destinations.
+ * Fully built with @yuva-devlab/ui Dialog and Input primitives with zero hardcoded menus.
  * @module @devlab/portal-web/components/layout/command-dialog
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  Command,
-  Grid2X2,
-  KeyRound,
-  ShieldCheck,
-  Users,
-  Settings2,
-  ChevronRight,
-} from "lucide-react";
+import { Command, ChevronRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -27,16 +19,23 @@ import {
   Button,
   Input,
 } from "@yuva-devlab/ui";
-import { TabKey } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
+import type { NavigationItem } from "@/lib/api-client";
+import { getNavIcon } from "./nav-icon";
 
 interface CommandDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onNavigateTab: (tab: TabKey) => void;
+  onNavigateTab: (tabKey: string) => void;
+  items?: NavigationItem[];
 }
 
-export const CommandDialog: React.FC<CommandDialogProps> = ({ isOpen, onClose, onNavigateTab }) => {
+export const CommandDialog: React.FC<CommandDialogProps> = ({
+  isOpen,
+  onClose,
+  onNavigateTab,
+  items = [],
+}) => {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -52,15 +51,8 @@ export const CommandDialog: React.FC<CommandDialogProps> = ({ isOpen, onClose, o
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  const navigationItems = [
-    { key: TabKey.APPS, label: UI_COPY.COMMON.TABS.APPS, icon: Grid2X2 },
-    { key: TabKey.IAM, label: UI_COPY.COMMON.TABS.IAM, icon: KeyRound },
-    { key: TabKey.AUDIT, label: UI_COPY.COMMON.TABS.AUDIT, icon: ShieldCheck },
-    { key: TabKey.TEAM, label: UI_COPY.COMMON.TABS.TEAM, icon: Users },
-    { key: TabKey.SETTINGS, label: UI_COPY.COMMON.TABS.SETTINGS, icon: Settings2 },
-  ];
-
-  const filteredItems = navigationItems.filter((item) =>
+  // Filter database-driven items dynamically based on search query
+  const filteredItems = items.filter((item) =>
     item.label.toLowerCase().includes(query.toLowerCase()),
   );
 
@@ -85,21 +77,24 @@ export const CommandDialog: React.FC<CommandDialogProps> = ({ isOpen, onClose, o
           />
 
           <div className="space-y-1">
-            {filteredItems.map((item) => (
-              <Button
-                key={item.key}
-                variant="ghost"
-                className="w-full justify-start text-xs font-medium"
-                onClick={() => {
-                  onNavigateTab(item.key);
-                  onClose();
-                }}
-              >
-                <item.icon className="text-muted-foreground mr-2.5 size-4" />
-                {item.label}
-                <ChevronRight className="text-muted-foreground ml-auto size-3.5" />
-              </Button>
-            ))}
+            {filteredItems.map((item) => {
+              const IconComponent = getNavIcon(item.icon);
+              return (
+                <Button
+                  key={item.id || item.key}
+                  variant="ghost"
+                  className="w-full justify-start text-xs font-medium"
+                  onClick={() => {
+                    onNavigateTab(item.key);
+                    onClose();
+                  }}
+                >
+                  <IconComponent className="text-muted-foreground mr-2.5 size-4" />
+                  {item.label}
+                  <ChevronRight className="text-muted-foreground ml-auto size-3.5" />
+                </Button>
+              );
+            })}
             {filteredItems.length === 0 && (
               <p className="text-muted-foreground py-4 text-center text-xs">
                 {UI_COPY.COMMON.COMMAND.EMPTY}

@@ -46,7 +46,7 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
     <div className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="callback-urls" className="text-xs font-semibold">
-          {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_URLS} *
+          {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_URLS}
         </Label>
         <p className="text-muted-foreground text-[11px]">
           {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_HELP}

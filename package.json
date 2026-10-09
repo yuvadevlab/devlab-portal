@@ -13,10 +13,10 @@
     "lint:fix": "eslint . --fix --max-warnings=0",
     "lint:turbo": "turbo lint",
     "typecheck": "turbo typecheck",
-    "db:generate": "prisma generate --schema=./prisma/schema.prisma",
+    "db:generate": "prisma generate --schema=./prisma/schema.prisma && rm -f prisma/generated/schema.prisma",
     "db:push": "prisma db push --schema=./prisma/schema.prisma",
     "db:seed": "node --loader ts-node/esm prisma/seed.ts",
-    "postinstall": "prisma generate --schema=./prisma/schema.prisma",
+    "postinstall": "prisma generate --schema=./prisma/schema.prisma && rm -f prisma/generated/schema.prisma",
     "prepare": "husky",
     "check": "pnpm lint && pnpm typecheck",
     "format": "prettier --write .",
@@ -32,10 +32,12 @@
     ]
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "7.10.0",
     "@prisma/client-runtime-utils": "7.10.0",
     "bcryptjs": "^3.0.3",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "pg": "^8.23.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.7.1",

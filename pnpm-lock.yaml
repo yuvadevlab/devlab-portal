@@ -170,6 +170,9 @@ importers:
 
   .:
     dependencies:
+      '@prisma/adapter-pg':
+        specifier: ^7.10.0
+        version: 7.10.0
       '@prisma/client':
         specifier: 7.10.0
         version: 7.10.0(prisma@7.10.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(typescript@6.0.3)
@@ -182,6 +185,9 @@ importers:
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
+      pg:
+        specifier: ^8.23.1
+        version: 8.23.1
     devDependencies:
       '@commitlint/cli':
         specifier: ^19.7.1

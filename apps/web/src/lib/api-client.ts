@@ -8,6 +8,19 @@ import { io, Socket } from "socket.io-client";
 import { API_ROUTES } from "@/lib/constants/routes";
 import { HttpMethod } from "@/lib/constants/enums";
 import { logger } from "@/lib/logger";
+import type {
+  NavigationItem,
+  RegisteredApp,
+  CreateAppPayload,
+  UpdateAppSettingsPayload,
+  ApiKey,
+  AuditLog,
+  UserMember,
+  JwksData,
+  OpenIdConfig,
+} from "@/lib/types/api";
+
+export * from "@/lib/types/api";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3015";
 
@@ -72,98 +85,10 @@ async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promis
   return res.json();
 }
 
-export interface RegisteredApp {
-  id: string;
-  appId: string;
-  name: string;
-  slug: string;
-  description?: string;
-  iconUrl?: string;
-  originUrl: string;
-  callbackUrls: string[];
-  healthUrl: string;
-  environment: string;
-  isActive: boolean;
-  maintenanceNote?: string;
-  latencyMs?: number;
-  healthStatus?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateAppPayload {
-  name: string;
-  appId: string;
-  slug?: string;
-  description?: string;
-  originUrl: string;
-  callbackUrls?: string[];
-  healthUrl?: string;
-  environment?: string;
-}
-
-export interface UpdateAppSettingsPayload {
-  name?: string;
-  description?: string;
-  originUrl?: string;
-  callbackUrls?: string[];
-  healthUrl?: string;
-  maintenanceNote?: string;
-}
-
-export interface ApiKey {
-  id: string;
-  name: string;
-  keyPrefix: string;
-  appId: string;
-  scopes: string[];
-  rateLimitRpm: number;
-  expiresAt?: string;
-  lastUsedAt?: string;
-  isRevoked: boolean;
-  createdAt: string;
-}
-
-export interface AuditLog {
-  id: string;
-  action: string;
-  actorId: string;
-  actor?: { id: string; email: string; name: string };
-  targetType: string;
-  targetId: string;
-  metadata?: Record<string, unknown>;
-  createdAt: string;
-}
-
-export interface UserMember {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  avatarUrl?: string;
-  isActive: boolean;
-  createdAt: string;
-}
-
-export interface JwksData {
-  keys: Array<{
-    kty: string;
-    n: string;
-    e: string;
-    kid: string;
-    use: string;
-    alg: string;
-  }>;
-}
-
-export interface OpenIdConfig {
-  issuer: string;
-  authorization_endpoint: string;
-  token_endpoint: string;
-  jwks_uri: string;
-}
-
 export const api = {
+  getNavigation: (): Promise<NavigationItem[]> =>
+    fetchJson<NavigationItem[]>(API_ROUTES.PLATFORM_NAVIGATION),
+
   getApps: (): Promise<RegisteredApp[]> => fetchJson<RegisteredApp[]>(API_ROUTES.APPS),
 
   createApp: (payload: CreateAppPayload): Promise<RegisteredApp & { clientSecret: string }> =>

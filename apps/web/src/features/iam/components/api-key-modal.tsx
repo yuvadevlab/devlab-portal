@@ -130,7 +130,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
             <form id="api-key-form" onSubmit={handleCreate} className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="api-key-name" className="text-xs font-semibold">
-                  {UI_COPY.IAM.MODAL.NAME_LABEL} *
+                  {UI_COPY.IAM.MODAL.NAME_LABEL}
                 </Label>
                 <Input
                   id="api-key-name"
@@ -144,7 +144,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
 
               <div className="space-y-1.5">
                 <Label htmlFor="api-key-app" className="text-xs font-semibold">
-                  {UI_COPY.IAM.MODAL.APP_LABEL} *
+                  {UI_COPY.IAM.MODAL.APP_LABEL}
                 </Label>
                 <Select value={appId} onValueChange={setAppId}>
                   <SelectTrigger id="api-key-app" className="h-9 w-full text-xs">

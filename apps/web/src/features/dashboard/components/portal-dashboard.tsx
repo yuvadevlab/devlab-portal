@@ -2,20 +2,13 @@
 
 /**
  * @file apps/web/src/features/dashboard/components/portal-dashboard.tsx
- * @description Master client component coordinating Lovable console layout, query hooks, and modals.
+ * @description Master client component coordinating Lovable console layout, DB-driven navigation, and query state.
  * @module @devlab/portal-web/features/dashboard/components/portal-dashboard
  */
 
 import React, { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  PortalHeader,
-  PortalNavbar,
-  PortalFooter,
-  CommandDialog,
-  TenantModal,
-} from "@/components/layout";
-import { TabKey } from "@/lib/constants/enums";
+import { PortalHeader, PortalNavbar, PortalFooter } from "@/components/layout";
 import { SOCKET_EVENTS } from "@/lib/constants/routes";
 import { getSocket, type RegisteredApp } from "@/lib/api-client";
 import {
@@ -24,33 +17,30 @@ import {
   useCreateAppMutation,
   useUpdateAppSettingsMutation,
   useToggleKillSwitchMutation,
-  AppMetrics,
-  AppGrid,
-  AppSettingsDrawer,
-  KillSwitchModal,
-  RegisterAppModal,
 } from "@/features/apps";
-import {
-  apiKeysQueryKey,
-  useApiKeysQuery,
-  useRevokeApiKeyMutation,
-  ApiKeysTable,
-  ApiKeyModal,
-} from "@/features/iam";
-import { auditLogsQueryKey, useAuditLogsQuery, AuditTable } from "@/features/audit";
-import {
-  teamMembersQueryKey,
-  useTeamMembersQuery,
-  TeamTable,
-  InviteMemberModal,
-} from "@/features/team";
-import { useJwksQuery, useOidcConfigQuery, JwksViewer } from "@/features/settings";
+import { apiKeysQueryKey, useApiKeysQuery, useRevokeApiKeyMutation } from "@/features/iam";
+import { auditLogsQueryKey, useAuditLogsQuery } from "@/features/audit";
+import { teamMembersQueryKey, useTeamMembersQuery } from "@/features/team";
+import { useJwksQuery, useOidcConfigQuery } from "@/features/settings";
+import { useNavigationQuery } from "../api/get-navigation";
+import { DashboardTabsContent } from "./dashboard-tabs-content";
+import { DashboardModals } from "./dashboard-modals";
 
 export function PortalDashboard(): React.JSX.Element {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<TabKey>(TabKey.APPS);
 
-  // TanStack Query hooks subscribing to server and local cache state
+  // Dynamic server-driven navigation menus from DB
+  const { data: navigationItems = [] } = useNavigationQuery();
+  const [activeTab, setActiveTab] = useState<string>("");
+
+  // Select the initial menu item dynamically from DB results (zero hardcoded default menu)
+  useEffect(() => {
+    if (!activeTab && navigationItems.length > 0) {
+      setActiveTab(navigationItems[0].key);
+    }
+  }, [activeTab, navigationItems]);
+
+  // TanStack Query hooks subscribing to server state
   const { data: apps = [] } = useAppsQuery();
   const { data: apiKeys = [] } = useApiKeysQuery();
   const { data: auditLogs = [] } = useAuditLogsQuery();
@@ -125,100 +115,68 @@ export function PortalDashboard(): React.JSX.Element {
         onNavigateTab={setActiveTab}
       />
 
-      <PortalNavbar activeTab={activeTab} onSelectTab={setActiveTab} appsCount={apps.length} />
+      <PortalNavbar
+        items={navigationItems}
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        appsCount={apps.length}
+      />
 
-      <main className="page-content">
-        {activeTab === TabKey.APPS && (
-          <>
-            <AppMetrics apps={apps} />
-            <AppGrid
-              apps={apps}
-              auditLogs={auditLogs}
-              onOpenRegisterModal={() => setIsRegisterOpen(true)}
-              onOpenSettings={(app) => setSelectedAppForDrawer(app)}
-              onToggleKillSwitch={(app) => setSelectedAppForKillSwitch(app)}
-              onNavigateTab={setActiveTab}
-            />
-          </>
-        )}
-
-        {activeTab === TabKey.IAM && (
-          <ApiKeysTable
-            apiKeys={apiKeys}
-            onOpenGenerateModal={() => setIsApiKeyModalOpen(true)}
-            onRevokeKey={async (id) => {
-              await revokeApiKey.mutateAsync(id);
-            }}
-          />
-        )}
-
-        {activeTab === TabKey.AUDIT && <AuditTable logs={auditLogs} />}
-
-        {activeTab === TabKey.TEAM && (
-          <TeamTable members={team} onOpenInviteModal={() => setIsInviteModalOpen(true)} />
-        )}
-
-        {activeTab === TabKey.SETTINGS && <JwksViewer jwks={jwks} oidc={oidc} />}
-
-        <PortalFooter />
-      </main>
-
-      {/* Global Command Dialog & Tenant Creation Modal */}
-      <CommandDialog
-        isOpen={isCommandOpen}
-        onClose={() => setIsCommandOpen(false)}
+      <DashboardTabsContent
+        activeTab={activeTab}
+        apps={apps}
+        apiKeys={apiKeys}
+        auditLogs={auditLogs}
+        team={team}
+        jwks={jwks}
+        oidc={oidc}
+        onOpenRegisterModal={() => setIsRegisterOpen(true)}
+        onOpenSettings={(app) => setSelectedAppForDrawer(app)}
+        onToggleKillSwitch={(app) => setSelectedAppForKillSwitch(app)}
         onNavigateTab={setActiveTab}
+        onOpenGenerateModal={() => setIsApiKeyModalOpen(true)}
+        onRevokeKey={async (id) => {
+          await revokeApiKey.mutateAsync(id);
+        }}
+        onOpenInviteModal={() => setIsInviteModalOpen(true)}
       />
 
-      <TenantModal
-        isOpen={isNewTenantOpen}
-        onClose={() => setIsNewTenantOpen(false)}
-        onCreateTenant={() => {}}
-      />
+      <PortalFooter />
 
-      {/* Slide-overs & Operations Modals */}
-      <RegisterAppModal
-        isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
-        onSubmit={async (payload) => createApp.mutateAsync(payload)}
-        onSuccess={() => {
+      <DashboardModals
+        navigationItems={navigationItems}
+        apps={apps}
+        isCommandOpen={isCommandOpen}
+        isNewTenantOpen={isNewTenantOpen}
+        isRegisterOpen={isRegisterOpen}
+        selectedAppForDrawer={selectedAppForDrawer}
+        selectedAppForKillSwitch={selectedAppForKillSwitch}
+        isApiKeyModalOpen={isApiKeyModalOpen}
+        isInviteModalOpen={isInviteModalOpen}
+        onCloseCommand={() => setIsCommandOpen(false)}
+        onCloseNewTenant={() => setIsNewTenantOpen(false)}
+        onCloseRegister={() => setIsRegisterOpen(false)}
+        onCloseDrawer={() => setSelectedAppForDrawer(null)}
+        onCloseKillSwitch={() => setSelectedAppForKillSwitch(null)}
+        onCloseApiKeyModal={() => setIsApiKeyModalOpen(false)}
+        onCloseInviteModal={() => setIsInviteModalOpen(false)}
+        onNavigateTab={setActiveTab}
+        onCreateApp={async (payload) => createApp.mutateAsync(payload)}
+        onUpdateAppSettings={async (id, payload) => {
+          await updateAppSettings.mutateAsync({ id, payload });
+        }}
+        onToggleKillSwitch={async (id, nextState, maintenanceNote) => {
+          await toggleKillSwitch.mutateAsync({ id, nextState, maintenanceNote });
+        }}
+        onSuccessRegister={() => {
           setIsRegisterOpen(false);
           queryClient.invalidateQueries({ queryKey: appsQueryKey() });
         }}
-      />
-
-      <AppSettingsDrawer
-        app={selectedAppForDrawer}
-        isOpen={!!selectedAppForDrawer}
-        onClose={() => setSelectedAppForDrawer(null)}
-        onSave={async (id, payload) => {
-          await updateAppSettings.mutateAsync({ id, payload });
-        }}
-      />
-
-      <KillSwitchModal
-        app={selectedAppForKillSwitch}
-        isOpen={!!selectedAppForKillSwitch}
-        onClose={() => setSelectedAppForKillSwitch(null)}
-        onConfirm={async (id, nextState, maintenanceNote) => {
-          await toggleKillSwitch.mutateAsync({ id, nextState, maintenanceNote });
-        }}
-      />
-
-      <ApiKeyModal
-        apps={apps}
-        isOpen={isApiKeyModalOpen}
-        onClose={() => setIsApiKeyModalOpen(false)}
-        onSuccess={() => {
+        onSuccessApiKey={() => {
           setIsApiKeyModalOpen(false);
           queryClient.invalidateQueries({ queryKey: apiKeysQueryKey() });
         }}
-      />
-
-      <InviteMemberModal
-        isOpen={isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}
-        onSuccess={() => {
+        onSuccessInvite={() => {
           setIsInviteModalOpen(false);
           queryClient.invalidateQueries({ queryKey: teamMembersQueryKey() });
         }}

@@ -7,7 +7,7 @@
  */
 
 import React from "react";
-import { ShieldCheck, AlertTriangle, Shield, CheckCircle } from "lucide-react";
+import { Box, Activity, ShieldCheck, Zap } from "lucide-react";
 import { MetricsBar, type MetricItem } from "@/components/layout";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
@@ -26,27 +26,27 @@ export const AuditMetrics: React.FC<AuditMetricsProps> = ({ logs }) => {
       label: UI_COPY.AUDIT.METRICS.RECORDED,
       value: logs.length,
       note: UI_COPY.AUDIT.METRICS.RECORDED_NOTE,
-      icon: ShieldCheck,
+      icon: Box,
     },
     {
       label: UI_COPY.AUDIT.METRICS.CRITICAL,
       value: criticalCount,
       note: UI_COPY.AUDIT.METRICS.CRITICAL_NOTE,
-      icon: AlertTriangle,
+      icon: Activity,
     },
     {
       label: UI_COPY.AUDIT.METRICS.POSTURE,
       value: UI_COPY.AUDIT.METRICS.POSTURE_VAL,
       note: UI_COPY.AUDIT.METRICS.POSTURE_NOTE,
       positive: true,
-      icon: Shield,
+      icon: ShieldCheck,
     },
     {
       label: UI_COPY.AUDIT.METRICS.INTEGRITY,
       value: UI_COPY.AUDIT.METRICS.INTEGRITY_VAL,
       note: UI_COPY.AUDIT.METRICS.INTEGRITY_NOTE,
       positive: true,
-      icon: CheckCircle,
+      icon: Zap,
     },
   ];
 

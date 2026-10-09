@@ -28,6 +28,7 @@ import { Heading } from "@/components/layout";
 import { AuditMetrics } from "./audit-metrics";
 import { AuditInspectorDrawer } from "./audit-inspector-drawer";
 import { UI_COPY } from "@/lib/ui-copy";
+import { AuditAction } from "@/lib/constants/enums";
 import type { AuditLog } from "@/features/audit/types";
 
 interface AuditTableProps {
@@ -40,7 +41,22 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
   const [actionFilter, setActionFilter] = useState("All");
   const [dateFilter, setDateFilter] = useState("");
 
-  const actions = Array.from(new Set(logs.map((l) => l.action)));
+  const standardActions = [
+    "key.created",
+    "app.registered",
+    "role.updated",
+    "key.rotated",
+    "killswitch.activated",
+    AuditAction.APP_REGISTERED,
+    AuditAction.APP_ACTIVATED,
+    AuditAction.APP_DEACTIVATED,
+    AuditAction.API_KEY_CREATED,
+    AuditAction.API_KEY_REVOKED,
+    AuditAction.USER_INVITED,
+  ];
+  const actions = Array.from(new Set([...logs.map((l) => l.action), ...standardActions])).filter(
+    Boolean,
+  );
 
   const filteredLogs = logs.filter((l) => {
     const matchesAction = actionFilter === "All" || l.action === actionFilter;
@@ -110,9 +126,16 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
 
           <Input
             type="date"
-            className="bg-card border-border h-9 w-40 text-xs"
+            className="bg-card border-border h-9 w-40 cursor-pointer text-xs scheme-dark"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
+            onClick={(e) => {
+              try {
+                e.currentTarget.showPicker?.();
+              } catch {
+                // Ignore fallback
+              }
+            }}
             aria-label={UI_COPY.AUDIT.TOOLBAR.DATE_ARIA}
           />
         </div>

@@ -19,7 +19,7 @@ interface PortalHeaderProps {
   auditLogs: AuditLog[];
   onOpenCommand: () => void;
   onOpenNewTenant: () => void;
-  onNavigateTab: (tab: TabKey) => void;
+  onNavigateTab: (tabKey: string) => void;
 }
 
 export const PortalHeader: React.FC<PortalHeaderProps> = ({

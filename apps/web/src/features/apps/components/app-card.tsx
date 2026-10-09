@@ -132,7 +132,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
             aria-label={`${isRoutingActive ? UI_COPY.APPS.CARD.DEACTIVATE_BTN : UI_COPY.APPS.CARD.ACTIVATE_BTN}: ${app.name}`}
             onClick={() => onToggleKillSwitch(app)}
           >
-            <Power className="size-4" />
+            <Power className="text-destructive size-4" />
           </Button>
         </div>
       </div>

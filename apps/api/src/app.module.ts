@@ -15,6 +15,7 @@ import { ApiKeysModule } from "./modules/api-keys/api-keys.module.js";
 import { AuditModule } from "./modules/audit/audit.module.js";
 import { WebsocketModule } from "./modules/websocket/websocket.module.js";
 import { UsersModule } from "./modules/users/users.module.js";
+import { PlatformModule } from "./modules/platform/platform.module.js";
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UsersModule } from "./modules/users/users.module.js";
     AuditModule,
     WebsocketModule,
     UsersModule,
+    PlatformModule,
   ],
 })
 export class AppModule {}
