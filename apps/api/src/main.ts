@@ -22,7 +22,7 @@ for (const p of candidateEnvs) {
 
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
-import { AppModule } from "./app.module.js";
+import { AppModule } from "./app.module";
 import { Logger } from "@yuva-devlab/logger";
 
 const logger = new Logger("PortalApiBootstrap");
@@ -30,12 +30,39 @@ const logger = new Logger("PortalApiBootstrap");
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
-  const corsOrigins = process.env.CORS_ORIGIN
+  const configuredOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim())
-    : ["http://localhost:3000", "http://localhost:3001", "http://localhost:3005"];
+    : [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:3005",
+        "http://localhost:3020",
+        "http://localhost:3025",
+      ];
 
   app.enableCors({
-    origin: corsOrigins,
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      // Allow non-browser requests (mobile, cURL, server-to-server)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      // Allow any local DevLab development port (3000-3099) or explicitly configured origin
+      const isLocalhost =
+        origin.startsWith("http://localhost:") ||
+        origin.startsWith("http://127.0.0.1:") ||
+        origin === "http://localhost" ||
+        origin === "http://127.0.0.1";
+
+      if (isLocalhost || configuredOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],

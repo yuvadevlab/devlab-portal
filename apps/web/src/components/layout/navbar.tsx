@@ -10,6 +10,7 @@ import React from "react";
 import { ShieldCheck, Activity } from "lucide-react";
 import { Badge } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
+import { useAuthMeQuery } from "@/features/auth";
 
 interface NavbarProps {
   healthyCount: number;
@@ -17,6 +18,11 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ healthyCount, totalApps }) => {
+  const { data: user } = useAuthMeQuery();
+  const userName = user?.name || "Member";
+  const userEmail = user?.email || "";
+  const initial = (userName[0] || "U").toUpperCase();
+
   return (
     <header className="border-border bg-card/90 sticky top-0 z-40 border-b backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
@@ -63,15 +69,15 @@ export const Navbar: React.FC<NavbarProps> = ({ healthyCount, totalApps }) => {
           {/* User profile capsule */}
           <div className="border-border bg-background flex items-center gap-2.5 rounded-full border px-3 py-1.5">
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full text-xs font-bold">
-              A
+              {initial}
             </div>
             <div className="hidden text-left md:block">
-              <p className="text-foreground text-xs leading-none font-medium">
-                Platform Super Admin
-              </p>
-              <p className="text-muted-foreground mt-0.5 font-mono text-[10px] leading-none">
-                admin@devlab.internal
-              </p>
+              <p className="text-foreground text-xs leading-none font-medium">{userName}</p>
+              {userEmail && (
+                <p className="text-muted-foreground mt-0.5 font-mono text-[10px] leading-none">
+                  {userEmail}
+                </p>
+              )}
             </div>
           </div>
         </div>

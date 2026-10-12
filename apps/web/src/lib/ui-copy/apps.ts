@@ -113,10 +113,10 @@ export const APPS_COPY = {
       CALLBACK_PLACEHOLDER: "https://app.example.com/api/auth/callback",
     },
     SCOPES: {
-      ORCHESTRAI_READ_DESC: "Read-only access to agents and executions",
-      ORCHESTRAI_EXECUTE_DESC: "Trigger autonomous swarm runs",
-      FINAI_READ_DESC: "Read financial analytics and agent advice",
-      LOGS_INGEST_DESC: "Direct telemetry and audit log ingestion",
+      READ_DESC: "Read-only access to ecosystem resources and telemetry",
+      WRITE_DESC: "Write and update access across application domain",
+      EXECUTE_DESC: "Trigger execution workflows and runtime routines",
+      EVENTS_DESC: "Direct telemetry and audit log ingestion",
     },
     CREDENTIALS: {
       SUCCESS_TITLE: "Application Registered Successfully",

@@ -1,28 +1,24 @@
-"use client";
-
 /**
  * @file apps/web/src/features/dashboard/components/portal-dashboard.tsx
- * @description Master client component coordinating Lovable console layout, DB-driven navigation, and query state.
+ * @description Central dashboard client shell orchestrating ecosystem navigation, live streams, and modals.
  * @module @devlab/portal-web/features/dashboard/components/portal-dashboard
  */
+
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalHeader, PortalNavbar, PortalFooter } from "@/components/layout";
+import { getSocket } from "@/lib/api-client";
 import { SOCKET_EVENTS } from "@/lib/constants/routes";
-import { getSocket, type RegisteredApp } from "@/lib/api-client";
-import {
-  appsQueryKey,
-  useAppsQuery,
-  useCreateAppMutation,
-  useUpdateAppSettingsMutation,
-  useToggleKillSwitchMutation,
-} from "@/features/apps";
-import { apiKeysQueryKey, useApiKeysQuery, useRevokeApiKeyMutation } from "@/features/iam";
-import { auditLogsQueryKey, useAuditLogsQuery } from "@/features/audit";
-import { teamMembersQueryKey, useTeamMembersQuery } from "@/features/team";
-import { useJwksQuery, useOidcConfigQuery } from "@/features/settings";
-import { useNavigationQuery } from "../api/get-navigation";
+import type { RegisteredApp } from "@/lib/api-client";
+import { useAppsQuery, appsQueryKey } from "@/features/apps/api";
+import { useApiKeysQuery, apiKeysQueryKey } from "@/features/iam/api";
+import { useAuditLogsQuery, auditLogsQueryKey } from "@/features/audit/api";
+import { useTeamMembersQuery, teamMembersQueryKey } from "@/features/team/api";
+import { useJwksQuery, useOidcConfigQuery } from "@/features/settings/api";
+import { useNavigationQuery } from "@/features/dashboard/api";
+import { useDashboardActions } from "../hooks/use-dashboard-actions";
 import { DashboardTabsContent } from "./dashboard-tabs-content";
 import { DashboardModals } from "./dashboard-modals";
 
@@ -33,7 +29,6 @@ export function PortalDashboard(): React.JSX.Element {
   const { data: navigationItems = [] } = useNavigationQuery();
   const [activeTab, setActiveTab] = useState<string>("");
 
-  // Select the initial menu item dynamically from DB results (zero hardcoded default menu)
   useEffect(() => {
     if (!activeTab && navigationItems.length > 0) {
       setActiveTab(navigationItems[0].key);
@@ -48,11 +43,14 @@ export function PortalDashboard(): React.JSX.Element {
   const { data: jwks = null } = useJwksQuery();
   const { data: oidc = null } = useOidcConfigQuery();
 
-  // Mutations
-  const createApp = useCreateAppMutation();
-  const updateAppSettings = useUpdateAppSettingsMutation();
-  const toggleKillSwitch = useToggleKillSwitchMutation();
-  const revokeApiKey = useRevokeApiKeyMutation();
+  // Mutation actions encapsulated with Sonner promise toasts
+  const {
+    handleCreateTenant,
+    handleRevokeKey,
+    handleCreateApp,
+    handleUpdateAppSettings,
+    handleToggleKillSwitch,
+  } = useDashboardActions(apps);
 
   // Modal and Drawer States
   const [isCommandOpen, setIsCommandOpen] = useState(false);
@@ -135,9 +133,7 @@ export function PortalDashboard(): React.JSX.Element {
         onToggleKillSwitch={(app) => setSelectedAppForKillSwitch(app)}
         onNavigateTab={setActiveTab}
         onOpenGenerateModal={() => setIsApiKeyModalOpen(true)}
-        onRevokeKey={async (id) => {
-          await revokeApiKey.mutateAsync(id);
-        }}
+        onRevokeKey={handleRevokeKey}
         onOpenInviteModal={() => setIsInviteModalOpen(true)}
       />
 
@@ -161,13 +157,10 @@ export function PortalDashboard(): React.JSX.Element {
         onCloseApiKeyModal={() => setIsApiKeyModalOpen(false)}
         onCloseInviteModal={() => setIsInviteModalOpen(false)}
         onNavigateTab={setActiveTab}
-        onCreateApp={async (payload) => createApp.mutateAsync(payload)}
-        onUpdateAppSettings={async (id, payload) => {
-          await updateAppSettings.mutateAsync({ id, payload });
-        }}
-        onToggleKillSwitch={async (id, nextState, maintenanceNote) => {
-          await toggleKillSwitch.mutateAsync({ id, nextState, maintenanceNote });
-        }}
+        onCreateTenant={handleCreateTenant}
+        onCreateApp={handleCreateApp}
+        onUpdateAppSettings={handleUpdateAppSettings}
+        onToggleKillSwitch={handleToggleKillSwitch}
         onSuccessRegister={() => {
           setIsRegisterOpen(false);
           queryClient.invalidateQueries({ queryKey: appsQueryKey() });

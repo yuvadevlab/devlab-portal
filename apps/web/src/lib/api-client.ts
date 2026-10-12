@@ -1,3 +1,34 @@
+export interface SystemTelemetry {
+  readonly status: string;
+  readonly statusText: string;
+  readonly apiPort: number | string;
+  readonly apiLabel: string;
+  readonly redisStatus: string;
+  readonly isRedisHealthy: boolean;
+  readonly isDbHealthy?: boolean;
+  readonly dbLatencyMs?: number;
+  readonly redisLatencyMs?: number;
+  readonly totalApps?: number;
+  readonly activeApps?: number;
+  readonly activeUsers?: number;
+  readonly uptimeSeconds?: number;
+  readonly version: string;
+  readonly environment: string;
+  readonly environmentLabel: string;
+  readonly docsUrl: string;
+  readonly docsLabel: string;
+}
+
+export interface Tenant {
+  readonly id: string;
+  readonly name: string;
+  readonly slug: string;
+  readonly plan: string;
+  readonly isActive: boolean;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
 /**
  * @file apps/web/src/lib/api-client.ts
  * @description Centralized API client utility with bearer token auto-bootstrap and real-time Socket.IO subscriptions.
@@ -7,7 +38,6 @@
 import { io, Socket } from "socket.io-client";
 import { API_ROUTES } from "@/lib/constants/routes";
 import { HttpMethod } from "@/lib/constants/enums";
-import { logger } from "@/lib/logger";
 import type {
   NavigationItem,
   RegisteredApp,
@@ -27,50 +57,67 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost
 let cachedToken: string | null = null;
 
 /**
- * Retrieves valid authentication token or bootstraps a developer session.
+ * Retrieves valid authentication token from browser storage or cookie.
  */
-async function getAuthToken(): Promise<string> {
+function getAuthToken(): string {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
   if (cachedToken) {
     return cachedToken;
   }
 
-  // Attempt local storage token if available in browser
-  if (typeof window !== "undefined") {
+  try {
     const stored = window.localStorage.getItem("devlab_access_token");
-    if (stored) {
-      cachedToken = stored;
-      return stored;
+    if (stored && stored.trim().length > 0) {
+      cachedToken = stored.trim();
+      return cachedToken;
     }
+  } catch {
+    // Ignore localStorage access restriction
   }
 
-  // Dev bootstrap: obtain RS256 token from local control plane
   try {
-    const res = await fetch(`${API_BASE_URL}${API_ROUTES.AUTH_LOGIN}`, {
-      method: HttpMethod.POST,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: "admin@devlab.internal",
-        password: "DevLab@2026!Admin",
-      }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      cachedToken = data.accessToken;
-      if (typeof window !== "undefined" && cachedToken) {
-        window.localStorage.setItem("devlab_access_token", cachedToken);
+    const match = document.cookie.match(/(?:^|;\\s*)devlab_access_token=([^;]+)/);
+    if (match && match[1]) {
+      const decoded = decodeURIComponent(match[1]).trim();
+      if (decoded.length > 0) {
+        cachedToken = decoded;
+        return cachedToken;
       }
-      return cachedToken || "";
     }
-  } catch (err) {
-    logger.warn("Could not auto-bootstrap admin session:", err);
+  } catch {
+    // Ignore cookie read errors
   }
 
   return "";
 }
 
-/** Standard fetch wrapper with JSON serialization and authentication */
+/**
+ * Clears client session tokens and triggers redirection to /login.
+ */
+export function purgeClientSession(): void {
+  cachedToken = null;
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.removeItem("devlab_access_token");
+      window.localStorage.removeItem("devlab_auth_token");
+      window.localStorage.removeItem("devlab_auth_user");
+      document.cookie = "devlab_access_token=; path=/; max-age=0; SameSite=Lax";
+    } catch {
+      // Ignore teardown errors
+    }
+    const current = window.location.pathname;
+    if (current !== "/login" && current !== "/forgot-password" && current !== "/reset-password") {
+      window.location.href = "/login";
+    }
+  }
+}
+
+/** Standard fetch wrapper with JSON serialization, bearer auth, and 401 interception */
 async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const token = await getAuthToken();
+  const token = getAuthToken();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -79,6 +126,9 @@ async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promis
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
   if (!res.ok) {
+    if (res.status === 401) {
+      purgeClientSession();
+    }
     const err = await res.json().catch(() => ({}));
     throw new Error(err.message || `API error ${res.status}: ${res.statusText}`);
   }
@@ -88,6 +138,19 @@ async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promis
 export const api = {
   getNavigation: (): Promise<NavigationItem[]> =>
     fetchJson<NavigationItem[]>(API_ROUTES.PLATFORM_NAVIGATION),
+
+  getTenants: (): Promise<Tenant[]> => fetchJson<Tenant[]>(API_ROUTES.PLATFORM_TENANTS),
+
+  createTenant: (payload: { name: string }): Promise<Tenant> =>
+    fetchJson<Tenant>(API_ROUTES.PLATFORM_TENANTS, {
+      method: HttpMethod.POST,
+      body: JSON.stringify(payload),
+    }),
+
+  getTelemetry: (): Promise<SystemTelemetry> =>
+    fetchJson<SystemTelemetry>(API_ROUTES.PLATFORM_TELEMETRY),
+
+  getMe: (): Promise<UserMember> => fetchJson<UserMember>(API_ROUTES.AUTH_ME),
 
   getApps: (): Promise<RegisteredApp[]> => fetchJson<RegisteredApp[]>(API_ROUTES.APPS),
 

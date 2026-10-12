@@ -5,7 +5,7 @@
  */
 
 import { Controller, Get, Header } from "@nestjs/common";
-import { KeypairService } from "./keys/keypair.service.js";
+import { KeypairService } from "./keys/keypair.service";
 
 @Controller(".well-known")
 export class JwksController {

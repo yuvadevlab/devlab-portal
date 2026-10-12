@@ -2,70 +2,56 @@
 
 /**
  * @file apps/web/src/components/layout/tab-nav.tsx
- * @description Horizontal control plane navigation tabs with badge counts and icon highlights.
+ * @description Horizontal control plane navigation tabs with badge counts and dynamic server-driven icons.
  * Fully built with @yuva-devlab/ui Tabs, TabsList, and TabsTrigger primitives.
  * @module @devlab/portal-web/components/layout/tab-nav
  */
 
 import React from "react";
-import { LayoutGrid, Key, ShieldAlert, Users, Cpu } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@yuva-devlab/ui";
-import { TabKey } from "@/lib/constants";
-import { UI_COPY } from "@/lib/ui-copy";
+import { useNavigationQuery } from "@/features/dashboard";
+import { getNavIcon } from "./nav-icon";
+import type { NavigationItem } from "@/lib/api-client";
 
 interface TabNavProps {
-  activeTab: TabKey;
-  onSelectTab: (tab: TabKey) => void;
-  appsCount: number;
-  keysCount: number;
-  auditCount: number;
+  items?: NavigationItem[];
+  activeTab: string;
+  onSelectTab: (tab: string) => void;
+  appsCount?: number;
+  keysCount?: number;
+  auditCount?: number;
 }
 
 export const TabNav: React.FC<TabNavProps> = ({
+  items,
   activeTab,
   onSelectTab,
   appsCount,
   keysCount,
   auditCount,
 }) => {
-  const tabs = [
-    {
-      key: TabKey.APPS,
-      label: UI_COPY.COMMON.TABS.APPS,
-      icon: LayoutGrid,
-      count: appsCount,
-    },
-    {
-      key: TabKey.IAM,
-      label: UI_COPY.COMMON.TABS.IAM,
-      icon: Key,
-      count: keysCount,
-    },
-    {
-      key: TabKey.AUDIT,
-      label: UI_COPY.COMMON.TABS.AUDIT,
-      icon: ShieldAlert,
-      count: auditCount,
-    },
-    {
-      key: TabKey.TEAM,
-      label: UI_COPY.COMMON.TABS.TEAM,
-      icon: Users,
-    },
-    {
-      key: TabKey.SETTINGS,
-      label: UI_COPY.COMMON.TABS.SETTINGS,
-      icon: Cpu,
-    },
-  ];
+  const { data: dbItems = [] } = useNavigationQuery();
+  const navItems = items && items.length > 0 ? items : dbItems;
+
+  if (navItems.length === 0) {
+    return null;
+  }
 
   return (
     <div className="border-border bg-background border-b px-6">
       <div className="mx-auto flex max-w-7xl items-center overflow-x-auto py-2">
-        <Tabs value={activeTab} onValueChange={(val) => onSelectTab(val as TabKey)}>
+        <Tabs value={activeTab} onValueChange={(val) => onSelectTab(val)}>
           <TabsList className="h-auto gap-2 border-0 bg-transparent p-0">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
+            {navItems.map((tab) => {
+              const Icon = getNavIcon(tab.icon);
+              const count =
+                tab.key === "apps"
+                  ? appsCount
+                  : tab.key === "iam"
+                    ? keysCount
+                    : tab.key === "audit"
+                      ? auditCount
+                      : undefined;
 
               return (
                 <TabsTrigger
@@ -75,9 +61,9 @@ export const TabNav: React.FC<TabNavProps> = ({
                 >
                   <Icon className="size-4" />
                   <span>{tab.label}</span>
-                  {tab.count !== undefined && (
+                  {count !== undefined && (
                     <span className="border-border bg-card text-muted-foreground rounded-full border px-1.5 py-0.5 font-mono text-[10px] leading-none">
-                      {tab.count}
+                      {count}
                     </span>
                   )}
                 </TabsTrigger>

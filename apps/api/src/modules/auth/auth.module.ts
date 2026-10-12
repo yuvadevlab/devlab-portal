@@ -1,19 +1,20 @@
 /**
  * @file apps/api/src/modules/auth/auth.module.ts
- * @description Authentication module registering KeypairService, AuthService, JWKS, and Auth controllers.
+ * @description NestJS module configuring OAuth2 authentication, JWT issuance, and JWKS endpoints.
  * @module @devlab/portal-api/auth
  */
 
 import { Module } from "@nestjs/common";
-import { KeypairService } from "./keys/keypair.service.js";
-import { AuthService } from "./auth.service.js";
-import { AuthController } from "./auth.controller.js";
-import { JwksController } from "./jwks.controller.js";
-import { AuthGuard } from "./auth.guard.js";
+import { AuthService } from "./auth.service";
+import { OAuthService } from "./oauth.service";
+import { AuthController } from "./auth.controller";
+import { JwksController } from "./jwks.controller";
+import { KeypairService } from "./keys/keypair.service";
+import { AuthGuard } from "./auth.guard";
 
 @Module({
   controllers: [AuthController, JwksController],
-  providers: [KeypairService, AuthService, AuthGuard],
-  exports: [KeypairService, AuthService, AuthGuard],
+  providers: [AuthService, OAuthService, KeypairService, AuthGuard],
+  exports: [AuthService, OAuthService, KeypairService, AuthGuard],
 })
 export class AuthModule {}

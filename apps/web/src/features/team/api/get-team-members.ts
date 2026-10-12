@@ -27,9 +27,9 @@ export function useTeamMembersQuery(): UseQueryResult<UserMember[], Error> {
  *
  * @param queryClient Active server QueryClient instance
  */
-export async function prefetchTeamMembers(queryClient: QueryClient): Promise<void> {
+export async function prefetchTeamMembers(queryClient: QueryClient, token?: string): Promise<void> {
   await queryClient.prefetchQuery({
     queryKey: teamMembersQueryKey(),
-    queryFn: () => serverFetch<UserMember[]>(API_ROUTES.USERS),
+    queryFn: () => serverFetch<UserMember[]>(API_ROUTES.USERS, token),
   });
 }

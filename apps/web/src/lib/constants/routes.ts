@@ -16,6 +16,8 @@ export const API_ROUTES = {
   AUTH_LOGIN: "/auth/login",
   AUTH_ME: "/auth/me",
   PLATFORM_NAVIGATION: "/api/v1/platform/navigation",
+  PLATFORM_TENANTS: "/api/v1/platform/tenants",
+  PLATFORM_TELEMETRY: "/api/v1/platform/telemetry",
   APPS: "/api/v1/apps",
   APP_BY_ID: (id: string) => `/api/v1/apps/${encodeURIComponent(id)}`,
   APP_STATUS: (id: string) => `/api/v1/apps/${encodeURIComponent(id)}/status`,

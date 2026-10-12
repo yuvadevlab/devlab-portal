@@ -7,10 +7,10 @@
 import { Resolver, Query, Mutation, Subscription, Args } from "@nestjs/graphql";
 import { UseGuards, UnauthorizedException } from "@nestjs/common";
 import { PubSub } from "graphql-subscriptions";
-import { AppsService } from "./apps.service.js";
-import { AuthGuard } from "../auth/auth.guard.js";
-import { RegisteredAppType, UpdateAppStatusDto, AppStatusChangedPayload } from "./dto/app.dto.js";
-import { CurrentUser } from "../../common/decorators/current-user.decorator.js";
+import { AppsService } from "./apps.service";
+import { AuthGuard } from "../auth/auth.guard";
+import { RegisteredAppType, UpdateAppStatusDto, AppStatusChangedPayload } from "./dto/app.dto";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
 export const appsPubSub = new PubSub();
 const APP_STATUS_CHANGED_TOPIC = "appStatusChanged";
@@ -20,13 +20,18 @@ export class AppsResolver {
   constructor(private readonly appsService: AppsService) {}
 
   @Query(() => [RegisteredAppType], { name: "apps" })
-  async getApps() {
-    return this.appsService.listApps();
+  @UseGuards(AuthGuard)
+  async getApps(@CurrentUser() user: { sub: string; role?: string; tenant_id?: string }) {
+    return this.appsService.listApps(user);
   }
 
   @Query(() => RegisteredAppType, { name: "app", nullable: true })
-  async getApp(@Args("id") id: string) {
-    return this.appsService.getApp(id);
+  @UseGuards(AuthGuard)
+  async getApp(
+    @Args("id") id: string,
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    return this.appsService.getApp(id, user);
   }
 
   @Mutation(() => RegisteredAppType, { name: "updateAppStatus" })
@@ -34,13 +39,13 @@ export class AppsResolver {
   async updateAppStatus(
     @Args("id") id: string,
     @Args("input") input: UpdateAppStatusDto,
-    @CurrentUser() user: { sub: string },
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
   ) {
     if (!user?.sub) {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
 
-    const updated = await this.appsService.updateAppStatus(id, input, user.sub);
+    const updated = await this.appsService.updateAppStatus(id, input, user);
 
     await appsPubSub.publish(APP_STATUS_CHANGED_TOPIC, {
       appStatusChanged: {

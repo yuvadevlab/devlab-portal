@@ -10,7 +10,7 @@
 import React from "react";
 import { Label, Textarea, Checkbox } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import { ApiKeyScope } from "@/lib/constants";
+import { ApiKeyScope, buildScope } from "@/lib/constants";
 import type { RegisterWizardFormState } from "@/features/apps/types";
 
 interface WizardStepSecurityProps {
@@ -19,26 +19,28 @@ interface WizardStepSecurityProps {
 }
 
 export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, onChange }) => {
+  const appSlug = form.slug || form.appId || "app";
+
   const commonScopes = [
     {
-      id: ApiKeyScope.ORCHESTRAI_READ,
-      label: "orchestrai:read",
-      desc: UI_COPY.APPS.WIZARD.SCOPES.ORCHESTRAI_READ_DESC,
+      id: buildScope(appSlug, ApiKeyScope.READ),
+      label: `${appSlug}:read`,
+      desc: UI_COPY.APPS.WIZARD.SCOPES.READ_DESC,
     },
     {
-      id: ApiKeyScope.ORCHESTRAI_EXECUTE,
-      label: "orchestrai:executions:create",
-      desc: UI_COPY.APPS.WIZARD.SCOPES.ORCHESTRAI_EXECUTE_DESC,
+      id: buildScope(appSlug, ApiKeyScope.WRITE),
+      label: `${appSlug}:write`,
+      desc: UI_COPY.APPS.WIZARD.SCOPES.WRITE_DESC,
     },
     {
-      id: ApiKeyScope.FINAI_READ,
-      label: "finai:read",
-      desc: UI_COPY.APPS.WIZARD.SCOPES.FINAI_READ_DESC,
+      id: buildScope(appSlug, ApiKeyScope.EXECUTE),
+      label: `${appSlug}:executions:create`,
+      desc: UI_COPY.APPS.WIZARD.SCOPES.EXECUTE_DESC,
     },
     {
-      id: ApiKeyScope.LOGS_INGEST,
-      label: "logs:ingest",
-      desc: UI_COPY.APPS.WIZARD.SCOPES.LOGS_INGEST_DESC,
+      id: buildScope(appSlug, ApiKeyScope.EVENTS),
+      label: `${appSlug}:events:publish`,
+      desc: UI_COPY.APPS.WIZARD.SCOPES.EVENTS_DESC,
     },
   ];
 

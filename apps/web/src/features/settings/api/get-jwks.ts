@@ -27,9 +27,9 @@ export function useJwksQuery(): UseQueryResult<JwksData, Error> {
  *
  * @param queryClient Active server QueryClient instance
  */
-export async function prefetchJwks(queryClient: QueryClient): Promise<void> {
+export async function prefetchJwks(queryClient: QueryClient, token?: string): Promise<void> {
   await queryClient.prefetchQuery({
     queryKey: jwksQueryKey(),
-    queryFn: () => serverFetch<JwksData>(API_ROUTES.JWKS),
+    queryFn: () => serverFetch<JwksData>(API_ROUTES.JWKS, token),
   });
 }

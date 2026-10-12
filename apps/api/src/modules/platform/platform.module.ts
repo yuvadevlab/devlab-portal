@@ -5,12 +5,16 @@
  */
 
 import { Module } from "@nestjs/common";
-import { PlatformController } from "./platform.controller.js";
-import { PlatformService } from "./platform.service.js";
+import { PlatformController } from "./platform.controller";
+import { PlatformService } from "./platform.service";
+import { PlatformAppStatusService } from "./platform-app-status.service";
+import { RedisModule } from "../redis/redis.module";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
+  imports: [RedisModule, AuthModule],
   controllers: [PlatformController],
-  providers: [PlatformService],
-  exports: [PlatformService],
+  providers: [PlatformService, PlatformAppStatusService],
+  exports: [PlatformService, PlatformAppStatusService],
 })
 export class PlatformModule {}

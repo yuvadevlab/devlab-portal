@@ -6,7 +6,7 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import { ConfigProvider } from "@yuva-devlab/ui";
+import { ConfigProvider, Toaster } from "@yuva-devlab/ui";
 import { QueryProvider } from "@/providers";
 import "./globals.css";
 
@@ -29,7 +29,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
     >
       <body className="bg-background text-foreground selection:bg-primary selection:text-primary-foreground min-h-screen antialiased">
         <ConfigProvider brand="portal" defaultTheme="dark" storageKey="portal-theme">
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            {children}
+            <Toaster />
+          </QueryProvider>
         </ConfigProvider>
       </body>
     </html>

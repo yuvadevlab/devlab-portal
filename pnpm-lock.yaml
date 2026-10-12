@@ -165,6 +165,7 @@ settings:
 overrides:
   '@yuva-devlab/tokens': link:../devlab-shared/packages/tokens
   '@yuva-devlab/ui': link:../devlab-shared/packages/ui
+  '@yuva-devlab/auth-client': link:../devlab-shared/packages/auth-client
 
 importers:
 
@@ -394,6 +395,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.67.2
         version: 5.104.1(react@19.3.0)
+      '@yuva-devlab/auth-client':
+        specifier: link:../../../devlab-shared/packages/auth-client
+        version: link:../../../devlab-shared/packages/auth-client
       '@yuva-devlab/logger':
         specifier: ^1.2.0
         version: 1.2.0

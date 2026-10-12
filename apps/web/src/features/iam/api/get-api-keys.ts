@@ -27,9 +27,9 @@ export function useApiKeysQuery(): UseQueryResult<ApiKey[], Error> {
  *
  * @param queryClient Active server QueryClient instance
  */
-export async function prefetchApiKeys(queryClient: QueryClient): Promise<void> {
+export async function prefetchApiKeys(queryClient: QueryClient, token?: string): Promise<void> {
   await queryClient.prefetchQuery({
     queryKey: apiKeysQueryKey(),
-    queryFn: () => serverFetch<ApiKey[]>(API_ROUTES.API_KEYS),
+    queryFn: () => serverFetch<ApiKey[]>(API_ROUTES.API_KEYS, token),
   });
 }

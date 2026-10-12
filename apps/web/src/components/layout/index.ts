@@ -14,3 +14,5 @@ export * from "./heading";
 export * from "./metrics-bar";
 export * from "./navbar";
 export * from "./tab-nav";
+export * from "./header-user-menu";
+export * from "./nav-icon";

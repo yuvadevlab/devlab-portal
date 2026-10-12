@@ -31,9 +31,13 @@ export function useAuditLogsQuery(limit = 100): UseQueryResult<AuditLog[], Error
  * @param queryClient Active server QueryClient instance
  * @param limit Optional maximum number of logs to prefetch
  */
-export async function prefetchAuditLogs(queryClient: QueryClient, limit = 100): Promise<void> {
+export async function prefetchAuditLogs(
+  queryClient: QueryClient,
+  limit = 100,
+  token?: string,
+): Promise<void> {
   await queryClient.prefetchQuery({
     queryKey: auditLogsQueryKey(limit),
-    queryFn: () => serverFetch<AuditLog[]>(`${API_ROUTES.AUDIT_LOGS}?limit=${limit}`),
+    queryFn: () => serverFetch<AuditLog[]>(`${API_ROUTES.AUDIT_LOGS}?limit=${limit}`, token),
   });
 }

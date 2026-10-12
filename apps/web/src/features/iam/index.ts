@@ -9,3 +9,4 @@ export * from "./api";
 export { IamMetrics } from "./components/iam-metrics";
 export { ApiKeysTable } from "./components/api-keys-table";
 export { ApiKeyModal } from "./components/api-key-modal";
+export { ApiKeyRevealPane } from "./components/api-key-reveal-pane";

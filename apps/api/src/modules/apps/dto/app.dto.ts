@@ -40,6 +40,11 @@ export class CreateAppDto {
   @IsOptional()
   iconUrl?: string;
 
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  themeColor?: string;
+
   @Field()
   @IsString()
   @IsNotEmpty()
@@ -72,6 +77,11 @@ export class UpdateAppSettingsDto {
   @IsString()
   @IsOptional()
   name?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  themeColor?: string;
 
   @Field({ nullable: true })
   @IsString()
@@ -131,6 +141,9 @@ export class RegisteredAppType {
 
   @Field({ nullable: true })
   iconUrl?: string;
+
+  @Field({ nullable: true })
+  themeColor?: string;
 
   @Field()
   originUrl!: string;

@@ -8,22 +8,10 @@
  */
 
 import React from "react";
-import {
-  Link2,
-  HeartPulse,
-  ArrowUpRight,
-  Settings2,
-  Power,
-  ChartNoAxesCombined,
-  Workflow,
-  Terminal,
-  ShieldCheck,
-  Layers,
-  Bot,
-  type LucideIcon,
-} from "lucide-react";
+import { Link2, HeartPulse, ArrowUpRight, Settings2, Power } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
+import { getNavIcon } from "@/components/layout";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppCardProps {
@@ -35,27 +23,19 @@ interface AppCardProps {
 export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleKillSwitch }) => {
   const isRoutingActive = app.isActive;
 
-  // Assign distinct thematic accent color palette
-  const getAppColor = (appId: string): string => {
-    if (appId.includes("finai")) return "mint";
-    if (appId.includes("orchestrai")) return "blue";
-    if (appId.includes("log")) return "amber";
-    if (appId.includes("guard")) return "rose";
-    return "teal";
+  // Purely dynamic server-driven thematic color with deterministic palette rotation fallback
+  const getAppColor = (registeredApp: RegisteredApp): string => {
+    if (registeredApp.themeColor) {
+      return registeredApp.themeColor;
+    }
+    const PALETTE = ["mint", "blue", "amber", "rose", "teal"] as const;
+    const seed = registeredApp.id || registeredApp.appId || registeredApp.slug;
+    const hash = seed.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return PALETTE[hash % PALETTE.length];
   };
 
-  // Assign contextual domain icon
-  const getAppIcon = (appId: string): LucideIcon => {
-    if (appId.includes("finai")) return ChartNoAxesCombined;
-    if (appId.includes("orchestrai")) return Workflow;
-    if (appId.includes("log")) return Terminal;
-    if (appId.includes("guard")) return ShieldCheck;
-    if (appId.includes("portal")) return Layers;
-    return Bot;
-  };
-
-  const appColor = getAppColor(app.appId);
-  const IconComponent = getAppIcon(app.appId);
+  const appColor = getAppColor(app);
+  const IconComponent = getNavIcon(app.iconUrl);
 
   return (
     <article className={`app-card ${appColor}`}>

@@ -24,12 +24,14 @@ export interface RegisteredApp {
   slug: string;
   description?: string;
   iconUrl?: string;
+  themeColor?: string;
   originUrl: string;
   callbackUrls: string[];
   healthUrl: string;
   environment: string;
   isActive: boolean;
   maintenanceNote?: string;
+  tenantId?: string;
   latencyMs?: number;
   healthStatus?: string;
   createdAt: string;
@@ -42,6 +44,7 @@ export interface CreateAppPayload {
   appId: string;
   slug?: string;
   description?: string;
+  themeColor?: string;
   originUrl: string;
   callbackUrls?: string[];
   healthUrl?: string;
@@ -55,6 +58,7 @@ export interface UpdateAppSettingsPayload {
   originUrl?: string;
   callbackUrls?: string[];
   healthUrl?: string;
+  themeColor?: string;
   maintenanceNote?: string;
 }
 
@@ -90,7 +94,15 @@ export interface UserMember {
   email: string;
   name: string;
   role: string;
+  tenantId?: string;
+  tenant?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
   avatarUrl?: string;
+  inviteUrl?: string;
+  inviteToken?: string;
   isActive: boolean;
   createdAt: string;
 }

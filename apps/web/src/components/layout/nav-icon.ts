@@ -1,6 +1,6 @@
 /**
  * @file apps/web/src/components/layout/nav-icon.ts
- * @description Dynamic Lucide icon resolver for server-driven navigation menus.
+ * @description Dynamic Lucide icon resolver for server-driven navigation menus and registered ecosystem apps.
  * @module @devlab/portal-web/components/layout/nav-icon
  */
 
@@ -19,6 +19,12 @@ import {
   Globe,
   Lock,
   Sliders,
+  ChartNoAxesCombined,
+  LayoutGrid,
+  Key,
+  ShieldAlert,
+  Cpu,
+  Bot,
   FolderCode,
   type LucideIcon,
 } from "lucide-react";
@@ -39,6 +45,13 @@ const ICON_REGISTRY: Record<string, LucideIcon> = {
   Globe,
   Lock,
   Sliders,
+  ChartNoAxesCombined,
+  LayoutGrid,
+  Key,
+  ShieldAlert,
+  Cpu,
+  Bot,
+  FolderCode,
 };
 
 /**
@@ -47,6 +60,9 @@ const ICON_REGISTRY: Record<string, LucideIcon> = {
  * @param iconKey - String identifier saved in the database
  * @returns Matching Lucide icon component, or FolderCode fallback
  */
-export function getNavIcon(iconKey: string): LucideIcon {
+export function getNavIcon(iconKey?: string | null): LucideIcon {
+  if (!iconKey) {
+    return FolderCode;
+  }
   return ICON_REGISTRY[iconKey] || FolderCode;
 }

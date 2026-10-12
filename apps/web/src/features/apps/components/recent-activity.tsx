@@ -58,9 +58,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
           <div className="activity-row" key={event.id}>
             <span className="text-muted-foreground">{getEventIcon(event.action)}</span>
             <span>
-              <span className="text-foreground font-medium">
-                {event.actorId || UI_COPY.COMMON.HEADER.USER_NAME}
-              </span>{" "}
+              <span className="text-foreground font-medium">{event.actorId || "System"}</span>{" "}
               <span className="text-muted-foreground">
                 {event.action
                   .replaceAll(".", " ")

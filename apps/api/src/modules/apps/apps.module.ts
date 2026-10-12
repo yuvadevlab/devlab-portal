@@ -5,11 +5,11 @@
  */
 
 import { Module } from "@nestjs/common";
-import { AppsService } from "./apps.service.js";
-import { AppsController } from "./apps.controller.js";
-import { AppsResolver } from "./apps.resolver.js";
-import { AuthModule } from "../auth/auth.module.js";
-import { WebsocketModule } from "../websocket/websocket.module.js";
+import { AppsService } from "./apps.service";
+import { AppsController } from "./apps.controller";
+import { AppsResolver } from "./apps.resolver";
+import { AuthModule } from "../auth/auth.module";
+import { WebsocketModule } from "../websocket/websocket.module";
 
 @Module({
   imports: [AuthModule, WebsocketModule],

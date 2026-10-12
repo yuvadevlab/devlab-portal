@@ -37,6 +37,7 @@ interface DashboardModalsProps {
   onCloseApiKeyModal: () => void;
   onCloseInviteModal: () => void;
   onNavigateTab: (tabKey: string) => void;
+  onCreateTenant: (name: string) => Promise<void>;
   onCreateApp: (payload: CreateAppPayload) => Promise<{ clientSecret: string }>;
   onUpdateAppSettings: (id: string, payload: UpdateAppSettingsPayload) => Promise<void>;
   onToggleKillSwitch: (id: string, nextState: boolean, maintenanceNote?: string) => Promise<void>;
@@ -63,6 +64,7 @@ export const DashboardModals: React.FC<DashboardModalsProps> = ({
   onCloseApiKeyModal,
   onCloseInviteModal,
   onNavigateTab,
+  onCreateTenant,
   onCreateApp,
   onUpdateAppSettings,
   onToggleKillSwitch,
@@ -80,7 +82,11 @@ export const DashboardModals: React.FC<DashboardModalsProps> = ({
         items={navigationItems}
       />
 
-      <TenantModal isOpen={isNewTenantOpen} onClose={onCloseNewTenant} onCreateTenant={() => {}} />
+      <TenantModal
+        isOpen={isNewTenantOpen}
+        onClose={onCloseNewTenant}
+        onCreateTenant={onCreateTenant}
+      />
 
       {/* Slide-overs & Operations Modals */}
       <RegisterAppModal

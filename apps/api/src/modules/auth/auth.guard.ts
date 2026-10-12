@@ -5,7 +5,7 @@
  */
 
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { KeypairService } from "./keys/keypair.service.js";
+import { KeypairService } from "./keys/keypair.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

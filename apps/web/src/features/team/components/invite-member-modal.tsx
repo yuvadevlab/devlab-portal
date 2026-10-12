@@ -1,23 +1,15 @@
-"use client";
-
 /**
  * @file apps/web/src/features/team/components/invite-member-modal.tsx
- * @description Modal dialog granting ecosystem control plane access and RBAC assignments.
- * Fully built with @yuva-devlab/ui Dialog, Label, Input, and Select components.
+ * @description Modal dialog for inviting new team members to the workspace.
+ * Adheres strictly to Sonner promise toast standard across FinAI and OrchestrAI.
  * @module @devlab/portal-web/features/team/components/invite-member-modal
  */
 
 import React, { useState } from "react";
-import { Users, UserPlus, CheckCircle2 } from "lucide-react";
+import { Users, UserPlus, CheckCircle2, Copy, Check } from "lucide-react";
 import {
   Button,
   Input,
-  Label,
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -25,11 +17,12 @@ import {
   DialogDescription,
   DialogBody,
   DialogFooter,
+  toast,
 } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { UserRole } from "@/lib/constants";
-import { logger } from "@/lib/logger";
 import { useInviteMember } from "@/features/team/api";
+import { InviteMemberForm } from "./invite-member-form";
 
 interface InviteMemberModalProps {
   isOpen: boolean;
@@ -46,26 +39,34 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<string>(UserRole.DEVELOPER);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [createdInviteUrl, setCreatedInviteUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const inviteMemberMutation = useInviteMember();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email) {
       return;
     }
 
-    try {
-      await inviteMemberMutation.mutateAsync({ name, email, role });
-      setIsSuccess(true);
-      setTimeout(() => {
-        setIsSuccess(false);
-        handleClose();
-        onSuccess();
-      }, 1200);
-    } catch (err) {
-      logger.error("Failed to invite member:", err);
-    }
+    const promise = inviteMemberMutation.mutateAsync({ name, email, role });
+    toast.promise(promise, {
+      loading: `Inviting ${name} (${email})...`,
+      success: (result) => {
+        setIsSuccess(true);
+        if (result.inviteUrl) {
+          setCreatedInviteUrl(result.inviteUrl);
+        } else {
+          setTimeout(() => {
+            handleClose();
+            onSuccess();
+          }, 1200);
+        }
+        return `Invitation created for ${email}`;
+      },
+      error: (err: unknown) => (err instanceof Error ? err.message : "Failed to invite member"),
+    });
   };
 
   const handleClose = () => {
@@ -73,7 +74,18 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
     setEmail("");
     setRole(UserRole.DEVELOPER);
     setIsSuccess(false);
+    setCreatedInviteUrl(null);
+    setCopied(false);
     onClose();
+  };
+
+  const handleCopyLink = () => {
+    if (createdInviteUrl) {
+      void navigator.clipboard.writeText(createdInviteUrl);
+      setCopied(true);
+      toast.success("Invite link copied to clipboard");
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
@@ -101,70 +113,70 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             </div>
           )}
 
-          <form id="invite-member-form" onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="invite-name" className="text-xs font-semibold">
-                {UI_COPY.TEAM.MODAL.NAME_LABEL}
-              </Label>
-              <Input
-                id="invite-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={UI_COPY.TEAM.MODAL.NAME_PLACEHOLDER}
-                required
-                className="h-9 text-xs"
-              />
+          {createdInviteUrl && (
+            <div className="bg-secondary/70 border-border space-y-2 rounded-lg border p-3 text-xs">
+              <p className="text-primary font-medium">
+                🛠 Dev mode — use this link to onboard member:
+              </p>
+              <div className="flex items-center gap-2">
+                <Input readOnly value={createdInviteUrl} className="h-8 font-mono text-[11px]" />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 shrink-0 gap-1 text-xs"
+                  onClick={handleCopyLink}
+                >
+                  {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
+                  {copied ? "Copied" : "Copy"}
+                </Button>
+              </div>
             </div>
+          )}
 
-            <div className="space-y-1.5">
-              <Label htmlFor="invite-email" className="text-xs font-semibold">
-                {UI_COPY.TEAM.MODAL.EMAIL_LABEL}
-              </Label>
-              <Input
-                id="invite-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={UI_COPY.TEAM.MODAL.EMAIL_PLACEHOLDER}
-                required
-                className="h-9 font-mono text-xs"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="invite-role" className="text-xs font-semibold">
-                {UI_COPY.TEAM.MODAL.ROLE_LABEL}
-              </Label>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger id="invite-role" className="h-9 w-full text-xs">
-                  <SelectValue placeholder={UI_COPY.TEAM.MODAL.ROLE_PLACEHOLDER} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={UserRole.DEVELOPER}>{UI_COPY.TEAM.ROLES.DEVELOPER}</SelectItem>
-                  <SelectItem value={UserRole.OPERATOR}>{UI_COPY.TEAM.ROLES.OPERATOR}</SelectItem>
-                  <SelectItem value={UserRole.ADMIN}>{UI_COPY.TEAM.ROLES.ADMIN}</SelectItem>
-                  <SelectItem value={UserRole.READ_ONLY}>{UI_COPY.TEAM.ROLES.READ_ONLY}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </form>
+          {!createdInviteUrl && (
+            <InviteMemberForm
+              name={name}
+              setName={setName}
+              email={email}
+              setEmail={setEmail}
+              role={role}
+              setRole={setRole}
+              onSubmit={handleSubmit}
+            />
+          )}
         </DialogBody>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={handleClose} className="h-9 text-xs">
-            {UI_COPY.COMMON.ACTIONS.CANCEL}
-          </Button>
-          <Button
-            type="submit"
-            form="invite-member-form"
-            disabled={inviteMemberMutation.isPending || !name || !email}
-            className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
-          >
-            <UserPlus className="mr-1.5 size-3.5" />
-            {inviteMemberMutation.isPending
-              ? UI_COPY.COMMON.ACTIONS.INVITING
-              : UI_COPY.COMMON.ACTIONS.INVITE}
-          </Button>
+          {createdInviteUrl ? (
+            <Button
+              type="button"
+              className="h-9 text-xs"
+              onClick={() => {
+                handleClose();
+                onSuccess();
+              }}
+            >
+              Done
+            </Button>
+          ) : (
+            <>
+              <Button type="button" variant="outline" onClick={handleClose} className="h-9 text-xs">
+                {UI_COPY.COMMON.ACTIONS.CANCEL}
+              </Button>
+              <Button
+                type="submit"
+                form="invite-member-form"
+                disabled={inviteMemberMutation.isPending || !name || !email}
+                className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
+              >
+                <UserPlus className="mr-1.5 size-3.5" />
+                {inviteMemberMutation.isPending
+                  ? UI_COPY.COMMON.ACTIONS.INVITING
+                  : UI_COPY.COMMON.ACTIONS.INVITE}
+              </Button>
+            </>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

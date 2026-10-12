@@ -54,17 +54,8 @@ export const COMMON_COPY = {
     STAGING: "Staging",
     PRODUCTION: "Production",
   },
-  TABS: {
-    APPS: "Ecosystem Apps & Services",
-    IAM: "IAM & API Keys",
-    AUDIT: "Security & Audit Ledger",
-    TEAM: "Team & Permissions",
-    SETTINGS: "Settings & JWKS",
-  },
   HEADER: {
     WORKSPACE: "Workspace",
-    TENANT_DEFAULT: "Yuva DevLab",
-    TENANTS_LIST: ["Yuva DevLab", "Staging Swarm Tenant", "Personal Sandbox"] as const,
     SEARCH_TENANTS: "Search tenants…",
     CREATE_TENANT: "Create New Tenant",
     CLUSTER_ONLINE: "Cluster online",
@@ -78,9 +69,6 @@ export const COMMON_COPY = {
     ENTERPRISE_PLAN: "Enterprise",
     ACCOUNT_SETTINGS: "Account settings",
     SIGN_OUT: "Sign out",
-    USER_NAME: "Yuvaraj Pattabi",
-    USER_EMAIL: "yuvaraj@devlab.io",
-    USER_ROLE: "super_admin",
   },
   COMMAND: {
     TITLE: "Search DevLab Portal",
@@ -94,14 +82,6 @@ export const COMMON_COPY = {
     NAME_LABEL: "Tenant Name",
     NAME_PLACEHOLDER: "e.g., Production Swarm Cluster",
     SUBMIT_BTN: "Create Tenant",
-  },
-  FOOTER: {
-    ALL_SYSTEMS: "All systems operational",
-    API_PORT: "API :3015",
-    REDIS_PUBSUB: "Redis PubSub active",
-    VERSION: "DevLab Portal v2.0.0",
-    DEMO_WORKSPACE: "Demo workspace",
-    DOCS: "Documentation",
   },
   EMPTY: {
     NO_DATA: "No items found",

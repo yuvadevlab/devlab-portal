@@ -6,8 +6,9 @@
 
 import { Injectable } from "@nestjs/common";
 import type { Prisma } from "@prisma/client";
-import { PrismaService } from "../../prisma/prisma.service.js";
+import { PrismaService } from "../../prisma/prisma.service";
 import { Logger } from "@yuva-devlab/logger";
+import { UserRole } from "../../common/constants/enums";
 
 @Injectable()
 export class AuditService {
@@ -18,8 +19,28 @@ export class AuditService {
   /**
    * Retrieves paginated audit log entries with associated actor metadata.
    */
-  async listLogs(limit = 50, offset = 0) {
+  async listLogs(
+    limit = 50,
+    offset = 0,
+    user?: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
+    const isAdmin = user?.role === UserRole.ADMIN;
+    const tenantId = user?.tenant_id;
+
+    const where: Prisma.AuditLogWhereInput = {};
+    if (!isSuperAdmin) {
+      if (isAdmin && tenantId) {
+        where.actor = { tenantId };
+      } else if (user?.sub) {
+        where.actorId = user.sub;
+      } else {
+        return [];
+      }
+    }
+
     return this.prisma.auditLog.findMany({
+      where,
       take: Math.min(limit, 100),
       skip: offset,
       orderBy: { createdAt: "desc" },

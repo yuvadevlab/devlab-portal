@@ -29,6 +29,8 @@ model User {
   role         Role       @default(developer)
   avatarUrl    String?    @map("avatar_url")
   isActive     Boolean    @default(true) @map("is_active")
+  tenantId     String?    @map("tenant_id") @db.Uuid
+  tenant       Tenant?    @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   sessions     Session[]
   apiKeys      ApiKey[]
   auditLogs    AuditLog[]
@@ -58,6 +60,7 @@ model RegisteredApp {
   slug             String         @unique
   description      String?
   iconUrl          String?        @map("icon_url")
+  themeColor       String?        @default("teal") @map("theme_color")
   originUrl        String         @map("origin_url")
   callbackUrls     String[]       @map("callback_urls")
   healthUrl        String         @map("health_url")
@@ -65,6 +68,8 @@ model RegisteredApp {
   isActive         Boolean        @default(true) @map("is_active")
   maintenanceNote  String?        @map("maintenance_note")
   clientSecretHash String         @map("client_secret_hash")
+  tenantId         String?        @map("tenant_id") @db.Uuid
+  tenant           Tenant?        @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   apiKeys          ApiKey[]
   createdAt        DateTime       @default(now()) @map("created_at")
   updatedAt        DateTime       @updatedAt @map("updated_at")
@@ -115,4 +120,18 @@ model NavigationItem {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("navigation_items")
+}
+
+model Tenant {
+  id        String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  slug      String          @unique
+  plan      String          @default("enterprise")
+  isActive  Boolean         @default(true) @map("is_active")
+  users     User[]
+  apps      RegisteredApp[]
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@map("tenants")
 }

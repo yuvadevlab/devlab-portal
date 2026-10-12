@@ -1,24 +1,14 @@
-"use client";
-
 /**
  * @file apps/web/src/features/iam/components/api-key-modal.tsx
- * @description Modal dialog generating cryptographically random API keys with SecretRevealCard.
- * Fully built with @yuva-devlab/ui Dialog, Input, Label, Select, and Checkbox components.
+ * @description Modal dialog for configuring and provisioning scoped API credentials.
+ * Adheres strictly to Sonner promise toast standard across FinAI and OrchestrAI.
  * @module @devlab/portal-web/features/iam/components/api-key-modal
  */
 
 import React, { useState } from "react";
-import { Key, AlertTriangle } from "lucide-react";
+import { Key } from "lucide-react";
 import {
   Button,
-  Input,
-  Label,
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  Checkbox,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -26,13 +16,14 @@ import {
   DialogDescription,
   DialogBody,
   DialogFooter,
-  SecretRevealCard,
+  toast,
 } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import { ApiKeyScope } from "@/lib/constants";
-import { logger } from "@/lib/logger";
+import { ApiKeyScope, buildScope } from "@/lib/constants";
 import type { RegisteredApp } from "@/lib/api-client";
 import { useCreateApiKey } from "@/features/iam/api";
+import { ApiKeyRevealPane } from "./api-key-reveal-pane";
+import { ApiKeyForm } from "./api-key-form";
 
 interface ApiKeyModalProps {
   apps: RegisteredApp[];
@@ -44,20 +35,39 @@ interface ApiKeyModalProps {
 export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose, onSuccess }) => {
   const [name, setName] = useState("");
   const [appId, setAppId] = useState("");
-  const [selectedScopes, setSelectedScopes] = useState<string[]>([ApiKeyScope.ORCHESTRAI_READ]);
   const [rateLimit, setRateLimit] = useState(600);
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
 
   const createApiKeyMutation = useCreateApiKey();
 
-  const scopeOptions = [
-    { id: ApiKeyScope.ORCHESTRAI_READ, label: "orchestrai:read" },
-    { id: ApiKeyScope.ORCHESTRAI_WRITE, label: "orchestrai:write" },
-    { id: ApiKeyScope.ORCHESTRAI_EXECUTE, label: "orchestrai:executions:create" },
-    { id: ApiKeyScope.FINAI_READ, label: "finai:read" },
-    { id: ApiKeyScope.FINAI_WRITE, label: "finai:write" },
-    { id: ApiKeyScope.LOGS_INGEST, label: "logs:ingest" },
-  ];
+  const selectedApp = apps.find((a) => a.id === appId || a.appId === appId) || apps[0];
+  const appSlug = selectedApp?.slug || selectedApp?.appId || "app";
+
+  const scopeOptions = React.useMemo(
+    () => [
+      { id: buildScope(appSlug, ApiKeyScope.READ), label: `${appSlug}:read` },
+      { id: buildScope(appSlug, ApiKeyScope.WRITE), label: `${appSlug}:write` },
+      { id: buildScope(appSlug, ApiKeyScope.EXECUTE), label: `${appSlug}:executions:create` },
+      { id: buildScope(appSlug, ApiKeyScope.EVENTS), label: `${appSlug}:events:publish` },
+    ],
+    [appSlug],
+  );
+
+  const defaultScope = buildScope(apps[0]?.slug || apps[0]?.appId || "app", ApiKeyScope.READ);
+  const [selectedScopes, setSelectedScopes] = useState<string[]>([]);
+
+  React.useEffect(() => {
+    if (selectedScopes.length === 0 && defaultScope) {
+      setSelectedScopes([defaultScope]);
+    }
+  }, [defaultScope, selectedScopes.length]);
+
+  const handleAppChange = (newAppId: string) => {
+    setAppId(newAppId);
+    const target = apps.find((a) => a.id === newAppId || a.appId === newAppId);
+    const targetSlug = target?.slug || target?.appId || "app";
+    setSelectedScopes([buildScope(targetSlug, ApiKeyScope.READ)]);
+  };
 
   const handleToggleScope = (scopeId: string) => {
     setSelectedScopes((prev) =>
@@ -65,32 +75,35 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
     );
   };
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || (!appId && apps.length > 0)) {
       return;
     }
 
-    try {
-      const targetAppId = appId || (apps[0]?.id ?? "");
-      const res = await createApiKeyMutation.mutateAsync({
-        name,
-        appId: targetAppId,
-        scopes: selectedScopes,
-        rateLimitRpm: rateLimit,
-      });
+    const targetAppId = appId || (apps[0]?.id ?? "");
+    const promise = createApiKeyMutation.mutateAsync({
+      name,
+      appId: targetAppId,
+      scopes: selectedScopes,
+      rateLimitRpm: rateLimit,
+    });
 
-      setGeneratedKey(res.rawKey);
-      onSuccess();
-    } catch (err) {
-      logger.error("Failed to generate API key:", err);
-    }
+    toast.promise(promise, {
+      loading: `Generating API key "${name}"...`,
+      success: (res) => {
+        setGeneratedKey(res.rawKey);
+        onSuccess();
+        return `API key "${name}" generated successfully`;
+      },
+      error: (err: unknown) => (err instanceof Error ? err.message : "Failed to generate API key"),
+    });
   };
 
   const handleClose = () => {
     setName("");
     setAppId("");
-    setSelectedScopes([ApiKeyScope.ORCHESTRAI_READ]);
+    setSelectedScopes([defaultScope]);
     setRateLimit(600);
     setGeneratedKey(null);
     onClose();
@@ -115,90 +128,21 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
 
         <DialogBody className="space-y-4 py-3">
           {generatedKey ? (
-            <div className="space-y-4">
-              <SecretRevealCard
-                secret={generatedKey}
-                warningMessage={UI_COPY.IAM.MODAL.SECRET_WARNING}
-                copyLabel={UI_COPY.COMMON.ACTIONS.COPY}
-              />
-              <div className="border-warning/20 bg-warning/10 text-warning flex items-start gap-2 rounded-lg border p-3 text-xs">
-                <AlertTriangle className="text-warning mt-0.5 size-4 shrink-0" />
-                <p className="text-[11px] leading-relaxed">{UI_COPY.IAM.MODAL.SECRET_WARNING}</p>
-              </div>
-            </div>
+            <ApiKeyRevealPane generatedKey={generatedKey} />
           ) : (
-            <form id="api-key-form" onSubmit={handleCreate} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="api-key-name" className="text-xs font-semibold">
-                  {UI_COPY.IAM.MODAL.NAME_LABEL}
-                </Label>
-                <Input
-                  id="api-key-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={UI_COPY.IAM.MODAL.NAME_PLACEHOLDER}
-                  required
-                  className="h-9 text-xs"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="api-key-app" className="text-xs font-semibold">
-                  {UI_COPY.IAM.MODAL.APP_LABEL}
-                </Label>
-                <Select value={appId} onValueChange={setAppId}>
-                  <SelectTrigger id="api-key-app" className="h-9 w-full text-xs">
-                    <SelectValue placeholder={UI_COPY.IAM.MODAL.APP_PLACEHOLDER} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {apps.map((a) => (
-                      <SelectItem key={a.id} value={a.id}>
-                        {a.name} ({a.appId})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold">{UI_COPY.IAM.MODAL.SCOPES_LABEL}</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {scopeOptions.map((s) => (
-                    <div
-                      key={s.id}
-                      onClick={() => handleToggleScope(s.id)}
-                      className={`flex cursor-pointer items-center gap-2.5 rounded-lg border p-2 transition-colors ${
-                        selectedScopes.includes(s.id)
-                          ? "border-primary bg-primary/10 text-foreground"
-                          : "border-border bg-card text-muted-foreground"
-                      }`}
-                    >
-                      <Checkbox
-                        id={`scope-${s.id}`}
-                        checked={selectedScopes.includes(s.id)}
-                        onCheckedChange={() => handleToggleScope(s.id)}
-                      />
-                      <span className="font-mono text-xs">{s.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="api-key-rate-limit" className="text-xs font-semibold">
-                  {UI_COPY.IAM.MODAL.RATE_LIMIT_LABEL}
-                </Label>
-                <Input
-                  id="api-key-rate-limit"
-                  type="number"
-                  value={rateLimit}
-                  onChange={(e) => setRateLimit(Number(e.target.value))}
-                  min={60}
-                  max={10000}
-                  className="h-9 font-mono text-xs"
-                />
-              </div>
-            </form>
+            <ApiKeyForm
+              name={name}
+              setName={setName}
+              appId={appId}
+              onAppChange={handleAppChange}
+              apps={apps}
+              scopeOptions={scopeOptions}
+              selectedScopes={selectedScopes}
+              onToggleScope={handleToggleScope}
+              rateLimit={rateLimit}
+              setRateLimit={setRateLimit}
+              onSubmit={handleCreate}
+            />
           )}
         </DialogBody>
 

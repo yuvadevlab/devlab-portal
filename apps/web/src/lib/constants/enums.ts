@@ -40,13 +40,22 @@ export enum UserRole {
 
 /** OAuth2 / API Key permission scopes */
 export enum ApiKeyScope {
-  ORCHESTRAI_READ = "orchestrai:read",
-  ORCHESTRAI_WRITE = "orchestrai:write",
-  ORCHESTRAI_EXECUTE = "orchestrai:executions:create",
-  FINAI_READ = "finai:read",
-  FINAI_WRITE = "finai:write",
-  LOGS_INGEST = "logs:ingest",
-  PORTAL_ADMIN = "portal:admin",
+  READ = "read",
+  WRITE = "write",
+  ADMIN = "admin",
+  EXECUTE = "execute",
+  EVENTS = "events",
+}
+
+/**
+ * Builds a dynamic scoped permission string for any registered ecosystem app.
+ *
+ * @param appSlug - Application identifier or slug
+ * @param action - Action name or scope verb
+ * @returns Fully qualified scope string (e.g. "finance-api:read")
+ */
+export function buildScope(appSlug: string, action: string): string {
+  return `${appSlug}:${action}`;
 }
 
 /** Standard audit event types recorded in immutable ledger */
