@@ -75,7 +75,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
     );
   };
 
-  const handleCreate = (e: React.FormEvent) => {
+  const handleCreate = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!name || (!appId && apps.length > 0)) {
       return;

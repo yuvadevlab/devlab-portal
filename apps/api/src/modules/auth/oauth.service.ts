@@ -9,6 +9,7 @@ import {
   UnauthorizedException,
   BadRequestException,
   NotFoundException,
+  ForbiddenException,
 } from "@nestjs/common";
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -17,6 +18,7 @@ import { RedisService } from "../redis/redis.service";
 import { KeypairService } from "./keys/keypair.service";
 import { AuthorizeDto, TokenDto } from "./dto/auth.dto";
 import { Logger } from "@yuva-devlab/logger";
+import { UserRole, AppAccessScope } from "../../common/constants/enums";
 
 @Injectable()
 export class OAuthService {
@@ -43,6 +45,32 @@ export class OAuthService {
     const isAllowedCallback = app.callbackUrls.includes(dto.redirect_uri);
     if (!isAllowedCallback) {
       throw new BadRequestException(`Redirect URI ${dto.redirect_uri} is not registered`);
+    }
+
+    // Verify user identity and app-specific entitlements
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException("User is inactive or not found");
+    }
+
+    // Super admins and administrators inherit global access across all ecosystem applications
+    const isPrivileged = user.role === UserRole.SUPER_ADMIN || user.role === UserRole.ADMIN;
+    // Standard members must be explicitly assigned to the requesting app or have wildcard access
+    const hasAppAccess =
+      isPrivileged ||
+      user.allowedApps.includes(app.appId) ||
+      user.allowedApps.includes(AppAccessScope.ALL);
+
+    if (!hasAppAccess) {
+      this.logger.warn(
+        `[authorize] Access denied for user ${user.id} (${user.email}) to app ${app.appId}`,
+      );
+      throw new ForbiddenException(
+        `Access denied: You do not have permissions to access ${app.name || app.appId}. Contact your administrator.`,
+      );
     }
 
     const code = `dlc_${crypto.randomBytes(24).toString("hex")}`;
@@ -124,6 +152,7 @@ export class OAuthService {
         tenant_slug: user.tenant?.slug,
         tenant_name: user.tenant?.name,
         appId: data.appId,
+        apps: user.allowedApps,
       },
       { expiresIn: "1h", subject: user.id, audience: data.appId },
     );

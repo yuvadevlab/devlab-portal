@@ -43,7 +43,7 @@ export const PortalNavbar: React.FC<PortalNavbarProps> = ({
             className={`nav-link ${isActive ? "active" : ""}`}
             onClick={() => onSelectTab(tab.key)}
           >
-            <IconComponent className="size-[15px]" />
+            <IconComponent className="size-3.75" />
             <span>{tab.label}</span>
             {count !== undefined && <span className="tag py-0!">{count}</span>}
           </button>

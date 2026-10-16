@@ -28,19 +28,37 @@ import { Heading } from "@/components/layout";
 import { IamMetrics } from "./iam-metrics";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { ApiKey } from "@/features/iam/types";
+import type { RegisteredApp } from "@/lib/api-client";
+import { useAppsQuery } from "@/features/apps/api";
 
-interface ApiKeysTableProps {
+export interface ApiKeysTableProps {
   apiKeys: ApiKey[];
+  apps?: RegisteredApp[];
   onOpenGenerateModal: () => void;
   onRevokeKey: (id: string) => Promise<void>;
 }
 
 export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
   apiKeys,
+  apps: propApps,
   onOpenGenerateModal,
   onRevokeKey,
 }) => {
   const [search, setSearch] = useState("");
+
+  const { data: queriedApps = [] } = useAppsQuery();
+  const resolvedApps = propApps && propApps.length > 0 ? propApps : queriedApps;
+
+  /**
+   * Resolves raw application identifier to friendly registered application name.
+   *
+   * @param appId - Registered application identifier or database UUID
+   * @returns Friendly application display name
+   */
+  const getAppName = (appId: string): string => {
+    const matched = resolvedApps.find((a) => a.appId === appId || a.id === appId);
+    return matched ? matched.name : appId;
+  };
   const [selectedApp, setSelectedApp] = useState("All");
 
   const appsInKeys = Array.from(new Set(apiKeys.map((k) => k.appId)));
@@ -86,7 +104,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
               <SelectItem value="All">{UI_COPY.IAM.TOOLBAR.ALL_APPLICATIONS}</SelectItem>
               {appsInKeys.map((appId) => (
                 <SelectItem key={appId} value={appId}>
-                  {appId}
+                  {getAppName(appId)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -118,7 +136,9 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                     {k.name}
                   </div>
                 </TableCell>
-                <TableCell className="text-muted-foreground font-mono text-xs">{k.appId}</TableCell>
+                <TableCell className="text-muted-foreground font-mono text-xs">
+                  {getAppName(k.appId)}
+                </TableCell>
                 <TableCell>
                   <code className="text-muted-foreground font-mono text-[11px]">
                     {k.keyPrefix}…

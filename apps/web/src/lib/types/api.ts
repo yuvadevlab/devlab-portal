@@ -94,6 +94,7 @@ export interface UserMember {
   email: string;
   name: string;
   role: string;
+  allowedApps?: string[];
   tenantId?: string;
   tenant?: {
     id: string;

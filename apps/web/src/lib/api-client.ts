@@ -203,7 +203,12 @@ export const api = {
 
   getUsers: (): Promise<UserMember[]> => fetchJson<UserMember[]>(API_ROUTES.USERS),
 
-  createUser: (payload: { email: string; name: string; role?: string }): Promise<UserMember> =>
+  createUser: (payload: {
+    email: string;
+    name: string;
+    role?: string;
+    allowedApps?: string[];
+  }): Promise<UserMember> =>
     fetchJson<UserMember>(API_ROUTES.USERS, {
       method: HttpMethod.POST,
       body: JSON.stringify(payload),

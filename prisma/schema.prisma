@@ -13,6 +13,7 @@ enum Role {
   developer
   operator
   read_only
+  member
 }
 
 enum AppEnvironment {
@@ -29,6 +30,7 @@ model User {
   role         Role       @default(developer)
   avatarUrl    String?    @map("avatar_url")
   isActive     Boolean    @default(true) @map("is_active")
+  allowedApps  String[]   @default([]) @map("allowed_apps")
   tenantId     String?    @map("tenant_id") @db.Uuid
   tenant       Tenant?    @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   sessions     Session[]

@@ -5,12 +5,19 @@
  */
 
 /** Organization RBAC roles */
+/** Application access authorization scopes */
+export enum AppAccessScope {
+  ALL = "*",
+}
+
+/** Organization RBAC roles */
 export enum UserRole {
   SUPER_ADMIN = "super_admin",
   ADMIN = "admin",
   DEVELOPER = "developer",
   OPERATOR = "operator",
   READ_ONLY = "read_only",
+  MEMBER = "member",
 }
 
 /** Standard audit event types recorded in immutable ledger */

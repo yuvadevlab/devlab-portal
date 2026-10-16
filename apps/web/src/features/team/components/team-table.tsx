@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * @file apps/web/src/features/team/components/team-table.tsx
  * @description Organization members and RBAC role assignments table with hierarchy viewer.
@@ -29,17 +27,57 @@ import {
 import { Heading } from "@/components/layout";
 import { RoleHierarchy } from "./role-hierarchy";
 import { UI_COPY } from "@/lib/ui-copy";
-import { UserRole } from "@/lib/constants/enums";
+import { UserRole, AppAccessScope } from "@/lib/constants/enums";
+import type { RegisteredApp } from "@/lib/api-client";
+import { useAppsQuery } from "@/features/apps/api";
 import type { UserMember } from "@/features/team/types";
 
-interface TeamTableProps {
+/**
+ * Properties required to render the {@link TeamTable} roster.
+ */
+export interface TeamTableProps {
+  /** Array of active organization team members */
   members: UserMember[];
+  /** Optional ecosystem applications catalog */
+  apps?: RegisteredApp[];
+  /** Callback opening the member invitation modal */
   onOpenInviteModal: () => void;
 }
 
-export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal }) => {
+/**
+ * Displays the team member roster with search filtering, RBAC role assignments,
+ * authorized application badges, and activation status toggles.
+ *
+ * @param props - Component configuration satisfying {@link TeamTableProps}
+ * @returns React element rendering team table
+ */
+export const TeamTable: React.FC<TeamTableProps> = ({
+  members,
+  apps: propApps,
+  onOpenInviteModal,
+}) => {
   const [search, setSearch] = useState("");
 
+  const { data: queriedApps = [] } = useAppsQuery();
+  const resolvedApps = propApps && propApps.length > 0 ? propApps : queriedApps;
+
+  /**
+   * Resolves application identifier to user-friendly display name.
+   *
+   * @param appId - Registered application identifier or wildcard
+   * @returns User-friendly application display name
+   */
+  const getAppName = (appId: string): string => {
+    if (appId === AppAccessScope.ALL) {
+      return "All Applications";
+    }
+    const matched = resolvedApps.find((a) => a.appId === appId || a.id === appId);
+    return matched ? matched.name : appId;
+  };
+
+  /**
+   * Filter members by matching name, email, or role against search query.
+   */
   const filteredMembers = members.filter(
     (m) =>
       m.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -47,6 +85,13 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
       m.role.toLowerCase().includes(search.toLowerCase()),
   );
 
+  /**
+   * Generates two-letter uppercase avatar initials from display name or email.
+   *
+   * @param name - Member display name
+   * @param email - Member corporate email
+   * @returns Two-character avatar string
+   */
   const getInitials = (name: string, email: string): string => {
     if (name.trim()) {
       const parts = name.trim().split(" ");
@@ -102,7 +147,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
               const isSelf = m.email.includes("admin@") || m.email.includes("yuvaraj@");
               return (
                 <TableRow key={m.id}>
-                  {/* Member identity */}
+                  {/* Member identity & authorized apps */}
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <span className="avatar">{getInitials(m.name, m.email)}</span>
@@ -116,6 +161,19 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
                         <div className="text-muted-foreground mt-0.5 font-mono text-[11px]">
                           {m.email}
                         </div>
+                        {/* Authorized application badges */}
+                        {m.allowedApps && m.allowedApps.length > 0 && (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {m.allowedApps.map((app) => (
+                              <span
+                                key={app}
+                                className="bg-secondary text-secondary-foreground border-border rounded border px-1.5 py-0.5 font-mono text-[10px]"
+                              >
+                                {getAppName(app)}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </TableCell>
@@ -135,6 +193,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
                           <SelectItem value={UserRole.DEVELOPER}>{UserRole.DEVELOPER}</SelectItem>
                           <SelectItem value={UserRole.OPERATOR}>{UserRole.OPERATOR}</SelectItem>
                           <SelectItem value={UserRole.READ_ONLY}>{UserRole.READ_ONLY}</SelectItem>
+                          <SelectItem value={UserRole.MEMBER}>{UserRole.MEMBER}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -178,10 +237,6 @@ export const TeamTable: React.FC<TeamTableProps> = ({ members, onOpenInviteModal
             })}
           </TableBody>
         </Table>
-
-        {filteredMembers.length === 0 && (
-          <div className="empty-state">{UI_COPY.TEAM.TABLE.EMPTY_TEXT}</div>
-        )}
       </div>
     </>
   );

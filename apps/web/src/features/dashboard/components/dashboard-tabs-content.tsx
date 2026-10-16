@@ -73,6 +73,7 @@ export const DashboardTabsContent: React.FC<DashboardTabsContentProps> = ({
       {activeTab === "iam" && (
         <ApiKeysTable
           apiKeys={apiKeys}
+          apps={apps}
           onOpenGenerateModal={onOpenGenerateModal}
           onRevokeKey={onRevokeKey}
         />
@@ -80,7 +81,9 @@ export const DashboardTabsContent: React.FC<DashboardTabsContentProps> = ({
 
       {activeTab === "audit" && <AuditTable logs={auditLogs} />}
 
-      {activeTab === "team" && <TeamTable members={team} onOpenInviteModal={onOpenInviteModal} />}
+      {activeTab === "team" && (
+        <TeamTable members={team} apps={apps} onOpenInviteModal={onOpenInviteModal} />
+      )}
 
       {activeTab === "settings" && <JwksViewer jwks={jwks} oidc={oidc} />}
     </main>

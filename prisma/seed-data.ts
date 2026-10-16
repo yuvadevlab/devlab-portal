@@ -24,3 +24,8 @@ export const NAVIGATION_ITEMS = [
   { key: "team", label: "Team & Permissions", icon: "Users", order: 4, isEnabled: true },
   { key: "settings", label: "Settings & JWKS", icon: "Settings2", order: 5, isEnabled: true },
 ] as const;
+
+/** Application access authorization scopes */
+export enum AppAccessScope {
+  ALL = "*",
+}

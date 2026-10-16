@@ -27,6 +27,9 @@ export const TEAM_COPY = {
     R05_INDEX: "05",
     R05_ROLE: "read_only",
     R05_DESC: "View applications and audit records",
+    R06_INDEX: "06",
+    R06_ROLE: "member",
+    R06_DESC: "End-user access scoped exclusively to designated applications",
   },
   TOOLBAR: {
     SEARCH_PLACEHOLDER: "Search team members…",
@@ -62,5 +65,6 @@ export const TEAM_COPY = {
     DEVELOPER: "developer",
     OPERATOR: "operator",
     READ_ONLY: "read_only",
+    MEMBER: "member",
   },
 } as const;

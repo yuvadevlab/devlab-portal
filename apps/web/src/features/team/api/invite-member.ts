@@ -8,14 +8,24 @@ import { useMutation, useQueryClient, type UseMutationResult } from "@tanstack/r
 import { api, type UserMember } from "@/lib/api-client";
 import { teamMembersQueryKey } from "./get-team-members";
 
+/**
+ * Variables payload required to execute {@link useInviteMemberMutation}.
+ */
 interface InviteMemberVariables {
+  /** Invitee corporate email address */
   email: string;
+  /** Invitee full display name */
   name: string;
+  /** Assigned RBAC role */
   role: string;
+  /** Optional scoped platform application entitlement identifiers */
+  allowedApps?: string[];
 }
 
 /**
  * Mutation hook for adding members and sending portal onboarding access.
+ *
+ * @returns TanStack Mutation result object
  */
 export function useInviteMemberMutation(): UseMutationResult<
   UserMember,
@@ -25,10 +35,10 @@ export function useInviteMemberMutation(): UseMutationResult<
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ email, name, role }: InviteMemberVariables) =>
-      api.createUser({ email, name, role }),
+    mutationFn: ({ email, name, role, allowedApps }: InviteMemberVariables) =>
+      api.createUser({ email, name, role, allowedApps }),
     onSuccess: () => {
-      // Invalidate team members query cache immediately
+      // Invalidate team members query cache immediately to refresh roster
       queryClient.invalidateQueries({ queryKey: teamMembersQueryKey() });
     },
   });

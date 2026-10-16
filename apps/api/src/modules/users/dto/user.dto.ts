@@ -4,7 +4,7 @@
  * @module @devlab/portal-api/users/dto
  */
 
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export enum UserRoleEnum {
   SUPER_ADMIN = "super_admin",
@@ -12,6 +12,7 @@ export enum UserRoleEnum {
   DEVELOPER = "developer",
   OPERATOR = "operator",
   READ_ONLY = "read_only",
+  MEMBER = "member",
 }
 
 export class CreateUserDto {
@@ -26,4 +27,9 @@ export class CreateUserDto {
   @IsEnum(UserRoleEnum)
   @IsOptional()
   role?: UserRoleEnum;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  allowedApps?: string[];
 }

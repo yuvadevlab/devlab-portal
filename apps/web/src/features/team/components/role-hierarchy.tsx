@@ -10,6 +10,12 @@ import React from "react";
 import { ShieldCheck } from "lucide-react";
 import { UI_COPY } from "@/lib/ui-copy";
 
+/**
+ * Visual overview rendering the six RBAC role tiers (from super_admin down to member),
+ * detailing their respective permissions, privileges, and application scopes.
+ *
+ * @returns React element rendering the role hierarchy banner
+ */
 export const RoleHierarchy: React.FC = () => {
   const roles = [
     {
@@ -37,6 +43,11 @@ export const RoleHierarchy: React.FC = () => {
       role: UI_COPY.TEAM.HIERARCHY.R05_ROLE,
       description: UI_COPY.TEAM.HIERARCHY.R05_DESC,
     },
+    {
+      index: UI_COPY.TEAM.HIERARCHY.R06_INDEX,
+      role: UI_COPY.TEAM.HIERARCHY.R06_ROLE,
+      description: UI_COPY.TEAM.HIERARCHY.R06_DESC,
+    },
   ];
 
   return (
@@ -45,7 +56,7 @@ export const RoleHierarchy: React.FC = () => {
         <ShieldCheck className="text-primary size-4" />
         {UI_COPY.TEAM.HIERARCHY.TITLE}
       </div>
-      <div className="grid grid-cols-2 gap-5 md:grid-cols-5">
+      <div className="grid grid-cols-2 gap-5 md:grid-cols-6">
         {roles.map((item) => (
           <div key={item.role}>
             <div className="flex items-center gap-2">

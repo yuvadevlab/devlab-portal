@@ -34,10 +34,9 @@ export class ApiKeysService {
       throw new NotFoundException(`Registered app '${dto.appId}' not found`);
     }
 
-    const env = process.env.NODE_ENV === "production" ? "live" : "dev";
-    const randomEntropy = crypto.randomBytes(24).toString("hex");
-    const rawKey = `dlk_${env}_${randomEntropy}`;
-    const keyPrefix = `dlk_${env}_${randomEntropy.slice(0, 6)}...`;
+    const randomEntropy = crypto.randomBytes(32).toString("hex");
+    const rawKey = `dlk_${randomEntropy}`;
+    const keyPrefix = `dlk_${randomEntropy.slice(0, 8)}...`;
     const keyHash = crypto.createHash("sha256").update(rawKey).digest("hex");
 
     const record = await this.prisma.apiKey.create({

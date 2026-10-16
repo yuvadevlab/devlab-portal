@@ -61,7 +61,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
     return null;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {

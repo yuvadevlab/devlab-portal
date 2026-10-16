@@ -36,6 +36,12 @@ export enum UserRole {
   DEVELOPER = "developer",
   OPERATOR = "operator",
   READ_ONLY = "read_only",
+  MEMBER = "member",
+}
+
+/** Application access authorization scopes */
+export enum AppAccessScope {
+  ALL = "*",
 }
 
 /** OAuth2 / API Key permission scopes */

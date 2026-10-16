@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import { Layers, ChevronDown, Check, Plus } from "lucide-react";
 import { Button, Input } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import { TabKey } from "@/lib/constants/enums";
+import { TabKey, UserRole } from "@/lib/constants/enums";
 import { useAuthMeQuery } from "@/features/auth";
 import { useTenantsQuery } from "@/features/dashboard";
 import type { AuditLog } from "@/features/audit/types";
@@ -42,7 +42,8 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   const { data: dbTenants } = useTenantsQuery();
 
   const tenants = dbTenants && dbTenants.length > 0 ? dbTenants : [];
-  const isSuperAdmin = currentUser?.role === "super_admin";
+  // Guard tenant switcher against non-superadmin accounts
+  const isSuperAdmin = currentUser?.role === UserRole.SUPER_ADMIN;
 
   // Synchronize active tenant identity with localStorage or user profile
   useEffect(() => {

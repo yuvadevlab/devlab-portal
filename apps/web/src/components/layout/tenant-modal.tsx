@@ -32,7 +32,7 @@ interface TenantModalProps {
 export const TenantModal: React.FC<TenantModalProps> = ({ isOpen, onClose, onCreateTenant }) => {
   const [tenantName, setTenantName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (tenantName.trim()) {
       onCreateTenant(tenantName.trim());

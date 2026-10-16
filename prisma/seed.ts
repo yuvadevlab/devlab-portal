@@ -5,14 +5,14 @@
  * @module devlab-portal/prisma
  */
 
-import { PrismaClient } from "./generated";
+import { PrismaClient, Role } from "./generated";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { INITIAL_TENANT, NAVIGATION_ITEMS } from "./seed-data";
+import { INITIAL_TENANT, NAVIGATION_ITEMS, AppAccessScope } from "./seed-data";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,16 +41,18 @@ async function main(): Promise<void> {
     where: { email: "admin@devlab.internal" },
     update: {
       name: "Platform Super Admin",
-      role: "super_admin",
+      role: Role.super_admin,
       isActive: true,
+      allowedApps: [AppAccessScope.ALL],
       tenantId: tenant.id,
     },
     create: {
       email: "admin@devlab.internal",
       name: "Platform Super Admin",
       passwordHash,
-      role: "super_admin",
+      role: Role.super_admin,
       isActive: true,
+      allowedApps: [AppAccessScope.ALL],
       tenantId: tenant.id,
     },
   });

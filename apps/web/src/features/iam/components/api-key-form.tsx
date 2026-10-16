@@ -29,7 +29,7 @@ export interface ApiKeyFormProps {
   onToggleScope: (id: string) => void;
   rateLimit: number;
   setRateLimit: (val: number) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: React.SubmitEvent) => void;
 }
 
 export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({

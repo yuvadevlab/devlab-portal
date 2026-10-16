@@ -20,44 +20,76 @@ import {
   toast,
 } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import { UserRole } from "@/lib/constants";
+import { UserRole } from "@/lib/constants/enums";
+import type { RegisteredApp } from "@/lib/api-client";
 import { useInviteMember } from "@/features/team/api";
+import { useAppsQuery } from "@/features/apps/api";
 import { InviteMemberForm } from "./invite-member-form";
 
-interface InviteMemberModalProps {
+/**
+ * Interface configuring the modal visibility and callback state.
+ */
+export interface InviteMemberModalProps {
+  /** Optional pre-fetched registered applications catalog */
+  apps?: RegisteredApp[];
+  /** Controls open/closed visibility of the dialog */
   isOpen: boolean;
+  /** Callback fired upon modal dismissal or cancellation */
   onClose: () => void;
+  /** Callback fired upon successful member onboarding */
   onSuccess: () => void;
 }
 
+/**
+ * Modal dialog component managing member invitation state, promise toast feedback,
+ * and dev-mode onboarding URL retrieval.
+ *
+ * @param props - Component configuration satisfying {@link InviteMemberModalProps}
+ * @returns React modal dialog element
+ */
 export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
+  apps: propApps,
   isOpen,
   onClose,
   onSuccess,
 }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<string>(UserRole.DEVELOPER);
+  const [role, setRole] = useState<string>(UserRole.MEMBER);
+  // Zero default allowed apps — explicit admin selection required
+  const [allowedApps, setAllowedApps] = useState<string[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
   const [createdInviteUrl, setCreatedInviteUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // Fallback to active query cache if apps not injected via props
+  const { data: queriedApps = [] } = useAppsQuery();
+  const apps = propApps && propApps.length > 0 ? propApps : queriedApps;
+
   const inviteMemberMutation = useInviteMember();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /**
+   * Dispatches the member creation mutation and shows toast notifications.
+   *
+   * @param e - Form submission event
+   */
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
+    // Guard against submission without name or email
     if (!name || !email) {
       return;
     }
 
-    const promise = inviteMemberMutation.mutateAsync({ name, email, role });
+    const promise = inviteMemberMutation.mutateAsync({ name, email, role, allowedApps });
     toast.promise(promise, {
       loading: `Inviting ${name} (${email})...`,
       success: (result) => {
         setIsSuccess(true);
+        // If an invite link is returned (dev environment), surface for quick copying
         if (result.inviteUrl) {
           setCreatedInviteUrl(result.inviteUrl);
         } else {
+          // In production, automatically close dialog after success
           setTimeout(() => {
             handleClose();
             onSuccess();
@@ -69,16 +101,23 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
     });
   };
 
+  /**
+   * Resets all internal dialog form states and notifies parent component.
+   */
   const handleClose = () => {
     setName("");
     setEmail("");
-    setRole(UserRole.DEVELOPER);
+    setRole(UserRole.MEMBER);
+    setAllowedApps([]);
     setIsSuccess(false);
     setCreatedInviteUrl(null);
     setCopied(false);
     onClose();
   };
 
+  /**
+   * Copies the generated dev-mode onboarding URL to the user clipboard.
+   */
   const handleCopyLink = () => {
     if (createdInviteUrl) {
       void navigator.clipboard.writeText(createdInviteUrl);
@@ -106,6 +145,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
         </DialogHeader>
 
         <DialogBody className="space-y-4 py-3">
+          {/* Success banner */}
           {isSuccess && (
             <div className="border-success/20 bg-success/10 text-success flex items-center gap-2 rounded-lg border p-3 text-xs">
               <CheckCircle2 className="size-4 shrink-0" />
@@ -113,6 +153,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             </div>
           )}
 
+          {/* Dev-mode quick onboarding link */}
           {createdInviteUrl && (
             <div className="bg-secondary/70 border-border space-y-2 rounded-lg border p-3 text-xs">
               <p className="text-primary font-medium">
@@ -134,6 +175,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             </div>
           )}
 
+          {/* Main invite inputs */}
           {!createdInviteUrl && (
             <InviteMemberForm
               name={name}
@@ -142,6 +184,9 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
               setEmail={setEmail}
               role={role}
               setRole={setRole}
+              apps={apps}
+              allowedApps={allowedApps}
+              setAllowedApps={setAllowedApps}
               onSubmit={handleSubmit}
             />
           )}

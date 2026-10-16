@@ -118,6 +118,7 @@ export const DashboardModals: React.FC<DashboardModalsProps> = ({
       />
 
       <InviteMemberModal
+        apps={apps}
         isOpen={isInviteModalOpen}
         onClose={onCloseInviteModal}
         onSuccess={onSuccessInvite}

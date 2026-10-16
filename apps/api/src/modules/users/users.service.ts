@@ -50,6 +50,7 @@ export class UsersService {
         name: true,
         role: true,
         avatarUrl: true,
+        allowedApps: true,
         isActive: true,
         createdAt: true,
       },
@@ -85,6 +86,7 @@ export class UsersService {
           (dto.role as unknown as UserRoleEnum) || (UserRole.DEVELOPER as unknown as UserRoleEnum),
         passwordHash,
         isActive: true,
+        allowedApps: dto.allowedApps ?? [],
         tenantId: actor.tenant_id ?? null,
       },
       select: {
@@ -93,6 +95,7 @@ export class UsersService {
         name: true,
         role: true,
         avatarUrl: true,
+        allowedApps: true,
         isActive: true,
         createdAt: true,
       },

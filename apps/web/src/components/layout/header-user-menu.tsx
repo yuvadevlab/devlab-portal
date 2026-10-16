@@ -11,6 +11,7 @@ import { ChevronDown, Settings2, LogOut } from "lucide-react";
 import { Button, toast } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { UserMember } from "@/lib/api-client";
+import { UserRole } from "@/lib/constants/enums";
 
 interface HeaderUserMenuProps {
   user?: UserMember | null;
@@ -29,7 +30,7 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
 }) => {
   const userName = user?.name || "Member";
   const userEmail = user?.email || "";
-  const userRole = user?.role || "member";
+  const userRole = user?.role || UserRole.MEMBER;
 
   // Derive initials from active user display name
   const initials =
