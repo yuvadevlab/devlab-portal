@@ -14,16 +14,28 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from "@nestjs/common";
 import type { Response } from "express";
-import { AuthService } from "./auth.service.js";
-import { AuthGuard } from "./auth.guard.js";
-import { LoginDto, AuthorizeDto, TokenDto } from "./dto/auth.dto.js";
-import { CurrentUser } from "../../common/decorators/current-user.decorator.js";
+import { AuthService } from "./auth.service";
+import { OAuthService } from "./oauth.service";
+import { AuthGuard } from "./auth.guard";
+import {
+  LoginDto,
+  RegisterDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  AuthorizeDto,
+  TokenDto,
+} from "./dto/auth.dto";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly oauthService: OAuthService,
+  ) {}
 
   /**
    * Direct login for Web Shell operator credentials.
@@ -32,6 +44,33 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  /**
+   * User self-registration into the active tenant workspace.
+   */
+  @Post("auth/register")
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
+
+  /**
+   * Initiates password reset recovery flow.
+   */
+  @Post("auth/forgot-password")
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto);
+  }
+
+  /**
+   * Resets password using verification token.
+   */
+  @Post("auth/reset-password")
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 
   /**
@@ -52,8 +91,12 @@ export class AuthController {
     @Query("user_id") userId: string,
     @Res() res: Response,
   ) {
-    const effectiveUserId = userId || "cmuzm86p00000sxyr2ct88hws";
-    const result = await this.authService.authorize(dto, effectiveUserId);
+    if (!userId) {
+      throw new BadRequestException(
+        "user_id query parameter is required to initiate authorization",
+      );
+    }
+    const result = await this.oauthService.authorize(dto, userId);
     return res.redirect(result.redirectUrl);
   }
 
@@ -63,6 +106,6 @@ export class AuthController {
   @Post("oauth/token")
   @HttpCode(HttpStatus.OK)
   async token(@Body() dto: TokenDto) {
-    return this.authService.exchangeToken(dto);
+    return this.oauthService.exchangeToken(dto);
   }
 }

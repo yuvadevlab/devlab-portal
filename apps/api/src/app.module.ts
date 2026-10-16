@@ -7,13 +7,15 @@
 import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-import { PrismaModule } from "./prisma/prisma.module.js";
-import { RedisModule } from "./modules/redis/redis.module.js";
-import { AuthModule } from "./modules/auth/auth.module.js";
-import { AppsModule } from "./modules/apps/apps.module.js";
-import { ApiKeysModule } from "./modules/api-keys/api-keys.module.js";
-import { AuditModule } from "./modules/audit/audit.module.js";
-import { WebsocketModule } from "./modules/websocket/websocket.module.js";
+import { PrismaModule } from "./prisma/prisma.module";
+import { RedisModule } from "./modules/redis/redis.module";
+import { AuthModule } from "./modules/auth/auth.module";
+import { AppsModule } from "./modules/apps/apps.module";
+import { ApiKeysModule } from "./modules/api-keys/api-keys.module";
+import { AuditModule } from "./modules/audit/audit.module";
+import { WebsocketModule } from "./modules/websocket/websocket.module";
+import { UsersModule } from "./modules/users/users.module";
+import { PlatformModule } from "./modules/platform/platform.module";
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { WebsocketModule } from "./modules/websocket/websocket.module.js";
     ApiKeysModule,
     AuditModule,
     WebsocketModule,
+    UsersModule,
+    PlatformModule,
   ],
 })
 export class AppModule {}

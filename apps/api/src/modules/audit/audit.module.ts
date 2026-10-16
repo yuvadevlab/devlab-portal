@@ -5,10 +5,10 @@
  */
 
 import { Module } from "@nestjs/common";
-import { AuditService } from "./audit.service.js";
-import { AuditController } from "./audit.controller.js";
-import { AuditResolver } from "./audit.resolver.js";
-import { AuthModule } from "../auth/auth.module.js";
+import { AuditService } from "./audit.service";
+import { AuditController } from "./audit.controller";
+import { AuditResolver } from "./audit.resolver";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
   imports: [AuthModule],

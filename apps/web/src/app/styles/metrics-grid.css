@@ -1,0 +1,82 @@
+/**
+ * @file apps/web/src/app/styles/metrics-grid.css
+ * @description Connected metric cards grid, telemetry visualizations, and benchmark bars.
+ */
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  margin-bottom: 31px;
+}
+
+.metric {
+  padding: 21px 23px;
+  border-right: 1px solid var(--border);
+}
+
+.metric:last-child {
+  border-right: 0;
+}
+
+.metric-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.metric-value {
+  font-size: 29px;
+  font-weight: 550;
+  margin-top: 11px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.metric-note {
+  font-size: 10px;
+  color: var(--muted-foreground);
+  margin-top: 8px;
+}
+
+.metric-note.positive {
+  color: var(--success);
+}
+
+.latency-value {
+  font-size: 54px;
+  color: var(--success);
+  margin: 28px 0 12px;
+}
+
+.benchmark {
+  display: flex;
+  height: 85px;
+  gap: 5px;
+  align-items: end;
+  margin-top: 25px;
+}
+
+.benchmark i {
+  flex: 1;
+  background: color-mix(in oklch, var(--primary) 40%, transparent);
+  border-top: 2px solid var(--primary);
+  height: 40%;
+}
+
+.benchmark i:nth-child(3n) {
+  height: 65%;
+}
+
+.benchmark i:nth-child(4n) {
+  height: 80%;
+}
+
+.benchmark i:nth-child(5n) {
+  height: 50%;
+}

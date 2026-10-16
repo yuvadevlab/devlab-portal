@@ -4,11 +4,13 @@
  * @module @devlab/portal-api/api-keys
  */
 
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import { Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
+import type { Prisma } from "@prisma/client";
 import crypto from "node:crypto";
-import { PrismaService } from "../../prisma/prisma.service.js";
-import { RedisService } from "../redis/redis.service.js";
-import { CreateApiKeyDto } from "./dto/api-key.dto.js";
+import { PrismaService } from "../../prisma/prisma.service";
+import { RedisService } from "../redis/redis.service";
+import { CreateApiKeyDto } from "./dto/api-key.dto";
+import { UserRole, AuditAction, AuditTargetType } from "../../common/constants/enums";
 import { Logger } from "@yuva-devlab/logger";
 
 @Injectable()
@@ -32,10 +34,9 @@ export class ApiKeysService {
       throw new NotFoundException(`Registered app '${dto.appId}' not found`);
     }
 
-    const env = process.env.NODE_ENV === "production" ? "live" : "dev";
-    const randomEntropy = crypto.randomBytes(24).toString("hex");
-    const rawKey = `dlk_${env}_${randomEntropy}`;
-    const keyPrefix = `dlk_${env}_${randomEntropy.slice(0, 6)}...`;
+    const randomEntropy = crypto.randomBytes(32).toString("hex");
+    const rawKey = `dlk_${randomEntropy}`;
+    const keyPrefix = `dlk_${randomEntropy.slice(0, 8)}...`;
     const keyHash = crypto.createHash("sha256").update(rawKey).digest("hex");
 
     const record = await this.prisma.apiKey.create({
@@ -54,9 +55,9 @@ export class ApiKeysService {
     // Record audit event
     await this.prisma.auditLog.create({
       data: {
-        action: "API_KEY_CREATED",
+        action: AuditAction.API_KEY_CREATED,
         actorId: userId,
-        targetType: "api_key",
+        targetType: AuditTargetType.API_KEY,
         targetId: record.id,
         metadata: { name: record.name, appId: app.appId, scopes: record.scopes },
       },
@@ -73,11 +74,28 @@ export class ApiKeysService {
   /**
    * Retrieves all non-revoked API keys, optionally filtered by application.
    */
-  async listApiKeys(appId?: string) {
+  async listApiKeys(appId?: string, user?: { sub: string; role?: string; tenant_id?: string }) {
+    const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
+    const isAdmin = user?.role === UserRole.ADMIN;
+    const tenantId = user?.tenant_id;
+    const userId = user?.sub;
+
+    const where: Prisma.ApiKeyWhereInput = {
+      ...(appId ? { app: { OR: [{ id: appId }, { appId }] } } : {}),
+    };
+
+    if (!isSuperAdmin) {
+      if (isAdmin && tenantId) {
+        where.user = { tenantId };
+      } else if (userId) {
+        where.userId = userId;
+      } else {
+        return [];
+      }
+    }
+
     return this.prisma.apiKey.findMany({
-      where: {
-        ...(appId ? { app: { OR: [{ id: appId }, { appId }] } } : {}),
-      },
+      where,
       orderBy: { createdAt: "desc" },
     });
   }
@@ -85,10 +103,22 @@ export class ApiKeysService {
   /**
    * Revokes an existing API key and evicts any active cache.
    */
-  async revokeApiKey(id: string, actorId: string) {
-    const key = await this.prisma.apiKey.findUnique({ where: { id } });
+  async revokeApiKey(id: string, actorId: string, user?: { role?: string; tenant_id?: string }) {
+    const key = await this.prisma.apiKey.findUnique({
+      where: { id },
+      include: { user: true },
+    });
     if (!key) {
       throw new NotFoundException(`API key '${id}' not found`);
+    }
+
+    const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
+    const isAdmin = user?.role === UserRole.ADMIN;
+    const isOwner = key.userId === actorId;
+    const isSameTenant = key.user?.tenantId === user?.tenant_id;
+
+    if (!isSuperAdmin && !isOwner && !(isAdmin && isSameTenant)) {
+      throw new ForbiddenException("You do not have permission to revoke this API key");
     }
 
     const updated = await this.prisma.apiKey.update({
@@ -102,9 +132,9 @@ export class ApiKeysService {
     // Audit log
     await this.prisma.auditLog.create({
       data: {
-        action: "API_KEY_REVOKED",
+        action: AuditAction.API_KEY_REVOKED,
         actorId,
-        targetType: "api_key",
+        targetType: AuditTargetType.API_KEY,
         targetId: id,
         metadata: { name: key.name },
       },

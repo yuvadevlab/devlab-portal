@@ -1,34 +1,39 @@
 /**
  * @file prisma/seed.ts
- * @description Database seeder populating initial super admin and application blueprints.
+ * @description Database seeder populating initial workspace tenant, default super admin, and navigation menu.
+ * Idempotent upserts preserve all existing database records without emptying or dropping data.
  * @module devlab-portal/prisma
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "./generated";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { INITIAL_TENANT, NAVIGATION_ITEMS, AppAccessScope } from "./seed-data";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-/**
- * Executes database seeding with idempotent upsert operations.
- */
 async function main(): Promise<void> {
   console.log("🌱 Starting DevLab Portal database seed...");
 
-  // 1. Seed Super Admin User
+  // 1. Seed Active Workspace Tenant (idempotent upsert)
+  const tenant = await prisma.tenant.upsert({
+    where: { slug: INITIAL_TENANT.slug },
+    update: INITIAL_TENANT,
+    create: INITIAL_TENANT,
+  });
+  console.log(`✅ Seeded Tenant: ${tenant.name} (${tenant.id})`);
+
+  // 2. Seed Single Default Super Admin User (idempotent upsert)
   const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD || "DevLab@2026!Admin";
   const passwordHash = await bcrypt.hash(defaultPassword, 10);
 
@@ -36,81 +41,53 @@ async function main(): Promise<void> {
     where: { email: "admin@devlab.internal" },
     update: {
       name: "Platform Super Admin",
-      role: "super_admin",
+      role: Role.super_admin,
       isActive: true,
+      allowedApps: [AppAccessScope.ALL],
+      tenantId: tenant.id,
     },
     create: {
       email: "admin@devlab.internal",
       name: "Platform Super Admin",
       passwordHash,
-      role: "super_admin",
+      role: Role.super_admin,
       isActive: true,
+      allowedApps: [AppAccessScope.ALL],
+      tenantId: tenant.id,
     },
   });
+  console.log(`✅ Seeded Default User: ${superAdmin.email}`);
 
-  console.log(`✅ Seeded Super Admin: ${superAdmin.email} (${superAdmin.id})`);
-
-  // 2. Seed Registered Apps
-  const apps = [
-    {
-      appId: "finai",
-      name: "FinAI Studio",
-      slug: "finai",
-      description: "Financial Intelligence Agentic Assistant",
-      originUrl: "http://localhost:3000",
-      callbackUrls: ["http://localhost:3000/api/auth/callback", "http://localhost:3000"],
-      healthUrl: "http://localhost:3002/api/v1/health",
-      environment: "local_dev" as const,
-      isActive: true,
-      clientSecret: "devlab_finai_secret_2026",
-    },
-    {
-      appId: "orchestrai",
-      name: "OrchestrAI",
-      slug: "orchestrai",
-      description: "Distributed Autonomous Multi-Agent Swarm Orchestrator",
-      originUrl: "http://localhost:3001",
-      callbackUrls: ["http://localhost:3001/api/auth/callback", "http://localhost:3001"],
-      healthUrl: "http://localhost:3000/api/v1/health",
-      environment: "local_dev" as const,
-      isActive: true,
-      clientSecret: "devlab_orchestrai_secret_2026",
-    },
-  ];
-
-  for (const app of apps) {
-    const secretHash = await bcrypt.hash(app.clientSecret, 10);
-
-    const record = await prisma.registeredApp.upsert({
-      where: { appId: app.appId },
-      update: {
-        name: app.name,
-        slug: app.slug,
-        description: app.description,
-        originUrl: app.originUrl,
-        callbackUrls: app.callbackUrls,
-        healthUrl: app.healthUrl,
-        environment: app.environment,
-        isActive: app.isActive,
-      },
-      create: {
-        appId: app.appId,
-        name: app.name,
-        slug: app.slug,
-        description: app.description,
-        originUrl: app.originUrl,
-        callbackUrls: app.callbackUrls,
-        healthUrl: app.healthUrl,
-        environment: app.environment,
-        isActive: app.isActive,
-        clientSecretHash: secretHash,
-      },
+  // 3. Seed Dynamic Navigation Menu Items (idempotent upsert)
+  for (const item of NAVIGATION_ITEMS) {
+    const record = await prisma.navigationItem.upsert({
+      where: { key: item.key },
+      update: item,
+      create: item,
     });
-
-    console.log(`✅ Seeded Registered App: ${record.name} [${record.appId}]`);
+    console.log(`✅ Seeded Navigation Menu Item: [${record.key}] ${record.label}`);
   }
 
-  console.log("🌱 Database seeding completed successfully.");
+  // 4. Seed Initial Bootstrap Audit Log if not already present
+  const existingAudit = await prisma.auditLog.findFirst({
+    where: { action: "system.bootstrapped", targetId: "Control Plane" },
+  });
+  if (!existingAudit) {
+    await prisma.auditLog.create({
+      data: {
+        action: "system.bootstrapped",
+        actorId: superAdmin.id,
+        targetType: "system",
+        targetId: "Control Plane",
+        metadata: { environment: "development", initializedBy: superAdmin.email },
+      },
+    });
+    console.log("✅ Seeded Initial Audit Log");
+  }
+
+  console.log(
+    "🌱 Database seeding completed successfully (all existing database records preserved).",
+  );
 }
 
 main()

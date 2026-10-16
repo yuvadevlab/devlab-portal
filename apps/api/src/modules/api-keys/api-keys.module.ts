@@ -5,10 +5,10 @@
  */
 
 import { Module } from "@nestjs/common";
-import { ApiKeysService } from "./api-keys.service.js";
-import { ApiKeysController } from "./api-keys.controller.js";
-import { ApiKeysResolver } from "./api-keys.resolver.js";
-import { AuthModule } from "../auth/auth.module.js";
+import { ApiKeysService } from "./api-keys.service";
+import { ApiKeysController } from "./api-keys.controller";
+import { ApiKeysResolver } from "./api-keys.resolver";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
   imports: [AuthModule],

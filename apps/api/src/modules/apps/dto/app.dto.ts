@@ -4,8 +4,110 @@
  * @module @devlab/portal-api/apps/dto
  */
 
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
+
+export enum AppEnvironmentEnum {
+  LOCAL_DEV = "local_dev",
+  STAGING = "staging",
+  PRODUCTION = "production",
+}
+
+@InputType()
+export class CreateAppDto {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  appId!: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  slug?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  iconUrl?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  themeColor?: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  originUrl!: string;
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  callbackUrls?: string[];
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  healthUrl?: string;
+
+  @Field({ nullable: true })
+  @IsEnum(AppEnvironmentEnum)
+  @IsOptional()
+  environment?: AppEnvironmentEnum;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  clientSecret?: string;
+}
+
+@InputType()
+export class UpdateAppSettingsDto {
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  themeColor?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  originUrl?: string;
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  callbackUrls?: string[];
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  healthUrl?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  maintenanceNote?: string;
+}
 
 @InputType()
 export class UpdateAppStatusDto {
@@ -39,6 +141,9 @@ export class RegisteredAppType {
 
   @Field({ nullable: true })
   iconUrl?: string;
+
+  @Field({ nullable: true })
+  themeColor?: string;
 
   @Field()
   originUrl!: string;

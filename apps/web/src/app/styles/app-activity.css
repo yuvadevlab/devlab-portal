@@ -1,0 +1,83 @@
+/**
+ * @file apps/web/src/app/styles/app-activity.css
+ * @description Register application placeholder card and recent activity audit feed.
+ */
+
+.register-card {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  min-height: 265px;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.register-symbol {
+  width: 39px;
+  height: 39px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+.register-card strong {
+  color: var(--foreground);
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.register-card p {
+  font-size: 11px;
+  margin: 0;
+}
+
+.activity-section {
+  margin-top: 34px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 17px;
+}
+
+.section-heading h2 {
+  font-size: 14px;
+  font-weight: 550;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.activity-list {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--card);
+}
+
+.activity-row {
+  padding: 14px 19px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.activity-row:last-child {
+  border-bottom: 0;
+}
+
+.activity-row time {
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  white-space: nowrap;
+}

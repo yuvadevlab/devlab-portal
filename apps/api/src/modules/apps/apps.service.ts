@@ -4,11 +4,20 @@
  * @module @devlab/portal-api/apps
  */
 
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "../../prisma/prisma.service.js";
-import { RedisService } from "../redis/redis.service.js";
-import { EventsGateway } from "../websocket/events.gateway.js";
-import { UpdateAppStatusDto } from "./dto/app.dto.js";
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  ForbiddenException,
+} from "@nestjs/common";
+import type { AppEnvironment, Prisma } from "@prisma/client";
+import crypto from "node:crypto";
+import bcrypt from "bcryptjs";
+import { PrismaService } from "../../prisma/prisma.service";
+import { RedisService } from "../redis/redis.service";
+import { EventsGateway } from "../websocket/events.gateway";
+import { CreateAppDto, UpdateAppSettingsDto, UpdateAppStatusDto } from "./dto/app.dto";
+import { AuditAction, AuditTargetType, UserRole } from "../../common/constants/enums";
 import { Logger } from "@yuva-devlab/logger";
 
 @Injectable()
@@ -24,12 +33,25 @@ export class AppsService {
   /**
    * Retrieves all registered applications and pings health URLs concurrently.
    */
-  async listApps() {
+  async listApps(user?: { sub?: string; role?: string; tenant_id?: string }) {
+    const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
+    const tenantId = user?.tenant_id;
+
+    const where: Prisma.RegisteredAppWhereInput = {};
+    if (!isSuperAdmin) {
+      if (tenantId) {
+        where.tenantId = tenantId;
+      } else {
+        return [];
+      }
+    }
+
     const apps = await this.prisma.registeredApp.findMany({
+      where,
       orderBy: { name: "asc" },
     });
 
-    const results = await Promise.all(
+    return Promise.all(
       apps.map(async (app) => {
         let latencyMs = 0;
         let healthStatus = "healthy";
@@ -51,35 +73,124 @@ export class AppsService {
           healthStatus = "maintenance";
         }
 
-        return {
-          ...app,
-          latencyMs,
-          healthStatus,
-        };
+        return { ...app, latencyMs, healthStatus };
       }),
     );
-
-    return results;
   }
 
   /**
    * Finds a registered application by ID or unique appId.
    */
-  async getApp(idOrAppId: string) {
+  async getApp(idOrAppId: string, user?: { sub?: string; role?: string; tenant_id?: string }) {
     const app = await this.prisma.registeredApp.findFirst({
       where: { OR: [{ id: idOrAppId }, { appId: idOrAppId }] },
     });
     if (!app) {
-      throw new NotFoundException(`Application '${idOrAppId}' not found`);
+      throw new NotFoundException(`Application "${idOrAppId}" not found`);
+    }
+    const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
+    if (!isSuperAdmin && app.tenantId && app.tenantId !== user?.tenant_id) {
+      throw new ForbiddenException("You do not have permission to access this application");
     }
     return app;
   }
 
   /**
+   * Registers a new application, provisions client credentials, and commits audit log.
+   */
+  async createApp(dto: CreateAppDto, actor: { sub: string; role?: string; tenant_id?: string }) {
+    const existing = await this.prisma.registeredApp.findFirst({
+      where: { OR: [{ appId: dto.appId }, { slug: dto.slug || dto.appId }] },
+    });
+    if (existing) {
+      throw new ConflictException(`App with ID "${dto.appId}" or slug already exists`);
+    }
+
+    const rawSecret = dto.clientSecret || `dl_sec_${crypto.randomBytes(24).toString("hex")}`;
+    const secretHash = await bcrypt.hash(rawSecret, 10);
+    const slug = dto.slug || dto.appId.toLowerCase().replace(/[^a-z0-9_-]/g, "-");
+
+    const app = await this.prisma.registeredApp.create({
+      data: {
+        appId: dto.appId,
+        name: dto.name,
+        slug,
+        description: dto.description ?? null,
+        iconUrl: dto.iconUrl ?? null,
+        themeColor: dto.themeColor ?? "teal",
+        originUrl: dto.originUrl,
+        callbackUrls:
+          dto.callbackUrls && dto.callbackUrls.length > 0 ? dto.callbackUrls : [dto.originUrl],
+        healthUrl: dto.healthUrl || `${dto.originUrl}/api/health`,
+        environment: (dto.environment as AppEnvironment) || "local_dev",
+        isActive: true,
+        clientSecretHash: secretHash,
+        tenantId: actor.tenant_id ?? null,
+      },
+    });
+
+    await this.prisma.auditLog.create({
+      data: {
+        action: AuditAction.APP_REGISTERED,
+        actorId: actor.sub,
+        targetType: AuditTargetType.APP,
+        targetId: app.id,
+        metadata: { appId: app.appId, name: app.name, environment: app.environment },
+      },
+    });
+
+    this.logger.info(
+      `App "${app.name}" registered by actor "${actor.sub}" in tenant "${actor.tenant_id ?? "none"}"`,
+    );
+    return { ...app, clientSecret: rawSecret };
+  }
+
+  /**
+   * Updates application operational configuration.
+   */
+  async updateAppSettings(
+    idOrAppId: string,
+    dto: UpdateAppSettingsDto,
+    actor: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    const app = await this.getApp(idOrAppId, actor);
+
+    const updated = await this.prisma.registeredApp.update({
+      where: { id: app.id },
+      data: {
+        name: dto.name ?? app.name,
+        description: dto.description ?? app.description,
+        originUrl: dto.originUrl ?? app.originUrl,
+        callbackUrls: dto.callbackUrls ?? app.callbackUrls,
+        healthUrl: dto.healthUrl ?? app.healthUrl,
+        themeColor: dto.themeColor !== undefined ? dto.themeColor : app.themeColor,
+        maintenanceNote:
+          dto.maintenanceNote !== undefined ? dto.maintenanceNote : app.maintenanceNote,
+      },
+    });
+
+    await this.prisma.auditLog.create({
+      data: {
+        action: AuditAction.APP_UPDATED,
+        actorId: actor.sub,
+        targetType: AuditTargetType.APP,
+        targetId: app.id,
+        metadata: JSON.parse(JSON.stringify({ appId: app.appId, changes: dto })),
+      },
+    });
+
+    return updated;
+  }
+
+  /**
    * Toggles the kill-switch (isActive) and broadcasts real-time events across Redis and WebSockets.
    */
-  async updateAppStatus(idOrAppId: string, dto: UpdateAppStatusDto, actorId: string) {
-    const app = await this.getApp(idOrAppId);
+  async updateAppStatus(
+    idOrAppId: string,
+    dto: UpdateAppStatusDto,
+    actor: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    const app = await this.getApp(idOrAppId, actor);
 
     const updated = await this.prisma.registeredApp.update({
       where: { id: app.id },
@@ -89,12 +200,11 @@ export class AppsService {
       },
     });
 
-    // 1. Audit Log record
     await this.prisma.auditLog.create({
       data: {
-        action: dto.isActive ? "APP_ACTIVATED" : "APP_DEACTIVATED",
-        actorId,
-        targetType: "registered_app",
+        action: dto.isActive ? AuditAction.APP_ACTIVATED : AuditAction.APP_DEACTIVATED,
+        actorId: actor.sub,
+        targetType: AuditTargetType.APP,
         targetId: app.id,
         metadata: {
           appId: app.appId,
@@ -113,15 +223,10 @@ export class AppsService {
       updatedAt: updated.updatedAt,
     };
 
-    // 2. Broadcast to Redis Pub/Sub topic
     await this.redis.publish("app.state.changed", JSON.stringify(payload));
-
-    // 3. Emit directly via WebSocket gateway
     this.eventsGateway.broadcastAppStateChanged(payload);
 
-    this.logger.info(
-      `Kill-switch toggled for '${app.name}': isActive=${updated.isActive} (Note: '${updated.maintenanceNote || "None"}')`,
-    );
+    this.logger.info(`Kill-switch toggled for "${app.name}": isActive=${updated.isActive}`);
 
     return updated;
   }

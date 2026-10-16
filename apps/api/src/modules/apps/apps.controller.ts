@@ -7,17 +7,19 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Param,
   Body,
   UseGuards,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
 } from "@nestjs/common";
-import { AppsService } from "./apps.service.js";
-import { AuthGuard } from "../auth/auth.guard.js";
-import { UpdateAppStatusDto } from "./dto/app.dto.js";
-import { CurrentUser } from "../../common/decorators/current-user.decorator.js";
+import { AppsService } from "./apps.service";
+import { AuthGuard } from "../auth/auth.guard";
+import { CreateAppDto, UpdateAppSettingsDto, UpdateAppStatusDto } from "./dto/app.dto";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
 @Controller("api/v1/apps")
 export class AppsController {
@@ -27,16 +29,54 @@ export class AppsController {
    * Retrieves all registered applications with dynamic latency and health statuses.
    */
   @Get()
-  async listApps() {
-    return this.appsService.listApps();
+  @UseGuards(AuthGuard)
+  async listApps(@CurrentUser() user: { sub: string; role?: string; tenant_id?: string }) {
+    return this.appsService.listApps(user);
   }
 
   /**
    * Retrieves a single application by ID or appId.
    */
   @Get(":id")
-  async getApp(@Param("id") id: string) {
-    return this.appsService.getApp(id);
+  @UseGuards(AuthGuard)
+  async getApp(
+    @Param("id") id: string,
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    return this.appsService.getApp(id, user);
+  }
+
+  /**
+   * Registers a new application in the ecosystem catalog.
+   */
+  @Post()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.CREATED)
+  async createApp(
+    @Body() dto: CreateAppDto,
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    return this.appsService.createApp(dto, user);
+  }
+
+  /**
+   * Updates application operational configuration.
+   */
+  @Patch(":id")
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async updateAppSettings(
+    @Param("id") id: string,
+    @Body() dto: UpdateAppSettingsDto,
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    return this.appsService.updateAppSettings(id, dto, user);
   }
 
   /**
@@ -48,8 +88,11 @@ export class AppsController {
   async updateStatus(
     @Param("id") id: string,
     @Body() dto: UpdateAppStatusDto,
-    @CurrentUser() user: { sub: string },
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
   ) {
-    return this.appsService.updateAppStatus(id, dto, user?.sub || "cmuzm86p00000sxyr2ct88hws");
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+    return this.appsService.updateAppStatus(id, dto, user);
   }
 }

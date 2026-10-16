@@ -13,6 +13,7 @@ enum Role {
   developer
   operator
   read_only
+  member
 }
 
 enum AppEnvironment {
@@ -22,13 +23,16 @@ enum AppEnvironment {
 }
 
 model User {
-  id           String     @id @default(cuid())
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email        String     @unique
   name         String
   passwordHash String     @map("password_hash")
   role         Role       @default(developer)
   avatarUrl    String?    @map("avatar_url")
   isActive     Boolean    @default(true) @map("is_active")
+  allowedApps  String[]   @default([]) @map("allowed_apps")
+  tenantId     String?    @map("tenant_id") @db.Uuid
+  tenant       Tenant?    @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   sessions     Session[]
   apiKeys      ApiKey[]
   auditLogs    AuditLog[]
@@ -39,8 +43,8 @@ model User {
 }
 
 model Session {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   tokenHash String   @unique @map("token_hash")
   expiresAt DateTime @map("expires_at")
@@ -52,12 +56,13 @@ model Session {
 }
 
 model RegisteredApp {
-  id               String         @id @default(cuid())
+  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   appId            String         @unique @map("app_id")
   name             String
   slug             String         @unique
   description      String?
   iconUrl          String?        @map("icon_url")
+  themeColor       String?        @default("teal") @map("theme_color")
   originUrl        String         @map("origin_url")
   callbackUrls     String[]       @map("callback_urls")
   healthUrl        String         @map("health_url")
@@ -65,6 +70,8 @@ model RegisteredApp {
   isActive         Boolean        @default(true) @map("is_active")
   maintenanceNote  String?        @map("maintenance_note")
   clientSecretHash String         @map("client_secret_hash")
+  tenantId         String?        @map("tenant_id") @db.Uuid
+  tenant           Tenant?        @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   apiKeys          ApiKey[]
   createdAt        DateTime       @default(now()) @map("created_at")
   updatedAt        DateTime       @updatedAt @map("updated_at")
@@ -73,13 +80,13 @@ model RegisteredApp {
 }
 
 model ApiKey {
-  id           String        @id @default(cuid())
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name         String
   keyPrefix    String        @map("key_prefix")
   keyHash      String        @unique @map("key_hash")
-  appId        String        @map("app_id")
+  appId        String        @map("app_id") @db.Uuid
   app          RegisteredApp @relation(fields: [appId], references: [id], onDelete: Cascade)
-  userId       String        @map("user_id")
+  userId       String        @map("user_id") @db.Uuid
   user         User          @relation(fields: [userId], references: [id])
   scopes       String[]
   rateLimitRpm Int           @default(600) @map("rate_limit_rpm")
@@ -92,9 +99,9 @@ model ApiKey {
 }
 
 model AuditLog {
-  id         String   @id @default(cuid())
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   action     String
-  actorId    String   @map("actor_id")
+  actorId    String   @map("actor_id") @db.Uuid
   actor      User     @relation(fields: [actorId], references: [id])
   targetType String   @map("target_type")
   targetId   String   @map("target_id")
@@ -102,4 +109,31 @@ model AuditLog {
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@map("audit_logs")
+}
+
+model NavigationItem {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key       String   @unique
+  label     String
+  icon      String
+  order     Int      @default(0)
+  isEnabled Boolean  @default(true) @map("is_enabled")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("navigation_items")
+}
+
+model Tenant {
+  id        String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  slug      String          @unique
+  plan      String          @default("enterprise")
+  isActive  Boolean         @default(true) @map("is_active")
+  users     User[]
+  apps      RegisteredApp[]
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@map("tenants")
 }
