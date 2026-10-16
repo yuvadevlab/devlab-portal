@@ -8,17 +8,10 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { Logger } from "@yuva-devlab/logger";
-import { createRequire } from "node:module";
-import type { PrismaClient as PrismaClientType } from "@prisma/client";
-
-const require = createRequire(import.meta.url);
-const { PrismaClient: BasePrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 
 @Injectable()
-export class PrismaService
-  extends (BasePrismaClient as new (args: unknown) => PrismaClientType)
-  implements OnModuleInit, OnModuleDestroy
-{
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger("PrismaService");
   private readonly pool: pg.Pool;
 

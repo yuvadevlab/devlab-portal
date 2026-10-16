@@ -6,9 +6,10 @@
 
 import { Resolver, Query, Args, Int } from "@nestjs/graphql";
 import { UseGuards } from "@nestjs/common";
-import { AuditService } from "./audit.service.js";
-import { AuthGuard } from "../auth/auth.guard.js";
-import { AuditLogType } from "./dto/audit.dto.js";
+import { AuditService } from "./audit.service";
+import { AuthGuard } from "../auth/auth.guard";
+import { AuditLogType } from "./dto/audit.dto";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
 @Resolver(() => AuditLogType)
 export class AuditResolver {
@@ -17,9 +18,10 @@ export class AuditResolver {
   @Query(() => [AuditLogType], { name: "auditLogs" })
   @UseGuards(AuthGuard)
   async getAuditLogs(
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
     @Args("limit", { type: () => Int, defaultValue: 50 }) limit: number,
     @Args("offset", { type: () => Int, defaultValue: 0 }) offset: number,
   ) {
-    return this.auditService.listLogs(limit, offset);
+    return this.auditService.listLogs(limit, offset, user);
   }
 }

@@ -17,10 +17,10 @@ import {
   HttpCode,
   HttpStatus,
 } from "@nestjs/common";
-import { ApiKeysService } from "./api-keys.service.js";
-import { AuthGuard } from "../auth/auth.guard.js";
-import { CreateApiKeyDto } from "./dto/api-key.dto.js";
-import { CurrentUser } from "../../common/decorators/current-user.decorator.js";
+import { ApiKeysService } from "./api-keys.service";
+import { AuthGuard } from "../auth/auth.guard";
+import { CreateApiKeyDto } from "./dto/api-key.dto";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
 @Controller("api/v1/api-keys")
 export class ApiKeysController {
@@ -40,8 +40,11 @@ export class ApiKeysController {
    */
   @Get()
   @UseGuards(AuthGuard)
-  async listApiKeys(@Query("app_id") appId?: string) {
-    return this.apiKeysService.listApiKeys(appId);
+  async listApiKeys(
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
+    @Query("app_id") appId?: string,
+  ) {
+    return this.apiKeysService.listApiKeys(appId, user);
   }
 
   /**
@@ -49,8 +52,11 @@ export class ApiKeysController {
    */
   @Delete(":id")
   @UseGuards(AuthGuard)
-  async revokeApiKey(@CurrentUser() user: { sub: string }, @Param("id") id: string) {
-    return this.apiKeysService.revokeApiKey(id, user.sub);
+  async revokeApiKey(
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
+    @Param("id") id: string,
+  ) {
+    return this.apiKeysService.revokeApiKey(id, user.sub, user);
   }
 
   /**

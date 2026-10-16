@@ -13,7 +13,7 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { Injectable, OnModuleInit } from "@nestjs/common";
-import { RedisService } from "../redis/redis.service.js";
+import { RedisService } from "../redis/redis.service";
 import { Logger } from "@yuva-devlab/logger";
 
 @Injectable()
