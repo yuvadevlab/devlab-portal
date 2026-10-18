@@ -18,6 +18,7 @@ import { RedisService } from "../redis/redis.service";
 import { EventsGateway } from "../websocket/events.gateway";
 import { CreateAppDto, UpdateAppSettingsDto, UpdateAppStatusDto } from "./dto/app.dto";
 import { AuditAction, AuditTargetType, UserRole } from "../../common/constants/enums";
+import { isValidUuid } from "@yuva-devlab/regex";
 import { Logger } from "@yuva-devlab/logger";
 
 @Injectable()
@@ -83,7 +84,9 @@ export class AppsService {
    */
   async getApp(idOrAppId: string, user?: { sub?: string; role?: string; tenant_id?: string }) {
     const app = await this.prisma.registeredApp.findFirst({
-      where: { OR: [{ id: idOrAppId }, { appId: idOrAppId }] },
+      where: isValidUuid(idOrAppId)
+        ? { OR: [{ id: idOrAppId }, { appId: idOrAppId }] }
+        : { appId: idOrAppId },
     });
     if (!app) {
       throw new NotFoundException(`Application "${idOrAppId}" not found`);
@@ -119,9 +122,11 @@ export class AppsService {
         iconUrl: dto.iconUrl ?? null,
         themeColor: dto.themeColor ?? "teal",
         originUrl: dto.originUrl,
+        apiUrl: dto.apiUrl ?? null,
         callbackUrls:
           dto.callbackUrls && dto.callbackUrls.length > 0 ? dto.callbackUrls : [dto.originUrl],
-        healthUrl: dto.healthUrl || `${dto.originUrl}/api/health`,
+        healthUrl:
+          dto.healthUrl || (dto.apiUrl ? `${dto.apiUrl}/health` : `${dto.originUrl}/api/health`),
         environment: (dto.environment as AppEnvironment) || "local_dev",
         isActive: true,
         clientSecretHash: secretHash,
@@ -161,6 +166,7 @@ export class AppsService {
         name: dto.name ?? app.name,
         description: dto.description ?? app.description,
         originUrl: dto.originUrl ?? app.originUrl,
+        apiUrl: dto.apiUrl !== undefined ? dto.apiUrl : app.apiUrl,
         callbackUrls: dto.callbackUrls ?? app.callbackUrls,
         healthUrl: dto.healthUrl ?? app.healthUrl,
         themeColor: dto.themeColor !== undefined ? dto.themeColor : app.themeColor,
