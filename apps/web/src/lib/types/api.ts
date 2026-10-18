@@ -130,3 +130,36 @@ export interface OpenIdConfig {
   token_endpoint: string;
   jwks_uri: string;
 }
+
+/** Operational system telemetry and latency health diagnostics */
+export interface SystemTelemetry {
+  readonly status: string;
+  readonly statusText: string;
+  readonly apiPort: number | string;
+  readonly apiLabel: string;
+  readonly redisStatus: string;
+  readonly isRedisHealthy: boolean;
+  readonly isDbHealthy?: boolean;
+  readonly dbLatencyMs?: number;
+  readonly redisLatencyMs?: number;
+  readonly totalApps?: number;
+  readonly activeApps?: number;
+  readonly activeUsers?: number;
+  readonly uptimeSeconds?: number;
+  readonly version: string;
+  readonly environment: string;
+  readonly environmentLabel: string;
+  readonly docsUrl: string;
+  readonly docsLabel: string;
+}
+
+/** Workspace tenant organization profile */
+export interface Tenant {
+  readonly id: string;
+  readonly name: string;
+  readonly slug: string;
+  readonly plan: string;
+  readonly isActive: boolean;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}

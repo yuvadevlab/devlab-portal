@@ -10,7 +10,7 @@ import React from "react";
 import { ChevronDown, Settings2, LogOut } from "lucide-react";
 import { Button, toast } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import type { UserMember } from "@/lib/api-client";
+import { purgeClientSession, type UserMember } from "@/lib/api-client";
 import { UserRole } from "@/lib/constants/enums";
 
 interface HeaderUserMenuProps {
@@ -43,18 +43,8 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
 
   const handleSignOut = () => {
     onClose();
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.removeItem("devlab_access_token");
-        localStorage.removeItem("devlab_auth_token");
-        localStorage.removeItem("devlab_auth_user");
-        document.cookie = "devlab_access_token=; path=/; max-age=0; SameSite=Lax";
-      } catch {
-        // Ignore storage errors on teardown
-      }
-      toast.info("Signed out of DevLab Portal");
-      window.location.href = "/login";
-    }
+    toast.info("Signed out of DevLab Portal");
+    purgeClientSession();
   };
 
   return (

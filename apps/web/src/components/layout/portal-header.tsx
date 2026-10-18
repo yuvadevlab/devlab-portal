@@ -9,7 +9,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Layers, ChevronDown, Check, Plus } from "lucide-react";
-import { Button, Input } from "@yuva-devlab/ui";
+import { Button, Input, useTheme } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { TabKey, UserRole } from "@/lib/constants/enums";
 import { useAuthMeQuery } from "@/features/auth";
@@ -30,7 +30,13 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   onOpenNewTenant,
   onNavigateTab,
 }) => {
-  const [isLight, setIsLight] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+  const isLight = resolvedTheme === "light";
+
+  const handleToggleTheme = () => {
+    setTheme(isLight ? "dark" : "light");
+  };
+
   const [isTenantMenuOpen, setIsTenantMenuOpen] = useState(false);
   const [tenantSearch, setTenantSearch] = useState("");
   const [activeTenantId, setActiveTenantId] = useState<string>("");
@@ -61,10 +67,6 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
       setActiveTenantId(tenants[0].id);
     }
   }, [tenants, currentUser, activeTenantId]);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", !isLight);
-  }, [isLight]);
 
   const activeTenantObj = tenants.find((t) => t.id === activeTenantId);
   const activeTenantName = activeTenantObj?.name || currentUser?.tenant?.name || "Workspace";
@@ -162,7 +164,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
         auditLogs={auditLogs}
         isLight={isLight}
         currentUser={currentUser}
-        onToggleTheme={() => setIsLight((prev) => !prev)}
+        onToggleTheme={handleToggleTheme}
         onOpenCommand={onOpenCommand}
         onNavigateTab={onNavigateTab}
       />

@@ -9,6 +9,7 @@
 @import "@yuva-devlab/ui/styles.css";
 
 @import "./styles/topbar.css";
+@import "./styles/ecosystem-launcher.css";
 @import "./styles/metrics-grid.css";
 @import "./styles/app-cards.css";
 @import "./styles/app-activity.css";
@@ -55,4 +56,10 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
+}
+
+/* ── Theme-init transition suppressor ──────────────────────────────────── */
+.portal-no-transition * {
+  transition: none !important;
+  animation: none !important;
 }

@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ConfigProvider, Toaster } from "@yuva-devlab/ui";
 import { QueryProvider } from "@/providers";
+import { appearanceScript } from "@/lib/appearance-script";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,11 +36,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
   return (
     <html
       lang="en"
-      className={`dark ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
       data-brand="portal"
       data-theme="portal"
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: appearanceScript }} />
+      </head>
       <body className="bg-background text-foreground selection:bg-primary selection:text-primary-foreground min-h-screen antialiased">
         <ConfigProvider brand="portal" defaultTheme="dark" storageKey="portal-theme">
           <QueryProvider>

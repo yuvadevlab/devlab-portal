@@ -40,7 +40,7 @@ export const AppGrid: React.FC<AppGridProps> = ({
   const environments = [
     { key: "All", label: UI_COPY.APPS.TOOLBAR.ALL_ENVIRONMENTS },
     { key: "production", label: UI_COPY.APPS.TOOLBAR.PRODUCTION },
-    { key: "staging", label: UI_COPY.APPS.TOOLBAR.STAGING },
+    // { key: "staging", label: UI_COPY.APPS.TOOLBAR.STAGING },
     { key: "local_dev", label: UI_COPY.APPS.TOOLBAR.LOCAL_DEV },
   ];
 
