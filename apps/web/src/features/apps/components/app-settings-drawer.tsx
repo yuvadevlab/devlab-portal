@@ -41,6 +41,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [originUrl, setOriginUrl] = useState("");
+  const [apiUrl, setApiUrl] = useState("");
   const [healthUrl, setHealthUrl] = useState("");
   const [callbacks, setCallbacks] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,6 +52,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
       setName(app.name);
       setDescription(app.description || "");
       setOriginUrl(app.originUrl);
+      setApiUrl(app.apiUrl || "");
       setHealthUrl(app.healthUrl);
       setCallbacks(app.callbackUrls || []);
       setSavedSuccess(false);
@@ -70,6 +72,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
         name,
         description,
         originUrl,
+        apiUrl: apiUrl.trim() || undefined,
         healthUrl,
         callbackUrls: filteredCallbacks,
       });
@@ -147,6 +150,20 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
               value={originUrl}
               onChange={(e) => setOriginUrl(e.target.value)}
               required
+              className="h-9 font-mono text-xs"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="drawer-app-api" className="text-xs font-semibold">
+              {UI_COPY.APPS.DRAWER.API_LABEL}
+            </Label>
+            <Input
+              id="drawer-app-api"
+              type="url"
+              value={apiUrl}
+              onChange={(e) => setApiUrl(e.target.value)}
+              placeholder="e.g. http://localhost:4000"
               className="h-9 font-mono text-xs"
             />
           </div>

@@ -8,7 +8,7 @@
  */
 
 import React from "react";
-import { Link2, HeartPulse, ArrowUpRight, Settings2, Power } from "lucide-react";
+import { Link2, HeartPulse, ArrowUpRight, Settings2, Power, Server } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { getNavIcon } from "@/components/layout";
@@ -61,16 +61,24 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
       {/* Description */}
       <p className="app-description">{app.description || UI_COPY.APPS.CARD.NO_DESC}</p>
 
-      {/* Origin URL */}
+      {/* Origin URL (Frontend) */}
       <div className="endpoint">
         <Link2 className="size-3 shrink-0" />
-        <span>{app.originUrl}</span>
+        <span className="truncate">{app.originUrl}</span>
       </div>
+
+      {/* Backend API URL */}
+      {app.apiUrl && (
+        <div className="endpoint">
+          <Server className="size-3 shrink-0" />
+          <span className="truncate">{app.apiUrl}</span>
+        </div>
+      )}
 
       {/* Health Probe & Status Code */}
       <div className="endpoint">
         <HeartPulse className="size-3 shrink-0" />
-        <span>{app.healthUrl || "/health"}</span>
+        <span className="truncate">{app.healthUrl || "/health"}</span>
         <span
           className={`ml-auto font-mono text-[10px] font-semibold ${
             isRoutingActive ? "text-success" : "text-destructive"

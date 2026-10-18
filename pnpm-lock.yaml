@@ -296,6 +296,9 @@ importers:
       '@yuva-devlab/logger':
         specifier: ^1.2.0
         version: 1.2.0
+      '@yuva-devlab/regex':
+        specifier: 0.2.0
+        version: 0.2.0
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -2847,6 +2850,9 @@ packages:
 
   '@yuva-devlab/logger@1.2.0':
     resolution: {integrity: sha512-BbJaY1XXX5cYLvf0ExQZXXLdbydV5b3bBHXXxwG+xBx7mZc5eHOlhYZeZ9XWHn92pWeSQpXAPAh9FSSyuxTfng==}
+
+  '@yuva-devlab/regex@0.2.0':
+    resolution: {integrity: sha512-mU0WYwNweLCgFecNU+bK+/dibOqrnoLoVAuv1ms0DgvEITGZ30dw70A7pFZvRAQhtf1PoQrZcsKdWLT6zbsXhw==}
 
   '@yuva-devlab/tokens@1.2.0':
     resolution: {integrity: sha512-wgt5w0ik5skcUe3nAsQVIOfxsZB6QsE2GWhCxlMEi0XHwqjELnuY7S1aJqU/LtgJBBec5uj1kG+TslvhbazS7g==}
@@ -8965,6 +8971,8 @@ snapshots:
   '@yuva-devlab/errors@0.2.0': {}
 
   '@yuva-devlab/logger@1.2.0': {}
+
+  '@yuva-devlab/regex@0.2.0': {}
 
   '@yuva-devlab/tokens@1.2.0': {}
 

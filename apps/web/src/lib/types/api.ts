@@ -26,6 +26,7 @@ export interface RegisteredApp {
   iconUrl?: string;
   themeColor?: string;
   originUrl: string;
+  apiUrl?: string;
   callbackUrls: string[];
   healthUrl: string;
   environment: string;
@@ -46,6 +47,7 @@ export interface CreateAppPayload {
   description?: string;
   themeColor?: string;
   originUrl: string;
+  apiUrl?: string;
   callbackUrls?: string[];
   healthUrl?: string;
   environment?: string;
@@ -56,6 +58,7 @@ export interface UpdateAppSettingsPayload {
   name?: string;
   description?: string;
   originUrl?: string;
+  apiUrl?: string;
   callbackUrls?: string[];
   healthUrl?: string;
   themeColor?: string;

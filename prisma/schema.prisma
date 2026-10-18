@@ -64,6 +64,7 @@ model RegisteredApp {
   iconUrl          String?        @map("icon_url")
   themeColor       String?        @default("teal") @map("theme_color")
   originUrl        String         @map("origin_url")
+  apiUrl           String?        @map("api_url")
   callbackUrls     String[]       @map("callback_urls")
   healthUrl        String         @map("health_url")
   environment      AppEnvironment @default(local_dev)

@@ -7,6 +7,7 @@
 import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import { PrismaModule } from "./prisma/prisma.module";
 import { RedisModule } from "./modules/redis/redis.module";
 import { AuthModule } from "./modules/auth/auth.module";
@@ -17,6 +18,16 @@ import { WebsocketModule } from "./modules/websocket/websocket.module";
 import { UsersModule } from "./modules/users/users.module";
 import { PlatformModule } from "./modules/platform/platform.module";
 
+const INITIAL_GRAPHQL_DOCUMENT = `# Welcome to DevLab Portal GraphQL Explorer
+query PlaceholderQuery {
+  apps {
+    id
+    name
+    isActive
+  }
+}
+`;
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -25,7 +36,21 @@ import { PlatformModule } from "./modules/platform/platform.module";
       subscriptions: {
         "graphql-ws": true,
       },
-      playground: true,
+      playground: false,
+      plugins: [
+        ApolloServerPluginLandingPageLocalDefault({
+          embed: {
+            initialState: {
+              pollForSchemaUpdates: true,
+              sharedHeaders: {
+                Authorization: "Bearer <PASTE_YOUR_TOKEN_HERE>",
+              },
+            },
+          },
+          includeCookies: true,
+          document: INITIAL_GRAPHQL_DOCUMENT,
+        }),
+      ],
       context: ({ req, res }: { req: unknown; res: unknown }) => ({ req, res }),
     }),
     PrismaModule,

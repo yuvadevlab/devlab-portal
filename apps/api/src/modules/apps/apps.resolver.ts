@@ -9,7 +9,12 @@ import { UseGuards, UnauthorizedException } from "@nestjs/common";
 import { PubSub } from "graphql-subscriptions";
 import { AppsService } from "./apps.service";
 import { AuthGuard } from "../auth/auth.guard";
-import { RegisteredAppType, UpdateAppStatusDto, AppStatusChangedPayload } from "./dto/app.dto";
+import {
+  RegisteredAppType,
+  UpdateAppStatusDto,
+  UpdateAppSettingsDto,
+  AppStatusChangedPayload,
+} from "./dto/app.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
 export const appsPubSub = new PubSub();
@@ -58,6 +63,27 @@ export class AppsResolver {
     });
 
     return updated;
+  }
+
+  /**
+   * Updates application operational configuration, URLs, and metadata.
+   *
+   * @param id - Application UUID or appId
+   * @param input - Target application configuration fields
+   * @param user - Current authenticated principal
+   */
+  @Mutation(() => RegisteredAppType, { name: "updateAppSettings" })
+  @UseGuards(AuthGuard)
+  async updateAppSettings(
+    @Args("id") id: string,
+    @Args("input") input: UpdateAppSettingsDto,
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    if (!user?.sub) {
+      throw new UnauthorizedException("Authenticated user identifier is required");
+    }
+
+    return this.appsService.updateAppSettings(id, input, user);
   }
 
   @Subscription(() => AppStatusChangedPayload, {

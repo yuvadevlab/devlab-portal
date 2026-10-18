@@ -11,6 +11,7 @@ import { PrismaService } from "../../prisma/prisma.service";
 import { RedisService } from "../redis/redis.service";
 import { CreateApiKeyDto } from "./dto/api-key.dto";
 import { UserRole, AuditAction, AuditTargetType } from "../../common/constants/enums";
+import { isValidUuid } from "@yuva-devlab/regex";
 import { Logger } from "@yuva-devlab/logger";
 
 @Injectable()
@@ -27,7 +28,9 @@ export class ApiKeysService {
    */
   async createApiKey(userId: string, dto: CreateApiKeyDto) {
     const app = await this.prisma.registeredApp.findFirst({
-      where: { OR: [{ id: dto.appId }, { appId: dto.appId }] },
+      where: isValidUuid(dto.appId)
+        ? { OR: [{ id: dto.appId }, { appId: dto.appId }] }
+        : { appId: dto.appId },
     });
 
     if (!app) {
