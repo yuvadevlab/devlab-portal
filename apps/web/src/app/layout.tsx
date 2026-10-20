@@ -6,24 +6,11 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
 import { ConfigProvider, Toaster } from "@devlab-portal/ui";
 import { QueryProvider } from "@/providers";
 import { appearanceScript } from "@/lib/appearance-script";
 import { UI_COPY } from "@/lib/ui-copy";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: UI_COPY.COMMON.METADATA.TITLE,
@@ -35,13 +22,7 @@ export const metadata: Metadata = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable}`}
-      data-brand="portal"
-      data-theme="portal"
-      suppressHydrationWarning
-    >
+    <html lang="en" data-brand="portal" data-theme="portal" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: appearanceScript }} />
       </head>

@@ -393,12 +393,18 @@ importers:
       '@devlab-portal/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@fontsource-variable/inter':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/jetbrains-mono':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@tanstack/react-query':
         specifier: ^5.67.2
         version: 5.104.1(react@19.3.0)
       '@yuva-devlab/auth-client':
-        specifier: ^0.3.0
-        version: 0.3.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^1.0.0
+        version: 1.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@yuva-devlab/logger':
         specifier: ^1.2.0
         version: 1.2.0
@@ -878,6 +884,12 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@fontsource-variable/inter@5.3.0':
+    resolution: {integrity: sha512-OupL48va4JNofb97w6NYeF9S7W/kHNKM0Er8Dem5nqi4jeOLrVJDoE8tZEpnMJmtkvNbB1EIPPwHcdkF6b1oUA==}
+
+  '@fontsource-variable/jetbrains-mono@5.3.0':
+    resolution: {integrity: sha512-F32xpS2NsGYoQi2ADSkKTgpJj7ozajsGgDJ8woTnqjmIB+dxDIqImjl4pXZVEExu8UFZ2ndhmX18EBS/hdz3Lw==}
 
   '@graphql-tools/merge@8.4.2':
     resolution: {integrity: sha512-XbrHAaj8yDuINph+sAfuq3QCZ/tKblrTLOpirK0+CAgNlZUCHs0Fa+xtMUURgwCVThLle1AF7svJCxFizygLsw==}
@@ -2867,8 +2879,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  '@yuva-devlab/auth-client@0.3.0':
-    resolution: {integrity: sha512-EjuRdPAsB/PcHgZLMYzTBoUr35OhbzT+AwA7ur3pd4GLzPeCDgQfypaZJwoBs7Opb9RFogcbTU9MJ7mdBba2/A==}
+  '@yuva-devlab/auth-client@1.0.0':
+    resolution: {integrity: sha512-S4NMoiO6oq98FZWIlKQ5yJoJ+w8utaV/EtREAnblL+7slv3SjHdYtP4yCwluNjsyXyVcRKEMm2yDXhxaTJOb7g==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -6853,6 +6865,10 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
+  '@fontsource-variable/inter@5.3.0': {}
+
+  '@fontsource-variable/jetbrains-mono@5.3.0': {}
+
   '@graphql-tools/merge@8.4.2(graphql@16.14.2)':
     dependencies:
       '@graphql-tools/utils': 9.2.1(graphql@16.14.2)
@@ -8988,7 +9004,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@yuva-devlab/auth-client@0.3.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@yuva-devlab/auth-client@1.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@yuva-devlab/errors': 0.2.0
       '@yuva-devlab/logger': 1.2.0
