@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/audit/components/audit-table.tsx
  * @description Immutable security audit ledger table with forensic inspection and JSON export.
- * Fully built with @yuva-devlab/ui Table, Input, Select, Button, and Drawer components.
+ * Fully built with @devlab-portal/ui Table, Input, Select, Button, and Drawer components.
  * @module @devlab/portal-web/features/audit/components/audit-table
  */
 
@@ -23,8 +23,8 @@ import {
   TableHead,
   TableRow,
   TableCell,
-} from "@yuva-devlab/ui";
-import { Heading } from "@/components/layout";
+} from "@devlab-portal/ui";
+import { Heading } from "@devlab-portal/ui";
 import { AuditMetrics } from "./audit-metrics";
 import { AuditInspectorDrawer } from "./audit-inspector-drawer";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -38,7 +38,7 @@ interface AuditTableProps {
 export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [search, setSearch] = useState("");
-  const [actionFilter, setActionFilter] = useState("All");
+  const [actionFilter, setActionFilter] = useState<string>(UI_COPY.COMMON.FILTERS.ALL);
   const [dateFilter, setDateFilter] = useState("");
 
   const standardActions = [
@@ -59,7 +59,7 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
   );
 
   const filteredLogs = logs.filter((l) => {
-    const matchesAction = actionFilter === "All" || l.action === actionFilter;
+    const matchesAction = actionFilter === UI_COPY.COMMON.FILTERS.ALL || l.action === actionFilter;
     const matchesSearch =
       (l.actor?.email || l.actorId).toLowerCase().includes(search.toLowerCase()) ||
       l.targetId.toLowerCase().includes(search.toLowerCase()) ||
@@ -78,14 +78,18 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = "devlab-audit-ledger.json";
+    anchor.download = UI_COPY.AUDIT.HEADER.EXPORT_FILENAME;
     anchor.click();
     URL.revokeObjectURL(url);
   };
 
   return (
     <>
-      <Heading title={UI_COPY.AUDIT.HEADER.TITLE} description={UI_COPY.AUDIT.HEADER.DESCRIPTION}>
+      <Heading
+        title={UI_COPY.AUDIT.HEADER.TITLE}
+        description={UI_COPY.AUDIT.HEADER.DESCRIPTION}
+        eyebrowLabel={UI_COPY.COMMON.HEADER.WORKSPACE}
+      >
         <Button variant="outline" onClick={exportLedger} className="gap-1.5">
           <Download className="size-4" />
           {UI_COPY.AUDIT.HEADER.EXPORT_BTN}
@@ -114,7 +118,9 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="All">{UI_COPY.AUDIT.TOOLBAR.ALL_ACTIONS}</SelectItem>
+                <SelectItem value={UI_COPY.COMMON.FILTERS.ALL}>
+                  {UI_COPY.AUDIT.TOOLBAR.ALL_ACTIONS}
+                </SelectItem>
                 {actions.map((act) => (
                   <SelectItem key={act} value={act}>
                     {act}

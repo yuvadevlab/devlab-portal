@@ -8,7 +8,7 @@
 
 import React from "react";
 import { AlertTriangle } from "lucide-react";
-import { SecretRevealCard } from "@yuva-devlab/ui";
+import { SecretRevealCard } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 
 interface ApiKeyRevealPaneProps {

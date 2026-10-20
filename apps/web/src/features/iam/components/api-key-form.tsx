@@ -14,7 +14,7 @@ import {
   SelectContent,
   SelectItem,
   Checkbox,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { RegisteredApp } from "@/lib/api-client";
 

@@ -3,12 +3,12 @@
 /**
  * @file apps/web/src/features/apps/components/register-wizard/wizard-step-security.tsx
  * @description Step 2 of App Registration Wizard: OAuth2 redirect URIs, CORS origins, and scope grants.
- * Fully built with @yuva-devlab/ui Label, Textarea, and Checkbox components.
+ * Fully built with @devlab-portal/ui Label, Textarea, and Checkbox components.
  * @module @devlab/portal-web/features/apps/components/register-wizard/step2
  */
 
 import React from "react";
-import { Label, Textarea, Checkbox } from "@yuva-devlab/ui";
+import { Label, Textarea, Checkbox } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { ApiKeyScope, buildScope } from "@/lib/constants";
 import type { RegisterWizardFormState } from "@/features/apps/types";

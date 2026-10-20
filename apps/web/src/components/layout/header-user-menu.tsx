@@ -8,7 +8,7 @@
 
 import React from "react";
 import { ChevronDown, Settings2, LogOut } from "lucide-react";
-import { Button, toast } from "@yuva-devlab/ui";
+import { Button, toast } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { purgeClientSession, type UserMember } from "@/lib/api-client";
 import { UserRole } from "@/lib/constants/enums";
@@ -28,7 +28,7 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
   onClose,
   onNavigateSettings,
 }) => {
-  const userName = user?.name || "Member";
+  const userName = user?.name || UI_COPY.COMMON.HEADER.MEMBER_FALLBACK;
   const userEmail = user?.email || "";
   const userRole = user?.role || UserRole.MEMBER;
 
@@ -43,7 +43,7 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
 
   const handleSignOut = () => {
     onClose();
-    toast.info("Signed out of DevLab Portal");
+    toast.info(UI_COPY.COMMON.HEADER.SIGNED_OUT_MESSAGE);
     purgeClientSession();
   };
 

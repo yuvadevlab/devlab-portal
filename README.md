@@ -35,6 +35,12 @@ graph TD
     end
 ```
 
+The web app consumes shared design-system components through `@devlab-portal/ui`. The UI
+package owns reusable presentation components, Tailwind setup, theme/token imports, and Portal
+styles; `apps/web/src/app/globals.css` only imports the package stylesheet. Keep user-facing
+labels, notifications, and accessibility copy in modular dictionaries under
+`apps/web/src/lib/ui-copy/`.
+
 ---
 
 ## 🌟 Key Capabilities
@@ -62,8 +68,9 @@ graph TD
 git clone https://github.com/yuvadevlab/devlab-portal.git
 cd devlab-portal
 
-# Copy environment variables
-cp .env.example .env
+# Configure each app independently
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env.local
 
 # Install dependencies
 pnpm install
@@ -82,7 +89,7 @@ pnpm db:push
 ### 3. Run Development Servers
 
 ```bash
-# Start both Fastify API and Next.js Web Console
+# Start both API and Next.js Web Console
 pnpm dev
 ```
 
@@ -107,6 +114,8 @@ devlab-portal/
 │   │   ├── src/routes/         # Auth, keys, audit, and health check routes
 │   │   └── src/services/       # Key hasher, Redis cache, and kill-switch manager
 │   └── web/                    # Next.js 15 administrative control plane UI
+├── packages/
+│   └── ui/                     # Portal UI facade backed by @yuva-devlab/ui
 ├── prisma/                     # Database schema definitions & migrations
 │   └── schema.prisma           # Tenants, ApiKeys, and AuditEvents models
 ├── .agents/                    # Specialized AI agent definitions

@@ -12,7 +12,7 @@ import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { INITIAL_TENANT, NAVIGATION_ITEMS, AppAccessScope } from "./seed-data";
+import { INITIAL_TENANT, NAVIGATION_ITEMS, AppAccessScope, ECOSYSTEM_APPS } from "./seed-data";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,7 +68,39 @@ async function main(): Promise<void> {
     console.log(`✅ Seeded Navigation Menu Item: [${record.key}] ${record.label}`);
   }
 
-  // 4. Seed Initial Bootstrap Audit Log if not already present
+  // 4. Seed Registered Ecosystem Applications (idempotent upsert)
+  const defaultSecretHash = await bcrypt.hash("devlab_secret_token_default", 10);
+  for (const app of ECOSYSTEM_APPS) {
+    await prisma.registeredApp.upsert({
+      where: { appId: app.appId },
+      update: {
+        name: app.name,
+        originUrl: app.originUrl,
+        apiUrl: app.apiUrl,
+        callbackUrls: [...app.callbackUrls],
+        healthUrl: app.healthUrl,
+        themeColor: app.themeColor,
+      },
+      create: {
+        appId: app.appId,
+        name: app.name,
+        slug: app.slug,
+        description: app.description,
+        originUrl: app.originUrl,
+        apiUrl: app.apiUrl,
+        callbackUrls: [...app.callbackUrls],
+        healthUrl: app.healthUrl,
+        themeColor: app.themeColor,
+        environment: app.environment,
+        isActive: app.isActive,
+        tenantId: tenant.id,
+        clientSecretHash: defaultSecretHash,
+      },
+    });
+    console.log(`✅ Seeded Registered App: [${app.appId}] ${app.name}`);
+  }
+
+  // 5. Seed Initial Bootstrap Audit Log if not already present
   const existingAudit = await prisma.auditLog.findFirst({
     where: { action: "system.bootstrapped", targetId: "Control Plane" },
   });

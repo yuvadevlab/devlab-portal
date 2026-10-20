@@ -9,12 +9,12 @@
 
 import React, { useState } from "react";
 import { Search, Bell, Sun, Moon, Grid2X2, ChevronDown } from "lucide-react";
-import { Button } from "@yuva-devlab/ui";
+import { Button } from "@devlab-portal/ui";
+import { getNavIcon } from "@devlab-portal/ui";
 import { TabKey } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog, UserMember } from "@/lib/api-client";
 import { useAppsQuery } from "@/features/apps";
-import { getNavIcon } from "./nav-icon";
 import { HeaderUserMenu } from "./header-user-menu";
 
 interface HeaderActionsProps {

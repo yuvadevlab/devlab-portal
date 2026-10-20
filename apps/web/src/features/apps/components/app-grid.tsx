@@ -3,13 +3,13 @@
 /**
  * @file apps/web/src/features/apps/components/app-grid.tsx
  * @description Application catalog grid with search filtering, environment tabs, and register card.
- * Fully built with @yuva-devlab/ui Input, Button, and layout primitives.
+ * Fully built with @devlab-portal/ui Input, Button, and layout primitives.
  * @module @devlab/portal-web/features/apps/components/app-grid
  */
 
 import React, { useState } from "react";
 import { Search, Plus } from "lucide-react";
-import { Button, Input } from "@yuva-devlab/ui";
+import { Button, Input } from "@devlab-portal/ui";
 import { AppCard } from "./app-card";
 import { RecentActivity } from "./recent-activity";
 import { TabKey } from "@/lib/constants/enums";
@@ -35,10 +35,10 @@ export const AppGrid: React.FC<AppGridProps> = ({
   onNavigateTab,
 }) => {
   const [search, setSearch] = useState("");
-  const [selectedEnv, setSelectedEnv] = useState<string>("All");
+  const [selectedEnv, setSelectedEnv] = useState<string>(UI_COPY.COMMON.FILTERS.ALL);
 
   const environments = [
-    { key: "All", label: UI_COPY.APPS.TOOLBAR.ALL_ENVIRONMENTS },
+    { key: UI_COPY.COMMON.FILTERS.ALL, label: UI_COPY.APPS.TOOLBAR.ALL_ENVIRONMENTS },
     { key: "production", label: UI_COPY.APPS.TOOLBAR.PRODUCTION },
     // { key: "staging", label: UI_COPY.APPS.TOOLBAR.STAGING },
     { key: "local_dev", label: UI_COPY.APPS.TOOLBAR.LOCAL_DEV },
@@ -50,7 +50,8 @@ export const AppGrid: React.FC<AppGridProps> = ({
       app.appId.toLowerCase().includes(search.toLowerCase()) ||
       (app.description && app.description.toLowerCase().includes(search.toLowerCase()));
 
-    const matchesEnv = selectedEnv === "All" || app.environment === selectedEnv;
+    const matchesEnv =
+      selectedEnv === UI_COPY.COMMON.FILTERS.ALL || app.environment === selectedEnv;
     return matchesSearch && matchesEnv;
   });
 

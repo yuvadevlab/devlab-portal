@@ -1,7 +1,7 @@
 /**
  * @file apps/web/src/features/team/components/team-table.tsx
  * @description Organization members and RBAC role assignments table with hierarchy viewer.
- * Fully built with @yuva-devlab/ui Table, Input, Select, Checkbox, Label, and Button components.
+ * Fully built with @devlab-portal/ui Table, Input, Select, Checkbox, Label, and Button components.
  * @module @devlab/portal-web/features/team/components/team-table
  */
 
@@ -23,8 +23,8 @@ import {
   TableHead,
   TableRow,
   TableCell,
-} from "@yuva-devlab/ui";
-import { Heading } from "@/components/layout";
+} from "@devlab-portal/ui";
+import { Heading } from "@devlab-portal/ui";
 import { RoleHierarchy } from "./role-hierarchy";
 import { UI_COPY } from "@/lib/ui-copy";
 import { UserRole, AppAccessScope } from "@/lib/constants/enums";
@@ -69,7 +69,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({
    */
   const getAppName = (appId: string): string => {
     if (appId === AppAccessScope.ALL) {
-      return "All Applications";
+      return UI_COPY.COMMON.MEMBER.ALL_APPLICATIONS;
     }
     const matched = resolvedApps.find((a) => a.appId === appId || a.id === appId);
     return matched ? matched.name : appId;
@@ -105,7 +105,11 @@ export const TeamTable: React.FC<TeamTableProps> = ({
 
   return (
     <>
-      <Heading title={UI_COPY.TEAM.HEADER.TITLE} description={UI_COPY.TEAM.HEADER.DESCRIPTION}>
+      <Heading
+        title={UI_COPY.TEAM.HEADER.TITLE}
+        description={UI_COPY.TEAM.HEADER.DESCRIPTION}
+        eyebrowLabel={UI_COPY.COMMON.HEADER.WORKSPACE}
+      >
         <Button onClick={onOpenInviteModal}>
           <UserPlus className="mr-1.5 size-4" />
           {UI_COPY.TEAM.HEADER.INVITE_BTN}
@@ -207,7 +211,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({
                         checked={m.isActive}
                         disabled={isSelf}
                         onCheckedChange={() => {}}
-                        aria-label={`Status for ${m.name}`}
+                        aria-label={UI_COPY.TEAM.APP_ACCESS.STATUS_FOR(m.name)}
                       />
                       <Label
                         htmlFor={`status-${m.id}`}
@@ -226,7 +230,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({
                       variant="ghost"
                       size="icon"
                       disabled={isSelf}
-                      aria-label={`Remove ${m.name}`}
+                      aria-label={UI_COPY.TEAM.APP_ACCESS.REMOVE_MEMBER(m.name)}
                       className="text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="text-destructive size-3.5" />

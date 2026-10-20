@@ -7,15 +7,9 @@ import { defineConfig } from "prisma/config";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const candidatePaths = [path.resolve(__dirname, ".env"), path.resolve(__dirname, "apps/api/.env")];
-
-for (const envPath of candidatePaths) {
-  if (fs.existsSync(envPath)) {
-    dotenv.config({ path: envPath, override: true });
-    if (process.env.DATABASE_URL) {
-      break;
-    }
-  }
+const apiEnvPath = path.resolve(__dirname, "apps/api/.env");
+if (fs.existsSync(apiEnvPath)) {
+  dotenv.config({ path: apiEnvPath, override: false });
 }
 
 export default defineConfig({

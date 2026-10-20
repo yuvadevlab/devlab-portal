@@ -9,10 +9,12 @@
 import React, { useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { SignIn } from "@yuva-devlab/auth-client";
+import { API_BASE_URL } from "@/lib/api-client";
+import { UI_COPY } from "@/lib/ui-copy";
 
 function LoginForm(): React.JSX.Element {
   const searchParams = useSearchParams();
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3015";
+  const apiBaseUrl = API_BASE_URL;
 
   const appParam = searchParams.get("app") || searchParams.get("brand") || undefined;
   const redirectParam = searchParams.get("redirect") || "/";
@@ -70,7 +72,7 @@ export const LoginView: React.FC = () => {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center">
-          <div className="text-muted-foreground text-sm">Loading…</div>
+          <div className="text-muted-foreground text-sm">{UI_COPY.AUTH.RESET_PASSWORD.LOADING}</div>
         </div>
       }
     >

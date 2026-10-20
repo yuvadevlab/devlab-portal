@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/components/layout/tenant-modal.tsx
  * @description Modal dialog for creating and switching to a new workspace tenant identity.
- * Fully built with @yuva-devlab/ui Dialog, Label, Input, and Button primitives.
+ * Fully built with @devlab-portal/ui Dialog, Label, Input, and Button primitives.
  * @module @devlab/portal-web/components/layout/tenant-modal
  */
 
@@ -20,7 +20,7 @@ import {
   Label,
   Input,
   Button,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 
 interface TenantModalProps {

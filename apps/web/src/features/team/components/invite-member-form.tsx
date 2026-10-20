@@ -15,7 +15,7 @@ import {
   SelectContent,
   SelectItem,
   Checkbox,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { UserRole } from "@/lib/constants/enums";
 import type { RegisteredApp } from "@/lib/api-client";
@@ -137,14 +137,14 @@ export const InviteMemberForm: React.FC<InviteMemberFormProps> = ({
 
       {/* Scoped App Access Checklist */}
       <div className="space-y-1.5 pt-1">
-        <Label className="text-xs font-semibold">Authorized Applications</Label>
+        <Label className="text-xs font-semibold">{UI_COPY.TEAM.MODAL.APPLICATIONS_LABEL}</Label>
         <p className="text-muted-foreground text-[11px]">
-          Designate which ecosystem applications this member can access via Single Sign-On.
+          {UI_COPY.TEAM.MODAL.APPLICATIONS_DESCRIPTION}
         </p>
         <div className="bg-secondary/40 border-border grid grid-cols-2 gap-2.5 rounded-lg border p-2.5">
           {apps.length === 0 ? (
             <p className="text-muted-foreground col-span-2 text-xs italic">
-              No registered applications found in this workspace.
+              {UI_COPY.TEAM.MODAL.NO_APPLICATIONS}
             </p>
           ) : (
             apps.map((app) => (

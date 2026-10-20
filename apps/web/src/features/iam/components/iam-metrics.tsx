@@ -8,7 +8,7 @@
 
 import React from "react";
 import { KeyRound, Activity, ShieldCheck, Zap } from "lucide-react";
-import { MetricsBar, type MetricItem } from "@/components/layout";
+import { MetricsBar, type MetricItem } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { ApiKey } from "@/features/iam/types";
 

@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/apps/components/register-wizard/register-app-modal.tsx
  * @description 3-step registration wizard orchestrator for onboarding new microservices into DevLab.
- * Fully built with @yuva-devlab/ui Dialog and Button components.
+ * Fully built with @devlab-portal/ui Dialog and Button components.
  * @module @devlab/portal-web/features/apps/components/register-wizard
  */
 
@@ -18,7 +18,7 @@ import {
   DialogDescription,
   DialogBody,
   DialogFooter,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { logger } from "@/lib/logger";
 import { UI_COPY } from "@/lib/ui-copy";
 import { AppEnvironment } from "@/lib/constants";

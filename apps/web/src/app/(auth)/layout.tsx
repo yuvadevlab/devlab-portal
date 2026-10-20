@@ -6,6 +6,7 @@
 
 import React from "react";
 import { Layers } from "lucide-react";
+import { UI_COPY } from "@/lib/ui-copy";
 
 interface AuthLayoutProps {
   readonly children: React.ReactNode;
@@ -18,7 +19,9 @@ export default function AuthLayout({ children }: AuthLayoutProps): React.JSX.Ele
         <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-lg shadow-md">
           <Layers className="size-5" />
         </span>
-        <span className="text-foreground text-xl font-bold tracking-tight">Yuva DevLab</span>
+        <span className="text-foreground text-xl font-bold tracking-tight">
+          {UI_COPY.AUTH.BRAND}
+        </span>
       </div>
       {children}
     </div>

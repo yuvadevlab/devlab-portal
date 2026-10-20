@@ -7,9 +7,10 @@
 import React from "react";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { ConfigProvider, Toaster } from "@yuva-devlab/ui";
+import { ConfigProvider, Toaster } from "@devlab-portal/ui";
 import { QueryProvider } from "@/providers";
 import { appearanceScript } from "@/lib/appearance-script";
+import { UI_COPY } from "@/lib/ui-copy";
 import "./globals.css";
 
 const inter = Inter({
@@ -25,8 +26,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DevLab Portal — Ecosystem Control Plane",
-  description: "Unified IAM, Kill-Switch, and App Launcher for DevLab Micro-Frontend Swarms",
+  title: UI_COPY.COMMON.METADATA.TITLE,
+  description: UI_COPY.COMMON.METADATA.DESCRIPTION,
 };
 
 /**
