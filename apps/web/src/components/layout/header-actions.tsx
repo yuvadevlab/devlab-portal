@@ -73,31 +73,40 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
           <Grid2X2 className="size-4" />
         </Button>
         {activeMenu === "apps" && (
-          <div className="pop-menu">
-            <p className="text-muted-foreground px-2 py-1 text-[10px] font-semibold tracking-wider uppercase">
-              {UI_COPY.COMMON.HEADER.ECOSYSTEM_HEADER}
-            </p>
-            <div className="mt-1 grid grid-cols-2 gap-1">
+          <div className="pop-menu ecosystem-popmenu">
+            <div className="flex items-center justify-between p-1">
+              <p className="text-muted-foreground text-[10px] font-semibold tracking-wider uppercase">
+                {UI_COPY.COMMON.HEADER.ECOSYSTEM_HEADER}
+              </p>
+              <span className="text-muted-foreground text-[10px] font-medium">
+                {registeredApps.length}
+              </span>
+            </div>
+            <div className="ecosystem-grid">
               {registeredApps.map((app) => {
                 const IconComponent = getNavIcon(app.iconUrl);
                 return (
-                  <Button
+                  <button
                     key={app.id || app.appId}
-                    variant="ghost"
-                    className="h-16 flex-col gap-1 text-xs"
+                    type="button"
+                    className="ecosystem-app-btn group"
                     onClick={() => {
                       window.open(app.originUrl, "_blank", "noopener,noreferrer");
                       setActiveMenu("");
                     }}
+                    title={`${app.name} (${app.originUrl})`}
                   >
-                    <IconComponent className="text-primary size-4" />
-                    <span className="max-w-25 truncate">{app.name}</span>
-                  </Button>
+                    <div className="ecosystem-icon-wrapper">
+                      <IconComponent className="size-4" />
+                    </div>
+                    <span className="ecosystem-app-title">{app.name}</span>
+                    <span className="ecosystem-app-sub">{app.appId}</span>
+                  </button>
                 );
               })}
               {registeredApps.length === 0 && (
-                <div className="text-muted-foreground col-span-2 py-3 text-center text-xs">
-                  No ecosystem apps registered
+                <div className="text-muted-foreground col-span-2 py-6 text-center text-xs">
+                  {UI_COPY.COMMON.HEADER.NO_APPS}
                 </div>
               )}
             </div>

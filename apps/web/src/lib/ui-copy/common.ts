@@ -63,6 +63,7 @@ export const COMMON_COPY = {
     SEARCH_LABEL: "Search portal",
     ECOSYSTEM_LAUNCHER: "Ecosystem launcher",
     ECOSYSTEM_HEADER: "DevLab Ecosystem",
+    NO_APPS: "No ecosystem apps registered",
     NOTIFICATIONS: "Notifications",
     DARK_MODE: "Switch to dark mode",
     LIGHT_MODE: "Switch to light mode",

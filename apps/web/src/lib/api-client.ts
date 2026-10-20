@@ -1,43 +1,13 @@
-export interface SystemTelemetry {
-  readonly status: string;
-  readonly statusText: string;
-  readonly apiPort: number | string;
-  readonly apiLabel: string;
-  readonly redisStatus: string;
-  readonly isRedisHealthy: boolean;
-  readonly isDbHealthy?: boolean;
-  readonly dbLatencyMs?: number;
-  readonly redisLatencyMs?: number;
-  readonly totalApps?: number;
-  readonly activeApps?: number;
-  readonly activeUsers?: number;
-  readonly uptimeSeconds?: number;
-  readonly version: string;
-  readonly environment: string;
-  readonly environmentLabel: string;
-  readonly docsUrl: string;
-  readonly docsLabel: string;
-}
-
-export interface Tenant {
-  readonly id: string;
-  readonly name: string;
-  readonly slug: string;
-  readonly plan: string;
-  readonly isActive: boolean;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-}
-
 /**
  * @file apps/web/src/lib/api-client.ts
- * @description Centralized API client utility with bearer token auto-bootstrap and real-time Socket.IO subscriptions.
+ * @description Centralized API client utility with bearer token auto-bootstrap, mutex 401 guarding, and real-time Socket.IO.
  * @module @devlab/portal-web/lib/api-client
  */
 
 import { io, Socket } from "socket.io-client";
 import { API_ROUTES } from "@/lib/constants/routes";
 import { HttpMethod } from "@/lib/constants/enums";
+import { isJwtExpired } from "@/lib/jwt";
 import type {
   NavigationItem,
   RegisteredApp,
@@ -48,6 +18,8 @@ import type {
   UserMember,
   JwksData,
   OpenIdConfig,
+  SystemTelemetry,
+  Tenant,
 } from "@/lib/types/api";
 
 export * from "@/lib/types/api";
@@ -55,9 +27,11 @@ export * from "@/lib/types/api";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3015";
 
 let cachedToken: string | null = null;
+let isPurgingSession = false;
 
 /**
  * Retrieves valid authentication token from browser storage or cookie.
+ * Preemptively clears expired tokens without making dead network requests.
  */
 function getAuthToken(): string {
   if (typeof window === "undefined") {
@@ -65,12 +39,20 @@ function getAuthToken(): string {
   }
 
   if (cachedToken) {
+    if (isJwtExpired(cachedToken)) {
+      purgeClientSession();
+      return "";
+    }
     return cachedToken;
   }
 
   try {
     const stored = window.localStorage.getItem("devlab_access_token");
     if (stored && stored.trim().length > 0) {
+      if (isJwtExpired(stored)) {
+        purgeClientSession();
+        return "";
+      }
       cachedToken = stored.trim();
       return cachedToken;
     }
@@ -79,10 +61,14 @@ function getAuthToken(): string {
   }
 
   try {
-    const match = document.cookie.match(/(?:^|;\\s*)devlab_access_token=([^;]+)/);
+    const match = document.cookie.match(/(?:^|;\s*)devlab_access_token=([^;]+)/);
     if (match && match[1]) {
       const decoded = decodeURIComponent(match[1]).trim();
       if (decoded.length > 0) {
+        if (isJwtExpired(decoded)) {
+          purgeClientSession();
+          return "";
+        }
         cachedToken = decoded;
         return cachedToken;
       }
@@ -95,10 +81,15 @@ function getAuthToken(): string {
 }
 
 /**
- * Clears client session tokens and triggers redirection to /login.
+ * Clears client session tokens and triggers redirection to /login with mutex protection.
  */
 export function purgeClientSession(): void {
+  if (isPurgingSession) {
+    return;
+  }
+  isPurgingSession = true;
   cachedToken = null;
+
   if (typeof window !== "undefined") {
     try {
       window.localStorage.removeItem("devlab_access_token");
@@ -115,8 +106,12 @@ export function purgeClientSession(): void {
   }
 }
 
-/** Standard fetch wrapper with JSON serialization, bearer auth, and 401 interception */
+/** Standard fetch wrapper with JSON serialization, bearer auth, and short-circuit 401 interception */
 async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  if (isPurgingSession) {
+    throw new Error("Session expired. Redirecting to login...");
+  }
+
   const token = getAuthToken();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
