@@ -81,7 +81,7 @@ export const COMMON_COPY = {
     MAIN_NAVIGATION: "Main navigation",
   },
   FOOTER: {
-    API: "API :3015",
+    API: "API :4000",
     REDIS: "Redis active",
     DOCS: "Docs",
     APPS_ACTIVE: "Apps Active",

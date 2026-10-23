@@ -403,8 +403,8 @@ importers:
         specifier: ^5.67.2
         version: 5.104.1(react@19.3.0)
       '@yuva-devlab/auth-client':
-        specifier: ^1.0.0
-        version: 1.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^1.0.1
+        version: 1.0.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@yuva-devlab/logger':
         specifier: ^1.2.0
         version: 1.2.0
@@ -2879,8 +2879,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  '@yuva-devlab/auth-client@1.0.0':
-    resolution: {integrity: sha512-S4NMoiO6oq98FZWIlKQ5yJoJ+w8utaV/EtREAnblL+7slv3SjHdYtP4yCwluNjsyXyVcRKEMm2yDXhxaTJOb7g==}
+  '@yuva-devlab/auth-client@1.0.1':
+    resolution: {integrity: sha512-4f51GRj+1G7VQwHMxDti++Xrjn5IU/Hja/uL6dqomv20OKc8DMWVZ85rRPuRyXlFV6tFPjgYe1SR3Q++7rrfBA==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -9004,7 +9004,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@yuva-devlab/auth-client@1.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@yuva-devlab/auth-client@1.0.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@yuva-devlab/errors': 0.2.0
       '@yuva-devlab/logger': 1.2.0

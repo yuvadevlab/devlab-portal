@@ -25,7 +25,7 @@ import type {
 export * from "@/lib/types/api";
 
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL || "http://localhost:3015";
+  process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL || "http://localhost:4000";
 
 let cachedToken: string | null = null;
 let isPurgingSession = false;
