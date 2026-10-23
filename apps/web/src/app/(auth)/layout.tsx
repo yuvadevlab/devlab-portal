@@ -5,25 +5,11 @@
  */
 
 import React from "react";
-import { Layers } from "lucide-react";
-import { UI_COPY } from "@/lib/ui-copy";
 
 interface AuthLayoutProps {
   readonly children: React.ReactNode;
 }
 
 export default function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
-  return (
-    <div className="bg-background flex min-h-screen flex-col items-center justify-center p-6">
-      <div className="mb-8 flex items-center gap-2">
-        <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-lg shadow-md">
-          <Layers className="size-5" />
-        </span>
-        <span className="text-foreground text-xl font-bold tracking-tight">
-          {UI_COPY.AUTH.BRAND}
-        </span>
-      </div>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }

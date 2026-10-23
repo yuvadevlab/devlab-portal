@@ -8,6 +8,7 @@
 
 import React, { useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { Layers } from "lucide-react";
 import { SignIn } from "@yuva-devlab/auth-client";
 import { API_BASE_URL } from "@/lib/api-client";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -51,19 +52,24 @@ function LoginForm(): React.JSX.Element {
   }, [appParam, redirectParam]);
 
   return (
-    <div
-      data-brand={appParam}
-      data-theme={appParam}
-      className="flex min-h-screen items-center justify-center p-4 transition-colors"
-    >
-      <SignIn
-        apiBaseUrl={apiBaseUrl}
-        brand={appParam}
-        theme={appParam}
-        onSuccess={handleSuccess}
-        forgotPasswordUrl={forgotPasswordUrl}
-      />
-    </div>
+    <SignIn
+      apiBaseUrl={apiBaseUrl}
+      brand={appParam ?? "portal"}
+      theme={appParam ?? "portal"}
+      onSuccess={handleSuccess}
+      forgotPasswordUrl={forgotPasswordUrl}
+      logo={
+        <div className="flex items-center gap-2">
+          <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-lg shadow-md">
+            <Layers className="size-5" />
+          </span>
+          <span className="text-foreground text-xl font-bold tracking-tight">
+            {UI_COPY.AUTH.BRAND}
+          </span>
+        </div>
+      }
+      fullPage
+    />
   );
 }
 

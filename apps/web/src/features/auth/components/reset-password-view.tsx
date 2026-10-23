@@ -9,7 +9,7 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Lock, Loader2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Layers, Lock, Loader2 } from "lucide-react";
 import { Button, Input, Label } from "@devlab-portal/ui";
 import { API_BASE_URL } from "@/lib/api-client";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -170,29 +170,39 @@ export const ResetPasswordView: React.FC = () => {
   const copy = UI_COPY.AUTH.RESET_PASSWORD;
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-foreground text-xl font-bold tracking-tight">
-          {copy.SET_ACCOUNT_TITLE}
-        </h2>
-        <p className="text-muted-foreground mt-1 text-xs">{copy.SET_ACCOUNT_DESCRIPTION}</p>
-      </div>
+    <main className="bg-background text-foreground flex min-h-dvh w-full items-center justify-center overflow-y-auto px-4 py-8">
+      <div className="w-full max-w-md space-y-6">
+        <div className="mb-8 flex items-center justify-center gap-2">
+          <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-lg shadow-md">
+            <Layers className="size-5" />
+          </span>
+          <span className="text-foreground text-xl font-bold tracking-tight">
+            {UI_COPY.AUTH.BRAND}
+          </span>
+        </div>
+        <div className="text-center">
+          <h2 className="text-foreground text-xl font-bold tracking-tight">
+            {copy.SET_ACCOUNT_TITLE}
+          </h2>
+          <p className="text-muted-foreground mt-1 text-xs">{copy.SET_ACCOUNT_DESCRIPTION}</p>
+        </div>
 
-      <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
-        <Suspense fallback={<div className="text-muted-foreground text-xs">{copy.LOADING}</div>}>
-          <ResetPasswordForm />
-        </Suspense>
-      </div>
+        <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
+          <Suspense fallback={<div className="text-muted-foreground text-xs">{copy.LOADING}</div>}>
+            <ResetPasswordForm />
+          </Suspense>
+        </div>
 
-      <div className="text-center">
-        <Link
-          href="/login"
-          className="text-primary hover:text-primary/80 inline-flex items-center gap-1.5 text-xs font-medium"
-        >
-          <ArrowLeft className="size-3.5" />
-          {copy.BACK_TO_SIGN_IN}
-        </Link>
+        <div className="text-center">
+          <Link
+            href="/login"
+            className="text-primary hover:text-primary/80 inline-flex items-center gap-1.5 text-xs font-medium"
+          >
+            <ArrowLeft className="size-3.5" />
+            {copy.BACK_TO_SIGN_IN}
+          </Link>
+        </div>
       </div>
-    </div>
+    </main>
   );
 };
