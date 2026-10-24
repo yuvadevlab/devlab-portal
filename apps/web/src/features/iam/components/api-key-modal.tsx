@@ -17,7 +17,7 @@ import {
   DialogBody,
   DialogFooter,
   toast,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { ApiKeyScope, buildScope } from "@/lib/constants";
 import type { RegisteredApp } from "@/lib/api-client";
@@ -90,13 +90,14 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
     });
 
     toast.promise(promise, {
-      loading: `Generating API key "${name}"...`,
+      loading: UI_COPY.IAM.MODAL.GENERATING_TOAST(name),
       success: (res) => {
         setGeneratedKey(res.rawKey);
         onSuccess();
-        return `API key "${name}" generated successfully`;
+        return UI_COPY.IAM.MODAL.GENERATED_TOAST(name);
       },
-      error: (err: unknown) => (err instanceof Error ? err.message : "Failed to generate API key"),
+      error: (err: unknown) =>
+        err instanceof Error ? err.message : UI_COPY.IAM.MODAL.GENERATE_FAILED,
     });
   };
 

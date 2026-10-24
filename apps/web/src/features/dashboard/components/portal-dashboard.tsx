@@ -8,7 +8,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { PortalHeader, PortalNavbar, PortalFooter } from "@/components/layout";
+import { NavigationBar } from "@devlab-portal/ui";
+import { PortalHeader, PortalFooter } from "@/components/layout";
+import { UI_COPY } from "@/lib/ui-copy";
 import { getSocket } from "@/lib/api-client";
 import { SOCKET_EVENTS } from "@/lib/constants/routes";
 import type { RegisteredApp } from "@/lib/api-client";
@@ -113,11 +115,12 @@ export function PortalDashboard(): React.JSX.Element {
         onNavigateTab={setActiveTab}
       />
 
-      <PortalNavbar
+      <NavigationBar
         items={navigationItems}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
-        appsCount={apps.length}
+        ariaLabel={UI_COPY.COMMON.A11Y.MAIN_NAVIGATION}
+        countForItem={(item) => (item.key === "apps" ? apps.length : undefined)}
       />
 
       <DashboardTabsContent

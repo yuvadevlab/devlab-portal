@@ -6,19 +6,8 @@
 
 import dotenv from "dotenv";
 import path from "node:path";
-import fs from "node:fs";
 
-// Load environment variables from local or parent directory
-const candidateEnvs = [
-  path.resolve(process.cwd(), ".env"),
-  path.resolve(process.cwd(), "../../.env"),
-];
-for (const p of candidateEnvs) {
-  if (fs.existsSync(p)) {
-    dotenv.config({ path: p, override: false });
-    if (process.env.DATABASE_URL) break;
-  }
-}
+dotenv.config({ path: path.resolve(__dirname, "../.env"), override: false });
 
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";

@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/apps/components/kill-switch-modal.tsx
  * @description Confirmation modal for severing or restoring microservice routing and tokens.
- * Fully built with @yuva-devlab/ui Dialog, Label, Textarea, and Button components.
+ * Fully built with @devlab-portal/ui Dialog, Label, Textarea, and Button components.
  * @module @devlab/portal-web/features/apps/components/kill-switch-modal
  */
 
@@ -20,7 +20,7 @@ import {
   DialogDescription,
   DialogBody,
   DialogFooter,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { logger } from "@/lib/logger";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { RegisteredApp } from "@/features/apps/types";

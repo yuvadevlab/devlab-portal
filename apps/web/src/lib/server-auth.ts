@@ -5,6 +5,7 @@
  */
 
 import { cookies } from "next/headers";
+import { isJwtExpired } from "./jwt";
 
 export interface ServerAuthSession {
   token: string;
@@ -12,16 +13,17 @@ export interface ServerAuthSession {
 
 /**
  * Reads and verifies presence of active session token from Next.js request cookies.
+ * Preemptively rejects expired or corrupted tokens to prevent 401 cascading during SSR prefetching.
  *
- * @returns Active session token object, or null if unauthenticated
+ * @returns Active session token object, or null if unauthenticated or expired
  */
 export async function getServerAuth(): Promise<ServerAuthSession | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("devlab_access_token")?.value;
+  const token = cookieStore.get("devlab_access_token")?.value?.trim();
 
-  if (!token || token.trim().length === 0) {
+  if (!token || isJwtExpired(token)) {
     return null;
   }
 
-  return { token: token.trim() };
+  return { token };
 }

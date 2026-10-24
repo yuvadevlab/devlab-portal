@@ -20,7 +20,7 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { logger } from "@/lib/logger";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { RegisteredApp, UpdateAppSettingsPayload } from "@/features/apps/types";
@@ -41,6 +41,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [originUrl, setOriginUrl] = useState("");
+  const [apiUrl, setApiUrl] = useState("");
   const [healthUrl, setHealthUrl] = useState("");
   const [callbacks, setCallbacks] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,6 +52,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
       setName(app.name);
       setDescription(app.description || "");
       setOriginUrl(app.originUrl);
+      setApiUrl(app.apiUrl || "");
       setHealthUrl(app.healthUrl);
       setCallbacks(app.callbackUrls || []);
       setSavedSuccess(false);
@@ -70,6 +72,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
         name,
         description,
         originUrl,
+        apiUrl: apiUrl.trim() || undefined,
         healthUrl,
         callbackUrls: filteredCallbacks,
       });
@@ -152,6 +155,20 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
           </div>
 
           <div className="space-y-1.5">
+            <Label htmlFor="drawer-app-api" className="text-xs font-semibold">
+              {UI_COPY.APPS.DRAWER.API_LABEL}
+            </Label>
+            <Input
+              id="drawer-app-api"
+              type="url"
+              value={apiUrl}
+              onChange={(e) => setApiUrl(e.target.value)}
+              placeholder={UI_COPY.APPS.DRAWER.API_PLACEHOLDER}
+              className="h-9 font-mono text-xs"
+            />
+          </div>
+
+          <div className="space-y-1.5">
             <Label htmlFor="drawer-app-health" className="text-xs font-semibold">
               {UI_COPY.APPS.DRAWER.HEALTH_LABEL}
             </Label>
@@ -180,7 +197,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    aria-label="Remove callback URL"
+                    aria-label={UI_COPY.APPS.DRAWER.REMOVE_CALLBACK_ARIA}
                     className="text-destructive hover:bg-destructive/10 shrink-0"
                     onClick={() => handleRemoveCallback(i)}
                   >

@@ -6,13 +6,15 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import { ConfigProvider, Toaster } from "@yuva-devlab/ui";
+import { ConfigProvider, Toaster } from "@devlab-portal/ui";
 import { QueryProvider } from "@/providers";
+import { appearanceScript } from "@/lib/appearance-script";
+import { UI_COPY } from "@/lib/ui-copy";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "DevLab Portal — Ecosystem Control Plane",
-  description: "Unified IAM, Kill-Switch, and App Launcher for DevLab Micro-Frontend Swarms",
+  title: UI_COPY.COMMON.METADATA.TITLE,
+  description: UI_COPY.COMMON.METADATA.DESCRIPTION,
 };
 
 /**
@@ -20,13 +22,10 @@ export const metadata: Metadata = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
-    <html
-      lang="en"
-      className="dark"
-      data-brand="portal"
-      data-theme="portal"
-      suppressHydrationWarning
-    >
+    <html lang="en" data-brand="portal" data-theme="portal" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: appearanceScript }} />
+      </head>
       <body className="bg-background text-foreground selection:bg-primary selection:text-primary-foreground min-h-screen antialiased">
         <ConfigProvider brand="portal" defaultTheme="dark" storageKey="portal-theme">
           <QueryProvider>

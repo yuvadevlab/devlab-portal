@@ -1,0 +1,97 @@
+/**
+ * @file packages/ui/src/styles/ecosystem-launcher.css
+ * @description Ecosystem App Launcher popover grid, app tiles, icon badges, and micro-interactions.
+ */
+
+.pop-menu.ecosystem-popmenu {
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  padding: 12px;
+}
+
+.ecosystem-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ecosystem-app-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 84px !important;
+  min-height: 84px !important;
+  padding: 10px 8px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  text-decoration: none;
+}
+
+.ecosystem-app-btn:hover {
+  background: var(--accent) !important;
+  border-color: var(--primary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.ecosystem-app-btn:active {
+  transform: translateY(0);
+}
+
+.ecosystem-app-btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.ecosystem-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  color: var(--primary);
+  margin-bottom: 6px;
+  flex-shrink: 0;
+  transition: transform 0.18s ease;
+}
+
+.ecosystem-app-btn:hover .ecosystem-icon-wrapper {
+  transform: scale(1.08);
+  background: color-mix(in oklch, var(--primary) 22%, transparent);
+}
+
+.ecosystem-app-title {
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--foreground);
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+  line-height: 1.25;
+}
+
+.ecosystem-app-sub {
+  font-size: 9px;
+  color: var(--muted-foreground);
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}

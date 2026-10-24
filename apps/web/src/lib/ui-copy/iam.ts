@@ -64,5 +64,8 @@ export const IAM_COPY = {
     SECRET_TITLE: "Your API Secret Key",
     SECRET_WARNING:
       "Save this secret key immediately. It is shown only once and cannot be recovered.",
+    GENERATING_TOAST: (name: string) => `Generating API key "${name}"...`,
+    GENERATED_TOAST: (name: string) => `API key "${name}" generated successfully`,
+    GENERATE_FAILED: "Failed to generate API key",
   },
 } as const;

@@ -6,13 +6,6 @@
 
 export * from "./portal-header";
 export * from "./header-actions";
-export * from "./portal-navbar";
 export * from "./portal-footer";
-export * from "./command-dialog";
 export * from "./tenant-modal";
-export * from "./heading";
-export * from "./metrics-bar";
-export * from "./navbar";
-export * from "./tab-nav";
 export * from "./header-user-menu";
-export * from "./nav-icon";

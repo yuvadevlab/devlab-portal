@@ -50,6 +50,11 @@ export class CreateAppDto {
   @IsNotEmpty()
   originUrl!: string;
 
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  apiUrl?: string;
+
   @Field(() => [String], { nullable: true })
   @IsArray()
   @IsOptional()
@@ -92,6 +97,11 @@ export class UpdateAppSettingsDto {
   @IsString()
   @IsOptional()
   originUrl?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  apiUrl?: string;
 
   @Field(() => [String], { nullable: true })
   @IsArray()
@@ -147,6 +157,9 @@ export class RegisteredAppType {
 
   @Field()
   originUrl!: string;
+
+  @Field({ nullable: true })
+  apiUrl?: string;
 
   @Field(() => [String])
   callbackUrls!: string[];

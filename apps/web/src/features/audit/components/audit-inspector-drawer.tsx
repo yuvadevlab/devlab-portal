@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/audit/components/audit-inspector-drawer.tsx
  * @description Slide-over inspection drawer for deep forensic analysis of raw JSON event payloads.
- * Fully built with @yuva-devlab/ui Sheet, Label, CopyButton, and Button primitives.
+ * Fully built with @devlab-portal/ui Sheet, Label, CopyButton, and Button primitives.
  * @module @devlab/portal-web/features/audit/components/audit-inspector-drawer
  */
 
@@ -19,7 +19,7 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
 

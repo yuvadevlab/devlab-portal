@@ -1,9 +1,9 @@
 "use client";
 
 /**
- * @file apps/web/src/components/layout/metrics-bar.tsx
+ * @file packages/ui/src/components/metrics-bar.tsx
  * @description Connected 4-column metric cards grid with positive growth telemetry indicators.
- * @module @devlab/portal-web/components/layout/metrics-bar
+ * @module @devlab-portal/ui/components/metrics-bar
  */
 
 import React from "react";

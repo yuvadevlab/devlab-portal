@@ -19,6 +19,7 @@ import { KeypairService } from "./keys/keypair.service";
 import { AuthorizeDto, TokenDto } from "./dto/auth.dto";
 import { Logger } from "@yuva-devlab/logger";
 import { UserRole, AppAccessScope } from "../../common/constants/enums";
+import { isValidUuid } from "@yuva-devlab/regex";
 
 @Injectable()
 export class OAuthService {
@@ -35,7 +36,9 @@ export class OAuthService {
    */
   async authorize(dto: AuthorizeDto, userId: string) {
     const app = await this.prisma.registeredApp.findFirst({
-      where: { OR: [{ appId: dto.client_id }, { id: dto.client_id }] },
+      where: isValidUuid(dto.client_id)
+        ? { OR: [{ appId: dto.client_id }, { id: dto.client_id }] }
+        : { appId: dto.client_id },
     });
 
     if (!app || !app.isActive) {
@@ -171,7 +174,9 @@ export class OAuthService {
     }
 
     const app = await this.prisma.registeredApp.findFirst({
-      where: { OR: [{ appId: dto.client_id }, { id: dto.client_id }] },
+      where: isValidUuid(dto.client_id)
+        ? { OR: [{ appId: dto.client_id }, { id: dto.client_id }] }
+        : { appId: dto.client_id },
     });
 
     if (!app || !app.isActive) {

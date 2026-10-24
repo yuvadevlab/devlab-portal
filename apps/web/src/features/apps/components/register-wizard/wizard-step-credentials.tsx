@@ -3,13 +3,13 @@
 /**
  * @file apps/web/src/features/apps/components/register-wizard/wizard-step-credentials.tsx
  * @description Step 3 of App Registration Wizard: Reveal generated Client ID and one-time secret.
- * Fully built with @yuva-devlab/ui SecretRevealCard, Label, and CopyButton primitives.
+ * Fully built with @devlab-portal/ui SecretRevealCard, Label, and CopyButton primitives.
  * @module @devlab/portal-web/features/apps/components/register-wizard/step3
  */
 
 import React from "react";
 import { CheckCircle2, AlertTriangle } from "lucide-react";
-import { SecretRevealCard, CopyButton, Label } from "@yuva-devlab/ui";
+import { SecretRevealCard, CopyButton, Label } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 
 interface WizardStepCredentialsProps {

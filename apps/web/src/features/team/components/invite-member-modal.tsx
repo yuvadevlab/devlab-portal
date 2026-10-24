@@ -18,7 +18,7 @@ import {
   DialogBody,
   DialogFooter,
   toast,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { UserRole } from "@/lib/constants/enums";
 import type { RegisteredApp } from "@/lib/api-client";
@@ -82,7 +82,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
 
     const promise = inviteMemberMutation.mutateAsync({ name, email, role, allowedApps });
     toast.promise(promise, {
-      loading: `Inviting ${name} (${email})...`,
+      loading: UI_COPY.TEAM.MODAL.INVITING_TOAST(name, email),
       success: (result) => {
         setIsSuccess(true);
         // If an invite link is returned (dev environment), surface for quick copying
@@ -95,9 +95,10 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             onSuccess();
           }, 1200);
         }
-        return `Invitation created for ${email}`;
+        return UI_COPY.TEAM.MODAL.INVITED_TOAST(email);
       },
-      error: (err: unknown) => (err instanceof Error ? err.message : "Failed to invite member"),
+      error: (err: unknown) =>
+        err instanceof Error ? err.message : UI_COPY.TEAM.MODAL.INVITE_FAILED,
     });
   };
 
@@ -122,7 +123,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
     if (createdInviteUrl) {
       void navigator.clipboard.writeText(createdInviteUrl);
       setCopied(true);
-      toast.success("Invite link copied to clipboard");
+      toast.success(UI_COPY.TEAM.MODAL.INVITE_LINK_COPIED);
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -156,9 +157,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
           {/* Dev-mode quick onboarding link */}
           {createdInviteUrl && (
             <div className="bg-secondary/70 border-border space-y-2 rounded-lg border p-3 text-xs">
-              <p className="text-primary font-medium">
-                🛠 Dev mode — use this link to onboard member:
-              </p>
+              <p className="text-primary font-medium">{UI_COPY.TEAM.MODAL.DEV_LINK_HINT}</p>
               <div className="flex items-center gap-2">
                 <Input readOnly value={createdInviteUrl} className="h-8 font-mono text-[11px]" />
                 <Button
@@ -169,7 +168,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                   onClick={handleCopyLink}
                 >
                   {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
-                  {copied ? "Copied" : "Copy"}
+                  {copied ? UI_COPY.TEAM.MODAL.COPIED : UI_COPY.TEAM.MODAL.COPY}
                 </Button>
               </div>
             </div>
@@ -202,7 +201,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                 onSuccess();
               }}
             >
-              Done
+              {UI_COPY.TEAM.MODAL.DONE}
             </Button>
           ) : (
             <>

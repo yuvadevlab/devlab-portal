@@ -8,9 +8,9 @@
 
 import React from "react";
 import { ChevronDown, Settings2, LogOut } from "lucide-react";
-import { Button, toast } from "@yuva-devlab/ui";
+import { Button, toast } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import type { UserMember } from "@/lib/api-client";
+import { purgeClientSession, type UserMember } from "@/lib/api-client";
 import { UserRole } from "@/lib/constants/enums";
 
 interface HeaderUserMenuProps {
@@ -28,7 +28,7 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
   onClose,
   onNavigateSettings,
 }) => {
-  const userName = user?.name || "Member";
+  const userName = user?.name || UI_COPY.COMMON.HEADER.MEMBER_FALLBACK;
   const userEmail = user?.email || "";
   const userRole = user?.role || UserRole.MEMBER;
 
@@ -43,18 +43,8 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
 
   const handleSignOut = () => {
     onClose();
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.removeItem("devlab_access_token");
-        localStorage.removeItem("devlab_auth_token");
-        localStorage.removeItem("devlab_auth_user");
-        document.cookie = "devlab_access_token=; path=/; max-age=0; SameSite=Lax";
-      } catch {
-        // Ignore storage errors on teardown
-      }
-      toast.info("Signed out of DevLab Portal");
-      window.location.href = "/login";
-    }
+    toast.info(UI_COPY.COMMON.HEADER.SIGNED_OUT_MESSAGE);
+    purgeClientSession();
   };
 
   return (

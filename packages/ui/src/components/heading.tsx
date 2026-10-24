@@ -1,27 +1,27 @@
 "use client";
 
 /**
- * @file apps/web/src/components/layout/heading.tsx
- * @description Standardized page heading layout featuring workspace eyebrow, title, and action controls.
- * @module @devlab/portal-web/components/layout/heading
+ * @file packages/ui/src/components/heading.tsx
+ * @description Standardized page heading layout featuring an eyebrow, title, and action controls.
+ * @module @devlab-portal/ui/components/heading
  */
 
 import React, { type ReactNode } from "react";
 import { Box } from "lucide-react";
-import { UI_COPY } from "@/lib/ui-copy";
 
 interface HeadingProps {
   title: string;
   description: string;
+  eyebrowLabel: string;
   children?: ReactNode;
 }
 
-export const Heading: React.FC<HeadingProps> = ({ title, description, children }) => {
+export const Heading: React.FC<HeadingProps> = ({ title, description, eyebrowLabel, children }) => {
   return (
     <>
       <div className="eyebrow">
         <Box className="size-3" />
-        <span>{UI_COPY.COMMON.HEADER.WORKSPACE}</span>
+        <span>{eyebrowLabel}</span>
         <span>/</span>
         <span className="text-foreground font-medium">{title}</span>
       </div>

@@ -7,10 +7,11 @@
 import React from "react";
 import type { Metadata } from "next";
 import { LoginView } from "@/features/auth";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export const metadata: Metadata = {
-  title: "Sign In — DevLab Portal",
-  description: "Sign in to your DevLab workspace control plane",
+  title: UI_COPY.AUTH.LOGIN.TITLE,
+  description: UI_COPY.AUTH.LOGIN.DESCRIPTION,
 };
 
 export default function LoginPage(): React.JSX.Element {

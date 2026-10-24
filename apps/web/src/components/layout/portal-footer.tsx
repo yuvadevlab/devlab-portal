@@ -8,8 +8,7 @@
  */
 
 import React from "react";
-import { ArrowUpRight } from "lucide-react";
-import { Button } from "@yuva-devlab/ui";
+import { StatusFooter } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { useTelemetryQuery } from "@/features/dashboard";
 
@@ -21,47 +20,26 @@ export const PortalFooter: React.FC = () => {
   const statusClass = isHealthy ? "healthy" : isDegraded ? "warning" : "error";
 
   const statusLabel = telemetry?.statusText || UI_COPY.COMMON.STATUS.HEALTHY;
-  const apiLabel = telemetry?.apiLabel || "API :3015";
-  const redisLabel = telemetry?.redisStatus || "Redis active";
+  const apiLabel = telemetry?.apiLabel || UI_COPY.COMMON.FOOTER.API;
+  const redisLabel = telemetry?.redisStatus || UI_COPY.COMMON.FOOTER.REDIS;
   const versionLabel = telemetry?.version || UI_COPY.COMMON.BRAND.VERSION;
-  const envLabel = telemetry?.environmentLabel || "Workspace";
+  const envLabel = telemetry?.environmentLabel || UI_COPY.COMMON.HEADER.WORKSPACE;
   const docsUrl = telemetry?.docsUrl || "https://docs.devlab.io";
-  const docsLabel = telemetry?.docsLabel || "Docs";
+  const docsLabel = telemetry?.docsLabel || UI_COPY.COMMON.FOOTER.DOCS;
 
   return (
-    <footer className="footer">
-      <span className="flex items-center gap-2">
-        <span className="status text-[10px]">
-          <span className={`status-dot ${statusClass}`} />
-          {statusLabel}
-        </span>
-        <span>·</span>
-        <span>{apiLabel}</span>
-        <span>·</span>
-        <span>{redisLabel}</span>
-        {telemetry?.totalApps !== undefined && (
-          <>
-            <span>·</span>
-            <span>
-              {telemetry.activeApps ?? 0}/{telemetry.totalApps} Apps Active
-            </span>
-          </>
-        )}
-      </span>
-
-      <span className="flex items-center gap-5">
-        <span>{versionLabel}</span>
-        <span className="tag text-[9px]!">{envLabel}</span>
-        <Button
-          variant="link"
-          size="sm"
-          className="text-muted-foreground hover:text-foreground h-auto gap-1 p-0 text-xs"
-          onClick={() => window.open(docsUrl, "_blank", "noopener,noreferrer")}
-        >
-          {docsLabel}
-          <ArrowUpRight className="size-3" />
-        </Button>
-      </span>
-    </footer>
+    <StatusFooter
+      statusLabel={statusLabel}
+      statusClass={statusClass}
+      apiLabel={apiLabel}
+      redisLabel={redisLabel}
+      activeApps={telemetry?.activeApps}
+      totalApps={telemetry?.totalApps}
+      appsActiveLabel={UI_COPY.COMMON.FOOTER.APPS_ACTIVE}
+      versionLabel={versionLabel}
+      environmentLabel={envLabel}
+      docsUrl={docsUrl}
+      docsLabel={docsLabel}
+    />
   );
 };

@@ -3,15 +3,14 @@
 /**
  * @file apps/web/src/features/apps/components/app-card.tsx
  * @description Application catalog card with thematic color palettes, live telemetry, and control actions.
- * Fully built with @yuva-devlab/ui Button and design tokens.
+ * Fully built with @devlab-portal/ui Button and design tokens.
  * @module @devlab/portal-web/features/apps/components/app-card
  */
 
 import React from "react";
-import { Link2, HeartPulse, ArrowUpRight, Settings2, Power } from "lucide-react";
-import { Button } from "@yuva-devlab/ui";
+import { Link2, HeartPulse, ArrowUpRight, Settings2, Power, Server } from "lucide-react";
+import { Button, getNavIcon } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import { getNavIcon } from "@/components/layout";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppCardProps {
@@ -61,16 +60,24 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
       {/* Description */}
       <p className="app-description">{app.description || UI_COPY.APPS.CARD.NO_DESC}</p>
 
-      {/* Origin URL */}
+      {/* Origin URL (Frontend) */}
       <div className="endpoint">
         <Link2 className="size-3 shrink-0" />
-        <span>{app.originUrl}</span>
+        <span className="truncate">{app.originUrl}</span>
       </div>
+
+      {/* Backend API URL */}
+      {app.apiUrl && (
+        <div className="endpoint">
+          <Server className="size-3 shrink-0" />
+          <span className="truncate">{app.apiUrl}</span>
+        </div>
+      )}
 
       {/* Health Probe & Status Code */}
       <div className="endpoint">
         <HeartPulse className="size-3 shrink-0" />
-        <span>{app.healthUrl || "/health"}</span>
+        <span className="truncate">{app.healthUrl || "/health"}</span>
         <span
           className={`ml-auto font-mono text-[10px] font-semibold ${
             isRoutingActive ? "text-success" : "text-destructive"

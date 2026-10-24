@@ -8,7 +8,7 @@
 
 import React from "react";
 import { Box, Activity, ShieldCheck, Zap } from "lucide-react";
-import { MetricsBar, type MetricItem } from "@/components/layout";
+import { MetricsBar, type MetricItem } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
 
