@@ -7,7 +7,7 @@
  */
 
 import React from "react";
-import { KeyRound, Activity, ShieldCheck, Zap } from "lucide-react";
+import { KeyRound, ShieldAlert, ShieldCheck, Activity } from "lucide-react";
 import { MetricsBar, type MetricItem } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { ApiKey } from "@/features/iam/types";
@@ -18,6 +18,9 @@ interface IamMetricsProps {
 
 export const IamMetrics: React.FC<IamMetricsProps> = ({ apiKeys }) => {
   const activeCount = apiKeys.filter((k) => !k.isRevoked).length;
+  const revokedCount = apiKeys.filter((k) => k.isRevoked).length;
+  const uniqueScopes = new Set(apiKeys.flatMap((k) => k.scopes || [])).size;
+  const activeRotationCount = apiKeys.filter((k) => Boolean(k.lastUsedAt)).length;
 
   const items: MetricItem[] = [
     {
@@ -27,24 +30,28 @@ export const IamMetrics: React.FC<IamMetricsProps> = ({ apiKeys }) => {
       icon: KeyRound,
     },
     {
-      label: UI_COPY.IAM.METRICS.M2M_LABEL,
-      value: UI_COPY.IAM.METRICS.M2M_VAL,
-      note: UI_COPY.IAM.METRICS.M2M_NOTE,
+      label: UI_COPY.IAM.METRICS.REVOKED_KEYS,
+      value: revokedCount,
+      note:
+        revokedCount === 0
+          ? UI_COPY.IAM.METRICS.REVOKED_ZERO_NOTE
+          : UI_COPY.IAM.METRICS.REVOKED_NOTE,
+      positive: revokedCount === 0,
+      icon: ShieldAlert,
+    },
+    {
+      label: UI_COPY.IAM.METRICS.ASSIGNED_SCOPES,
+      value: uniqueScopes,
+      note: UI_COPY.IAM.METRICS.ASSIGNED_SCOPES_NOTE,
+      icon: ShieldCheck,
+      positive: true,
+    },
+    {
+      label: UI_COPY.IAM.METRICS.ACTIVE_ROTATION,
+      value: activeRotationCount,
+      note: UI_COPY.IAM.METRICS.ACTIVE_ROTATION_NOTE,
       positive: true,
       icon: Activity,
-    },
-    {
-      label: UI_COPY.IAM.METRICS.RATE_LIMIT_LABEL,
-      value: UI_COPY.IAM.METRICS.RATE_LIMIT_VAL,
-      note: UI_COPY.IAM.METRICS.RATE_LIMIT_NOTE,
-      icon: Zap,
-    },
-    {
-      label: UI_COPY.IAM.METRICS.HEALTH_LABEL,
-      value: UI_COPY.IAM.METRICS.HEALTH_VAL,
-      note: UI_COPY.IAM.METRICS.HEALTH_NOTE,
-      positive: true,
-      icon: ShieldCheck,
     },
   ];
 

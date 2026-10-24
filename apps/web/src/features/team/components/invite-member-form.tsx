@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/team/components/invite-member-form.tsx
  * @description Form inputs for inviting and onboarding team members with RBAC roles and app access.

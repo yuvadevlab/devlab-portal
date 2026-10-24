@@ -142,6 +142,7 @@ export interface SystemTelemetry {
   readonly isDbHealthy?: boolean;
   readonly dbLatencyMs?: number;
   readonly redisLatencyMs?: number;
+  readonly latencyMs?: number;
   readonly totalApps?: number;
   readonly activeApps?: number;
   readonly activeUsers?: number;

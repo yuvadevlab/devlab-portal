@@ -25,7 +25,7 @@ export class PlatformService {
    * Retrieves all enabled platform navigation items ordered by priority index.
    */
   async getNavigationItems() {
-    this.logger.debug("Fetching enabled platform navigation items from database");
+    this.logger.info("Fetching enabled platform navigation items from database");
     return this.prisma.navigationItem.findMany({
       where: { isEnabled: true },
       orderBy: { order: "asc" },
@@ -36,7 +36,7 @@ export class PlatformService {
    * Retrieves all active platform tenants from the database.
    */
   async getTenants(user?: { sub?: string; role?: string; tenant_id?: string }) {
-    this.logger.debug("Fetching active platform tenants from database");
+    this.logger.info("Fetching active platform tenants from database");
     const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
     const tenantId = user?.tenant_id;
 
@@ -78,7 +78,7 @@ export class PlatformService {
       throw new BadRequestException(`Tenant with slug "${slug}" already exists`);
     }
 
-    this.logger.log(`Provisioning new tenant: ${dto.name} (${slug})`);
+    this.logger.info(`Provisioning new tenant: ${dto.name} (${slug})`);
     return this.prisma.tenant.create({
       data: {
         name: dto.name.trim(),
@@ -124,18 +124,8 @@ export class PlatformService {
       try {
         const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
         const tenantId = user?.tenant_id;
-        const appWhere =
-          !isSuperAdmin && tenantId
-            ? { tenantId }
-            : !isSuperAdmin
-              ? { id: "00000000-0000-0000-0000-000000000000" }
-              : {};
-        const userWhere =
-          !isSuperAdmin && tenantId
-            ? { tenantId }
-            : !isSuperAdmin
-              ? { id: "00000000-0000-0000-0000-000000000000" }
-              : {};
+        const appWhere = tenantId && !isSuperAdmin ? { tenantId } : {};
+        const userWhere = tenantId && !isSuperAdmin ? { tenantId } : {};
         [totalApps, activeApps, activeUsers] = await Promise.all([
           this.prisma.registeredApp.count({ where: appWhere }),
           this.prisma.registeredApp.count({ where: { ...appWhere, isActive: true } }),
@@ -178,6 +168,7 @@ export class PlatformService {
       isDbHealthy: dbConnected,
       dbLatencyMs,
       redisLatencyMs,
+      latencyMs: dbLatencyMs + redisLatencyMs,
       totalApps,
       activeApps,
       activeUsers,
