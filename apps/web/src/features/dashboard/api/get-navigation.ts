@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * @file apps/web/src/features/dashboard/api/get-navigation.ts
  * @description TanStack Query hook and SSR prefetch helper for dynamic platform navigation menus.
