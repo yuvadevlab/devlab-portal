@@ -29,8 +29,10 @@ export function useNavigationQuery() {
  * @param queryClient Active server QueryClient instance
  */
 export async function prefetchNavigation(queryClient: QueryClient): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: navigationQueryKey(),
-    queryFn: () => serverFetch<NavigationItem[]>(API_ROUTES.PLATFORM_NAVIGATION),
-  });
+  await queryClient
+    .query({
+      queryKey: navigationQueryKey(),
+      queryFn: () => serverFetch<NavigationItem[]>(API_ROUTES.PLATFORM_NAVIGATION),
+    })
+    .catch(() => {});
 }

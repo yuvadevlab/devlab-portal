@@ -30,8 +30,10 @@ export function useAuthMeQuery(): UseQueryResult<UserMember, Error> {
  * @param token Optional bearer token for server authorization
  */
 export async function prefetchAuthMe(queryClient: QueryClient, token?: string): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: authMeQueryKey(),
-    queryFn: () => serverFetch<UserMember>(API_ROUTES.AUTH_ME, token),
-  });
+  await queryClient
+    .query({
+      queryKey: authMeQueryKey(),
+      queryFn: () => serverFetch<UserMember>(API_ROUTES.AUTH_ME, token),
+    })
+    .catch(() => {});
 }

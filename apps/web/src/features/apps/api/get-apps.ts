@@ -28,8 +28,10 @@ export function useAppsQuery(): UseQueryResult<RegisteredApp[], Error> {
  * @param queryClient Active server QueryClient instance
  */
 export async function prefetchApps(queryClient: QueryClient, token?: string): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: appsQueryKey(),
-    queryFn: () => serverFetch<RegisteredApp[]>(API_ROUTES.APPS, token),
-  });
+  await queryClient
+    .query({
+      queryKey: appsQueryKey(),
+      queryFn: () => serverFetch<RegisteredApp[]>(API_ROUTES.APPS, token),
+    })
+    .catch(() => {});
 }
