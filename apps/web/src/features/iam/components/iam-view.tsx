@@ -7,7 +7,6 @@
  */
 
 import React from "react";
-import { IamMetrics } from "./iam-metrics";
 import { ApiKeysTable } from "./api-keys-table";
 import { useApiKeysQuery } from "@/features/iam/api";
 import { useAppsQuery } from "@/features/apps/api";
@@ -21,14 +20,11 @@ export function IamView(): React.JSX.Element {
   const { openApiKeyModal } = useDashboardModals();
 
   return (
-    <>
-      <IamMetrics apiKeys={apiKeys} />
-      <ApiKeysTable
-        apiKeys={apiKeys}
-        apps={apps}
-        onOpenGenerateModal={openApiKeyModal}
-        onRevokeKey={handleRevokeKey}
-      />
-    </>
+    <ApiKeysTable
+      apiKeys={apiKeys}
+      apps={apps}
+      onOpenGenerateModal={openApiKeyModal}
+      onRevokeKey={handleRevokeKey}
+    />
   );
 }

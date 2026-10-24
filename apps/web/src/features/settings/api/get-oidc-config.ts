@@ -28,8 +28,10 @@ export function useOidcConfigQuery(): UseQueryResult<OpenIdConfig, Error> {
  * @param queryClient Active server QueryClient instance
  */
 export async function prefetchOidcConfig(queryClient: QueryClient, token?: string): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: oidcConfigQueryKey(),
-    queryFn: () => serverFetch<OpenIdConfig>(API_ROUTES.OPENID_CONFIG, token),
-  });
+  await queryClient
+    .query({
+      queryKey: oidcConfigQueryKey(),
+      queryFn: () => serverFetch<OpenIdConfig>(API_ROUTES.OPENID_CONFIG, token),
+    })
+    .catch(() => {});
 }

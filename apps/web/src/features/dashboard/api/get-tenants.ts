@@ -30,8 +30,10 @@ export function useTenantsQuery(): UseQueryResult<Tenant[], Error> {
  * @param token Optional bearer token for server authorization
  */
 export async function prefetchTenants(queryClient: QueryClient): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: tenantsQueryKey(),
-    queryFn: () => serverFetch<Tenant[]>(API_ROUTES.PLATFORM_TENANTS),
-  });
+  await queryClient
+    .query({
+      queryKey: tenantsQueryKey(),
+      queryFn: () => serverFetch<Tenant[]>(API_ROUTES.PLATFORM_TENANTS),
+    })
+    .catch(() => {});
 }
