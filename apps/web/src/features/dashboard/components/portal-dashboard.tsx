@@ -165,11 +165,9 @@ export function PortalDashboard(): React.JSX.Element {
         onUpdateAppSettings={handleUpdateAppSettings}
         onToggleKillSwitch={handleToggleKillSwitch}
         onSuccessRegister={() => {
-          setIsRegisterOpen(false);
           queryClient.invalidateQueries({ queryKey: appsQueryKey() });
         }}
         onSuccessApiKey={() => {
-          setIsApiKeyModalOpen(false);
           queryClient.invalidateQueries({ queryKey: apiKeysQueryKey() });
         }}
         onSuccessInvite={() => {

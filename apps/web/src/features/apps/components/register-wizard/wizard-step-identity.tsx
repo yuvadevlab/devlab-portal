@@ -37,16 +37,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
         <Input
           id="app-name"
           value={form.name}
-          onChange={(e) => {
-            const name = e.target.value;
-            // Auto-generate slug/appId from name if appId was unchanged
-            const autoId = name.toLowerCase().replace(/[^a-z0-9_-]/g, "-");
-            onChange({
-              name,
-              appId: form.appId ? form.appId : autoId,
-              slug: form.slug ? form.slug : autoId,
-            });
-          }}
+          onChange={(e) => onChange({ name: e.target.value })}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.NAME_PLACEHOLDER}
           required
           className="h-9 text-xs"
@@ -121,14 +112,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
           <Input
             id="app-origin"
             value={form.originUrl}
-            onChange={(e) => {
-              const origin = e.target.value;
-              onChange({
-                originUrl: origin,
-                healthUrl: form.healthUrl ? form.healthUrl : `${origin}/api/health`,
-                callbackUrls: form.callbackUrls ? form.callbackUrls : `${origin}/api/auth/callback`,
-              });
-            }}
+            onChange={(e) => onChange({ originUrl: e.target.value })}
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_PLACEHOLDER}
             required
             className="h-9 font-mono text-xs"
@@ -144,7 +128,6 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
             value={form.healthUrl}
             onChange={(e) => onChange({ healthUrl: e.target.value })}
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.HEALTH_PLACEHOLDER}
-            required
             className="h-9 font-mono text-xs"
           />
         </div>

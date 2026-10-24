@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from "react";
-import { Key } from "lucide-react";
+import { Key, CheckCircle2 } from "lucide-react";
 import {
   Button,
   Dialog,
@@ -115,13 +115,19 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
       <DialogContent size="lg">
         <DialogHeader>
           <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
-              <Key className="size-4" />
+            <div
+              className={`flex size-8 items-center justify-center rounded-lg ${
+                generatedKey ? "bg-success/15 text-success" : "bg-primary/15 text-primary"
+              }`}
+            >
+              {generatedKey ? <CheckCircle2 className="size-4" /> : <Key className="size-4" />}
             </div>
             <div>
-              <DialogTitle className="text-base font-bold">{UI_COPY.IAM.MODAL.TITLE}</DialogTitle>
+              <DialogTitle className="text-base font-bold">
+                {generatedKey ? UI_COPY.IAM.MODAL.TITLE_STEP_2 : UI_COPY.IAM.MODAL.TITLE}
+              </DialogTitle>
               <DialogDescription className="text-muted-foreground text-xs">
-                {UI_COPY.IAM.MODAL.DESCRIPTION}
+                {generatedKey ? UI_COPY.IAM.MODAL.DESC_STEP_2 : UI_COPY.IAM.MODAL.DESCRIPTION}
               </DialogDescription>
             </div>
           </div>
@@ -154,7 +160,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
               onClick={handleClose}
               className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
             >
-              {UI_COPY.COMMON.ACTIONS.CLOSE}
+              {UI_COPY.IAM.MODAL.DONE_BTN}
             </Button>
           ) : (
             <>

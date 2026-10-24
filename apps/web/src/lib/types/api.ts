@@ -149,8 +149,8 @@ export interface SystemTelemetry {
   readonly version: string;
   readonly environment: string;
   readonly environmentLabel: string;
-  readonly docsUrl: string;
-  readonly docsLabel: string;
+  readonly docsUrl?: string;
+  readonly docsLabel?: string;
 }
 
 /** Workspace tenant organization profile */

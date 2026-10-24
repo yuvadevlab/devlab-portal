@@ -114,10 +114,10 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
         <div className="flex gap-2.5">
           <div className="w-44">
             <Select value={actionFilter} onValueChange={setActionFilter}>
-              <SelectTrigger className="bg-card border-border h-9 text-xs">
+              <SelectTrigger className="bg-card border-border h-9 w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="w-full min-w-(--radix-select-trigger-width)">
                 <SelectItem value={UI_COPY.COMMON.FILTERS.ALL}>
                   {UI_COPY.AUDIT.TOOLBAR.ALL_ACTIONS}
                 </SelectItem>
