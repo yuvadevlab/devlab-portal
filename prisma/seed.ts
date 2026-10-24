@@ -12,10 +12,11 @@ import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { INITIAL_TENANT, NAVIGATION_ITEMS, AppAccessScope, ECOSYSTEM_APPS } from "./seed-data";
+import { INITIAL_TENANT, INITIAL_SUPER_ADMIN, NAVIGATION_ITEMS } from "./seed-data";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, "../apps/api/.env") });
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
@@ -34,29 +35,28 @@ async function main(): Promise<void> {
   console.log(`✅ Seeded Tenant: ${tenant.name} (${tenant.id})`);
 
   // 2. Seed Single Default Super Admin User (idempotent upsert)
-  const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD || "DevLab@2026!Admin";
-  const passwordHash = await bcrypt.hash(defaultPassword, 10);
+  const passwordHash = await bcrypt.hash(INITIAL_SUPER_ADMIN.defaultPassword, 10);
 
   const superAdmin = await prisma.user.upsert({
-    where: { email: "admin@devlab.internal" },
+    where: { email: INITIAL_SUPER_ADMIN.email },
     update: {
-      name: "Platform Super Admin",
+      name: INITIAL_SUPER_ADMIN.name,
       role: Role.super_admin,
-      isActive: true,
-      allowedApps: [AppAccessScope.ALL],
+      isActive: INITIAL_SUPER_ADMIN.isActive,
+      allowedApps: [...INITIAL_SUPER_ADMIN.allowedApps],
       tenantId: tenant.id,
     },
     create: {
-      email: "admin@devlab.internal",
-      name: "Platform Super Admin",
+      email: INITIAL_SUPER_ADMIN.email,
+      name: INITIAL_SUPER_ADMIN.name,
       passwordHash,
       role: Role.super_admin,
-      isActive: true,
-      allowedApps: [AppAccessScope.ALL],
+      isActive: INITIAL_SUPER_ADMIN.isActive,
+      allowedApps: [...INITIAL_SUPER_ADMIN.allowedApps],
       tenantId: tenant.id,
     },
   });
-  console.log(`✅ Seeded Default User: ${superAdmin.email}`);
+  console.log(`✅ Seeded Super Admin User: ${superAdmin.email}`);
 
   // 3. Seed Dynamic Navigation Menu Items (idempotent upsert)
   for (const item of NAVIGATION_ITEMS) {
@@ -68,39 +68,7 @@ async function main(): Promise<void> {
     console.log(`✅ Seeded Navigation Menu Item: [${record.key}] ${record.label}`);
   }
 
-  // 4. Seed Registered Ecosystem Applications (idempotent upsert)
-  const defaultSecretHash = await bcrypt.hash("devlab_secret_token_default", 10);
-  for (const app of ECOSYSTEM_APPS) {
-    await prisma.registeredApp.upsert({
-      where: { appId: app.appId },
-      update: {
-        name: app.name,
-        originUrl: app.originUrl,
-        apiUrl: app.apiUrl,
-        callbackUrls: [...app.callbackUrls],
-        healthUrl: app.healthUrl,
-        themeColor: app.themeColor,
-      },
-      create: {
-        appId: app.appId,
-        name: app.name,
-        slug: app.slug,
-        description: app.description,
-        originUrl: app.originUrl,
-        apiUrl: app.apiUrl,
-        callbackUrls: [...app.callbackUrls],
-        healthUrl: app.healthUrl,
-        themeColor: app.themeColor,
-        environment: app.environment,
-        isActive: app.isActive,
-        tenantId: tenant.id,
-        clientSecretHash: defaultSecretHash,
-      },
-    });
-    console.log(`✅ Seeded Registered App: [${app.appId}] ${app.name}`);
-  }
-
-  // 5. Seed Initial Bootstrap Audit Log if not already present
+  // 4. Seed Initial Bootstrap Audit Log if not already present
   const existingAudit = await prisma.auditLog.findFirst({
     where: { action: "system.bootstrapped", targetId: "Control Plane" },
   });
@@ -111,7 +79,10 @@ async function main(): Promise<void> {
         actorId: superAdmin.id,
         targetType: "system",
         targetId: "Control Plane",
-        metadata: { environment: "development", initializedBy: superAdmin.email },
+        metadata: {
+          environment: process.env.NODE_ENV || "development",
+          initializedBy: superAdmin.email,
+        },
       },
     });
     console.log("✅ Seeded Initial Audit Log");
