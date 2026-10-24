@@ -6,13 +6,13 @@
 
 ### 1.1 Executive Product Summary
 
-**DevLab Portal** is the centralized developer management platform, API key lifecycle authority, and governance control plane for the entire DevLab multi-repo ecosystem (`orchestrai`, `finai`, `devlab-logs`, `incidentai`).
+**DevLab Portal** is the centralized developer management platform, API key lifecycle authority, OIDC/JWKS identity provider, and governance control plane for the entire DevLab multi-repo ecosystem (`orchestrai`, `finai`, `devlab-logs`, `vitalai`, `incidentai`).
 
 In a distributed AI and financial services infrastructure, distributed security cannot rely on fragmented, decentralized key validation or slow database queries. DevLab Portal provides:
 
-1. **Cryptographic API Key Authority**: Issues cryptographically secure, prefixed API keys (`dl_live_...`, `dl_test_...`) with SHA-256 salted hashes, scoping permissions down to individual endpoints and token budgets.
-2. **Sub-Millisecond Redis Kill-Switch Bus**: Emits immediate key, user, and tenant revocation signals across a Redis Pub/Sub backplane (`devlab:killswitch:events`), guaranteeing that revoked credentials are rejected across all services in <1 millisecond.
-3. **Multi-Tenant Organization & RBAC Engine**: Fine-grained role-based access control (`OWNER`, `ADMIN`, `MEMBER`, `VIEWER`) governing tenant memberships, team invites, and security audit logs.
+1. **Cryptographic API Key & OIDC Authority**: Issues cryptographically secure, prefixed API keys (`dl_live_...`, `dl_test_...`) with SHA-256 salted hashes and RS256 signed JWTs discovered via `/.well-known/jwks.json`.
+2. **Sub-Millisecond Redis Kill-Switch Bus**: Emits immediate key, user, and tenant revocation signals across a Redis Pub/Sub backplane (`app.state.changed`), guaranteeing that revoked credentials are rejected across all services in <1 millisecond.
+3. **Multi-Tenant Organization & RBAC Engine**: Fine-grained role-based access control (`super_admin`, `admin`, `developer`, `operator`, `read_only`, `member`) governing tenant memberships, team invites, and security audit logs.
 4. **Platform Usage & Quota Governance**: Centralized token rate-limiting and quota tracking, preventing runaway LLM consumption across tenant swarms.
 
 ### 1.2 Target Personas & Primary Use Cases
@@ -32,16 +32,16 @@ In a distributed AI and financial services infrastructure, distributed security 
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   DEVLAB PORTAL TOPOLOGY & CONTROL PLANE                               │
 └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-                  [Portal Web Console (Next.js 15 — Port 3005)]
-                                        │  (HTTP / SSE)
+                  [Portal Web Console (Next.js 15 — Dev :3000 | Prod :3010)]
+                                        │  (HTTP / WebSocket)
                                         ▼
-                  [Portal Fastify API Control Plane (Port 3015)]
+                  [Portal NestJS Control Plane API (Dev :4000 | Prod :4010)]
                                         │
      ┌──────────────────────────────────┼──────────────────────────────────┐
      ▼                                  ▼                                  ▼
-[API Key Management Engine]    [RBAC & Tenant Hierarchy]      [Instant Kill-Switch Pub/Sub]
- • SHA-256 Salted Hashing       • Multi-Tenant Isolation       • Redis Channel:
- • Prefixes: dl_live_ / dl_test_• Roles: OWNER/ADMIN/MEMBER     devlab:killswitch:events
+[API Key & OIDC Authority]     [RBAC & Tenant Hierarchy]      [Instant Kill-Switch Pub/Sub]
+ • SHA-256 Hashing & RS256 JWKS • Multi-Tenant Isolation       • Redis Channel:
+ • Prefixes: dl_live_ / dl_test_• Roles: super_admin/admin/...   app.state.changed
  • Capability Scopes & Quotas   • Audit Log Persistence        • <1ms Propagation SLA
      │                                  │                                  │
      └──────────────────────────────────┴─────────────────┬────────────────┘
@@ -51,25 +51,26 @@ In a distributed AI and financial services infrastructure, distributed security 
 
 ### 2.1 Application Layer Breakdown
 
-#### 1. Developer Web Console (`apps/web` — Port `3005`)
+#### 1. Developer Web Console (`apps/web` — Dev: Port `3000` | Prod: Port `3010`)
 
 - **Technology Stack**: Next.js 15, React 19, Tailwind CSS v4, `@yuva-devlab/ui`, `@yuva-devlab/tokens`.
-- **Purpose**: Modern administrative web application for tenant and API key lifecycle management.
+- **Purpose**: Modern administrative web application for tenant, user authentication, and API key lifecycle management.
 - **Detailed Features**:
   - **API Key Management Dashboard**: Create, view, copy (one-time display), rotate, and revoke live and test API keys.
   - **One-Click Instant Kill-Switch**: Visual red-alert button allowing immediate eviction of compromised keys or entire tenant access.
   - **Audit Log Explorer**: Filterable, searchable table displaying chronological security events with IP addresses, user agents, and actor IDs.
   - **Tenant & Team Management**: Invite team members, assign granular RBAC roles, and manage billing profiles.
-  - **Real-Time Usage Telemetry**: Charts showing active requests, token consumption, and rate limit saturation.
+  - **JWKS & OIDC Inspector**: Live introspection interface for cryptographic key rotation and token discovery endpoints.
 
-#### 2. Fastify Control Plane API (`apps/api` — Port `3015`)
+#### 2. NestJS Control Plane API (`apps/api` — Dev: Port `4000` | Prod: Port `4010`)
 
-- **Technology Stack**: Fastify v4, Prisma ORM, PostgreSQL 16, Redis 7.
-- **Purpose**: High-throughput REST API serving authentication verification, key generation, and control plane operations.
+- **Technology Stack**: NestJS 11, Apollo GraphQL, Prisma ORM 7, PostgreSQL 16, Redis 7, Socket.IO.
+- **Purpose**: High-throughput control plane serving authentication verification, RS256 JWKS token issuance, and GraphQL/REST APIs.
 - **Detailed Features**:
+  - **OIDC Discovery & JWKS**: Exposes `/.well-known/jwks.json` and `/.well-known/openid-configuration` with RS256 2048-bit keys.
   - **Cryptographic Key Generation**: Generates 32-byte cryptographically secure random bytes encoded in base62, prefixed with `dl_live_` or `dl_test_`. Stores only the `SHA-256` hash in PostgreSQL.
-  - **Sub-Millisecond Redis Key Caching**: Syncs key metadata (tenant ID, scopes, status) to Redis with key format `devlab:apikey:<hash>`, enabling sub-millisecond lookups for downstream gateways.
-  - **Kill-Switch Event Publisher**: When a key or tenant is revoked, immediately deletes the Redis cache entry and broadcasts a revocation payload to the `devlab:killswitch:events` channel.
+  - **Sub-Millisecond Redis Key Caching**: Syncs key metadata (tenant ID, scopes, status) to Redis, enabling sub-millisecond lookups for downstream gateways.
+  - **Kill-Switch Event Publisher**: When a key or app status is revoked, immediately deletes the Redis cache entry and broadcasts a revocation payload to the `app.state.changed` channel.
   - **Comprehensive Audit Trail**: Automatically writes immutable records into the `AuditLog` table for every state mutation.
 
 ---
@@ -79,40 +80,37 @@ In a distributed AI and financial services infrastructure, distributed security 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Admin as Security Admin (Portal :3005)
-    participant Portal as Portal API (:3015)
+    participant Admin as Security Admin (Portal :3000 / :3010)
+    participant Portal as Portal API (:4000 / :4010)
     participant Redis as Redis (:6379)
-    participant GW as OrchestraI Gateway (:4001)
-    participant Worker as OrchestraI Worker (:4003)
-    participant Logs as DevLab Logs (:3020)
+    participant GW as OrchestrAI Gateway (:4002 / :4012)
+    participant Logs as DevLab Logs (:4003 / :4013)
 
-    Admin->>Portal: 1. POST /api/v1/keys/:id/revoke (Revoke Key)
+    Admin->>Portal: 1. POST /api/v1/api-keys/:id (Revoke Key)
     Portal->>Portal: 2. Update PostgreSQL (Status = REVOKED)
     Portal->>Redis: 3. DEL devlab:apikey:<hash>
-    Portal->>Redis: 4. PUBLISH devlab:killswitch:events { keyId, tenantId, status: "REVOKED" }
+    Portal->>Redis: 4. PUBLISH app.state.changed { keyId, tenantId, status: "REVOKED" }
 
     par Instant Sub-Millisecond Notification
-        Redis->>GW: 5a. Receive Killswitch Event (<1ms)
+        Redis->>GW: 5. Receive Killswitch Event (<1ms)
         GW->>GW: Invalidate local in-memory key cache
-    and
-        Redis->>Worker: 5b. Receive Killswitch Event (<1ms)
-        Worker->>Worker: Abort in-flight task for revoked key
     end
 
-    Portal->>Logs: 6. Stream Security Audit Event (:3020)
+    Portal->>Logs: 6. Stream Security Audit Event (:4003 / :4013)
     Portal-->>Admin: 200 OK (Key Instantly Revoked)
 ```
 
 ### 3.1 Inter-Repository Integration Matrix
 
-| Ecosystem Member    | Direction | Protocol & Transport | Exact Payload Contract & Endpoint                       | Purpose & Operational Behavior                                                                      |
-| :------------------ | :-------: | :------------------- | :------------------------------------------------------ | :-------------------------------------------------------------------------------------------------- |
-| **`orchestrai`**    | Outbound  | Redis Pub/Sub & HTTP | `POST http://localhost:4001/api/v1/internal/killswitch` | Emits revocation events; validates client API keys on session initiation.                           |
-| **`finai`**         | Outbound  | Redis Pub/Sub & HTTP | `GET http://localhost:3015/api/v1/subscriptions/verify` | Provides subscription tier verification and user feature entitlements.                              |
-| **`devlab-logs`**   | Outbound  | HTTP/2 POST          | `POST http://localhost:3020/api/v1/logs/ingest`         | Streams administrative audit records, access history, and key management actions.                   |
-| **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8085/api/v1/incidents/webhook`   | Dispatches alerts if Redis pub/sub connection drops or database replication delays occur.           |
-| **`devlab-guard`**  |  Inbound  | CLI Git Pre-commit   | `uv run devlab-guard scan --path .`                     | Scans codebase to enforce 250-line rule, type safety, and zero magic strings.                       |
-| **`devlab-shared`** |  Static   | npm Package Imports  | Direct package import                                   | Imports `@yuva-devlab/ui`, `@yuva-devlab/tokens`, `@yuva-devlab/logger`, and `@yuva-devlab/errors`. |
+| Ecosystem Member    | Direction | Protocol & Transport | Exact Payload Contract & Endpoint                                    | Purpose & Operational Behavior                                                                      |
+| :------------------ | :-------: | :------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- |
+| **`finai`**         |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Verifies user session tokens; redirects unauthenticated web users to `http://localhost:3010/login`. |
+| **`orchestrai`**    |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Validates client API keys and user tokens for AI agent execution sessions.                          |
+| **`devlab-logs`**   | Outbound  | HTTP POST            | `POST http://localhost:4013/logs`                                    | Streams administrative audit records, access history, and key management actions.                   |
+| **`vitalai`**       |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Authenticates athlete sessions and verifies trainer role permissions.                               |
+| **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8085/api/v1/incidents/webhook`                | Dispatches alerts if Redis pub/sub connection drops or database replication delays occur.           |
+| **`devlab-guard`**  |  Inbound  | CLI Git Pre-commit   | `uv run devlab-guard scan --path .`                                  | Scans codebase to enforce 250-line rule, type safety, and zero magic strings.                       |
+| **`devlab-shared`** |  Static   | npm Package Imports  | `@yuva-devlab/ui`, `@yuva-devlab/tokens`, `@yuva-devlab/auth-client` | Standardized UI components, CSS design tokens, and shared auth client.                              |
 
 ---
 
@@ -124,11 +122,13 @@ sequenceDiagram
    - Plaintext API keys are displayed to the user ONCE upon creation and never stored.
    - The database stores only the `SHA-256` hash and a non-sensitive 4-character prefix/suffix hint (e.g. `dl_live_...a8f2`).
 2. **Sub-1ms Revocation Propagation**:
-   - Every key revocation MUST publish to Redis pub/sub and delete the corresponding Redis key synchronously within the database transaction.
+   - Every key revocation MUST publish to Redis pub/sub (`app.state.changed`) and delete the corresponding Redis key synchronously within the database transaction.
 3. **Hard 250-Line Maximum Rule**:
    - No code file across `apps/*` may exceed 250 lines. Decompose early at 200 lines.
 4. **Canonical Enums Only**:
-   - All roles (`OWNER`, `ADMIN`, `MEMBER`, `VIEWER`) and key statuses (`ACTIVE`, `REVOKED`, `EXPIRED`) must use strict TypeScript enums.
+   - All roles (`super_admin`, `admin`, `developer`, `operator`, `read_only`, `member`) must use strict TypeScript enums matching `prisma/schema.prisma`.
+5. **Next.js Page & Layout Invariant (Pure SSR Wrappers)**:
+   - All `page.tsx` and `layout.tsx` files across Next.js apps MUST remain Server Components (`SSR`). Never mark them `"use client"`.
 
 ---
 
@@ -144,11 +144,11 @@ cd devlab-portal
 # Install dependencies
 pnpm install
 
-# Start local database & run Prisma migrations
+# Push schema to local PostgreSQL
 pnpm db:generate
-pnpm db:migrate
+pnpm db:push
 
-# Start Web (:3005) and API (:3015) in development mode
+# Start Web (:3000) and API (:4000) in development mode
 pnpm dev
 
 # Verify monorepo typecheck
@@ -157,21 +157,40 @@ pnpm typecheck
 
 ### 5.2 Complete Environment Variables Reference
 
-| Variable                 |  Type  |         Default          | Required | Description                                                                                   |
-| :----------------------- | :----: | :----------------------: | :------: | :-------------------------------------------------------------------------------------------- |
-| `PORT`                   | Number |          `3015`          |   Yes    | Fastify API listening port.                                                                   |
-| `DATABASE_URL`           | String |            —             |   Yes    | PostgreSQL connection string (`postgresql://postgres:postgres@localhost:5432/devlab_portal`). |
-| `REDIS_URL`              | String | `redis://localhost:6379` |   Yes    | Redis URL for caching key metadata and kill-switch pub/sub.                                   |
-| `DEVLAB_LOGS_URL`        | String | `http://localhost:3020`  |   Yes    | DevLab Logs ingestion endpoint.                                                               |
-| `INCIDENTAI_WEBHOOK_URL` | String | `http://localhost:8085`  |    No    | Webhook URL for incident alerting.                                                            |
+#### API (`apps/api/.env`)
 
-### 5.3 Programmatic API Key Verification Example
+| Variable         | Type   | Default                                                 | Required | Description                                                           |
+| :--------------- | :----- | :------------------------------------------------------ | :------: | :-------------------------------------------------------------------- |
+| `PORT`           | Number | `4000` (dev) / `4010` (prod)                            |   Yes    | NestJS API control plane port.                                        |
+| `NODE_ENV`       | String | `development` / `production`                            |   Yes    | Runtime environment mode.                                             |
+| `DATABASE_URL`   | String | `postgresql://...`                                      |   Yes    | PostgreSQL connection string (`devlab_portal_dev` / `devlab_portal`). |
+| `REDIS_URL`      | String | `redis://localhost:6379`                                |   Yes    | Redis URL for key caching and WebSocket pub/sub.                      |
+| `OIDC_ISSUER`    | String | `http://localhost:4000` (dev) / `http://localhost:4010` |   Yes    | OIDC discovery issuer URL for JWKS tokens.                            |
+| `PORTAL_ORIGIN`  | String | `http://localhost:3000` (dev) / `http://localhost:3010` |   Yes    | Frontend origin allowed for CORS and cookie sessions.                 |
+| `SESSION_SECRET` | String | (random 32+ char secret)                                |   Yes    | Session cookie encryption secret.                                     |
+| `CORS_ORIGIN`    | String | (comma-separated origins)                               |   Yes    | Allowed CORS origins across ecosystem web apps.                       |
+
+#### Web (`apps/web/.env`)
+
+| Variable                            | Type   | Default                                                 | Required | Description                                   |
+| :---------------------------------- | :----- | :------------------------------------------------------ | :------: | :-------------------------------------------- |
+| `PORT`                              | Number | `3000` (dev) / `3010` (prod)                            |   Yes    | Next.js web application HTTP port.            |
+| `NEXT_PUBLIC_DEVLAB_PORTAL_API_URL` | String | `http://localhost:4000` (dev) / `http://localhost:4010` |   Yes    | NestJS backend API URL consumed by client UI. |
+
+### 5.3 Production Operations via DevLab Suite
+
+Production instances are managed through the central `devlab` CLI:
 
 ```bash
-# Verify API Key via Fastify Gateway Endpoint
-curl -X POST http://localhost:3015/api/v1/keys/verify \
-  -H "Content-Type: application/json" \
-  -d '{
-    "apiKey": "dl_live_a1b2c3d4e5f6g7h8i9j0"
-  }'
+# Audit environment integrity
+devlab env devlab-portal
+
+# Start production services (Web :3010 | API :4010)
+devlab start devlab-portal
+
+# Check system-wide platform health
+devlab doctor
+
+# Stream production logs
+devlab logs devlab-portal
 ```
