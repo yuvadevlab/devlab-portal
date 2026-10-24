@@ -8,7 +8,12 @@
 /** Client-side URL paths and tab queries */
 export const APP_ROUTES = {
   HOME: "/",
-  TAB: (tab: string) => `/?tab=${encodeURIComponent(tab)}`,
+  APPS: "/apps",
+  IAM: "/iam",
+  AUDIT: "/audit",
+  TEAM: "/team",
+  SETTINGS: "/settings",
+  TAB: (tab: string) => (tab === "apps" ? "/apps" : `/${tab}`),
 } as const;
 
 /** Backend REST API endpoints */

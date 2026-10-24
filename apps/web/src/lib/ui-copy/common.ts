@@ -90,6 +90,9 @@ export const COMMON_COPY = {
     REDIS: "Redis active",
     DOCS: "Docs",
     APPS_ACTIVE: "Apps Active",
+    COMMAND_HINT: "Press ⌘K for Command Palette",
+    LATENCY_SUFFIX: "Latency",
+    REDIS_DEGRADED: "Redis degraded",
   },
   MEMBER: {
     ALL_APPLICATIONS: "All Applications",

@@ -1,29 +1,32 @@
 "use client";
 
 import React from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Zap } from "lucide-react";
 import { Button } from "@yuva-devlab/ui";
 
 export interface StatusFooterProps {
   statusLabel: string;
   statusClass: "healthy" | "warning" | "error";
-  apiLabel: string;
-  redisLabel: string;
+  latencyMs?: number;
+  apiLabel?: string;
+  redisLabel?: string;
   activeApps?: number;
   totalApps?: number;
-  appsActiveLabel: string;
+  appsActiveLabel?: string;
   versionLabel: string;
   environmentLabel: string;
+  commandHint?: string;
   docsUrl?: string;
   docsLabel?: string;
 }
 
 /**
- * Displays service health, environment metadata, and a documentation link in the app footer.
+ * Displays service health, cluster latency, environment metadata, and shortcuts in the app footer.
  */
 export function StatusFooter({
   statusLabel,
   statusClass,
+  latencyMs,
   apiLabel,
   redisLabel,
   activeApps,
@@ -31,6 +34,7 @@ export function StatusFooter({
   appsActiveLabel,
   versionLabel,
   environmentLabel,
+  commandHint,
   docsUrl,
   docsLabel,
 }: StatusFooterProps) {
@@ -41,22 +45,46 @@ export function StatusFooter({
           <span className={`status-dot ${statusClass}`} />
           {statusLabel}
         </span>
-        <span>·</span>
-        <span>{apiLabel}</span>
-        <span>·</span>
-        <span>{redisLabel}</span>
-        {totalApps !== undefined && (
+
+        {latencyMs !== undefined && (
           <>
-            <span>·</span>
-            <span>
+            <span className="text-muted-foreground/60">·</span>
+            <span className="text-muted-foreground inline-flex items-center gap-1 font-mono text-[10px]">
+              <Zap className="size-2.5 text-amber-500" />
+              {latencyMs}ms latency
+            </span>
+          </>
+        )}
+
+        {statusClass !== "healthy" && redisLabel && (
+          <>
+            <span className="text-muted-foreground/60">·</span>
+            <span className="text-[10px] text-amber-500">{redisLabel}</span>
+          </>
+        )}
+
+        {apiLabel && !latencyMs && (
+          <>
+            <span className="text-muted-foreground/60">·</span>
+            <span className="text-[10px]">{apiLabel}</span>
+          </>
+        )}
+
+        {totalApps !== undefined && appsActiveLabel && (
+          <>
+            <span className="text-muted-foreground/60">·</span>
+            <span className="text-[10px]">
               {activeApps ?? 0}/{totalApps} {appsActiveLabel}
             </span>
           </>
         )}
       </span>
 
-      <span className="flex items-center gap-5">
-        <span>{versionLabel}</span>
+      <span className="flex items-center gap-4">
+        {commandHint && (
+          <span className="text-muted-foreground hidden text-[10px] md:inline">{commandHint}</span>
+        )}
+        <span className="text-muted-foreground text-[10px]">{versionLabel}</span>
         <span className="tag text-[9px]!">{environmentLabel}</span>
         {docsUrl ? (
           <Button

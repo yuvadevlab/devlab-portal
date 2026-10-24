@@ -4,5 +4,6 @@
  * @module @devlab/portal-web/features/dashboard
  */
 
-export { PortalDashboard } from "./components/portal-dashboard";
 export * from "./api";
+export * from "./context";
+export { DashboardShell } from "./components/dashboard-shell";

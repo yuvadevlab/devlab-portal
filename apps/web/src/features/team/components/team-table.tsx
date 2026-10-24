@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/team/components/team-table.tsx
  * @description Organization members and RBAC role assignments table with hierarchy viewer.

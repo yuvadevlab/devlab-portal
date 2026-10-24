@@ -7,3 +7,5 @@
 export * from "./types";
 export * from "./api";
 export { JwksViewer } from "./components/jwks-viewer";
+
+export { SettingsView } from "./components/settings-view";

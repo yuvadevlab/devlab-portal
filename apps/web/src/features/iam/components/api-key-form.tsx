@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/iam/components/api-key-form.tsx
  * @description Scoped form inputs for API key creation modal.
