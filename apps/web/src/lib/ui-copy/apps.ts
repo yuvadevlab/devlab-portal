@@ -61,6 +61,16 @@ export const APPS_COPY = {
     VIEW_LEDGER: "View audit ledger",
     EMPTY: "No recent operational events recorded yet.",
     MINUTES_AGO: "minutes ago",
+    ACTIONS: {
+      KEY_CREATED: "created an API key for",
+      KEY_REVOKED: "revoked an API key for",
+      APP_REGISTERED: "registered",
+      APP_UPDATED: "updated configuration for",
+      APP_ACTIVATED: "restored traffic for",
+      APP_DEACTIVATED: "engaged kill-switch for",
+      STATUS_UPDATED: "updated kill-switch status for",
+      USER_INVITED: "invited team member",
+    },
   },
   DRAWER: {
     TITLE: "Application settings",

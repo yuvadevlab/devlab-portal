@@ -10,7 +10,7 @@ import React from "react";
 import { Activity, ArrowUpRight, KeyRound, ShieldAlert, Plus, ChevronRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@devlab-portal/ui";
-import { TabKey } from "@/lib/constants/enums";
+import { TabKey, AuditAction } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
 
@@ -21,21 +21,50 @@ interface RecentActivityProps {
 
 export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNavigateTab }) => {
   const getEventIcon = (action: string) => {
-    if (action.includes("key")) return <KeyRound className="size-3.5" />;
-    if (action.includes("kill") || action.includes("status") || action.includes("role")) {
-      return <ShieldAlert className="size-3.5" />;
+    switch (action.toUpperCase().replace(/[\s.-]+/g, "_")) {
+      case AuditAction.API_KEY_CREATED:
+      case AuditAction.API_KEY_REVOKED:
+        return <KeyRound className="size-3.5" />;
+      case AuditAction.APP_ACTIVATED:
+      case AuditAction.APP_DEACTIVATED:
+      case AuditAction.STATUS_UPDATED:
+        return <ShieldAlert className="size-3.5" />;
+      default:
+        return <Plus className="size-3.5" />;
     }
-    return <Plus className="size-3.5" />;
+  };
+
+  const formatEventAction = (action: string): string => {
+    switch (action.toUpperCase().replace(/[\s.-]+/g, "_")) {
+      case AuditAction.API_KEY_CREATED:
+        return UI_COPY.APPS.RECENT_ACTIVITY.ACTIONS.KEY_CREATED;
+      case AuditAction.API_KEY_REVOKED:
+        return UI_COPY.APPS.RECENT_ACTIVITY.ACTIONS.KEY_REVOKED;
+      case AuditAction.APP_REGISTERED:
+        return UI_COPY.APPS.RECENT_ACTIVITY.ACTIONS.APP_REGISTERED;
+      case AuditAction.APP_UPDATED:
+        return UI_COPY.APPS.RECENT_ACTIVITY.ACTIONS.APP_UPDATED;
+      case AuditAction.APP_ACTIVATED:
+        return UI_COPY.APPS.RECENT_ACTIVITY.ACTIONS.APP_ACTIVATED;
+      case AuditAction.APP_DEACTIVATED:
+        return UI_COPY.APPS.RECENT_ACTIVITY.ACTIONS.APP_DEACTIVATED;
+      case AuditAction.STATUS_UPDATED:
+        return UI_COPY.APPS.RECENT_ACTIVITY.ACTIONS.STATUS_UPDATED;
+      case AuditAction.USER_INVITED:
+        return UI_COPY.APPS.RECENT_ACTIVITY.ACTIONS.USER_INVITED;
+      default:
+        return action.replaceAll(".", " ").replaceAll("_", " ").toLowerCase();
+    }
   };
 
   const getRelativeTime = (timestamp?: string) => {
-    if (!timestamp) return "just now";
+    if (!timestamp) return UI_COPY.COMMON.TIME.JUST_NOW;
     try {
       const date = new Date(timestamp);
-      if (Number.isNaN(date.getTime())) return "just now";
+      if (Number.isNaN(date.getTime())) return UI_COPY.COMMON.TIME.JUST_NOW;
       return formatDistanceToNow(date, { addSuffix: true });
     } catch {
-      return "just now";
+      return UI_COPY.COMMON.TIME.JUST_NOW;
     }
   };
 
@@ -69,13 +98,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
                   event.actorId ||
                   UI_COPY.COMMON.MEMBER.SYSTEM}
               </span>{" "}
-              <span className="text-muted-foreground">
-                {event.action
-                  .replaceAll(".", " ")
-                  .replace("key created", "created an API key for")
-                  .replace("app registered", "registered")
-                  .replace("status updated", "updated kill-switch status for")}
-              </span>{" "}
+              <span className="text-muted-foreground">{formatEventAction(event.action)}</span>{" "}
               <span className="text-foreground font-semibold">{event.targetId}</span>
             </span>
             <span className="tag hidden sm:inline-flex">{event.action}</span>

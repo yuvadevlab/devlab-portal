@@ -101,10 +101,10 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
 
         <div className="w-48">
           <Select value={selectedApp} onValueChange={setSelectedApp}>
-            <SelectTrigger className="bg-card border-border h-9 text-xs">
+            <SelectTrigger className="bg-card border-border h-9 w-full text-xs">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="w-full min-w-(--radix-select-trigger-width)">
               <SelectItem value={UI_COPY.COMMON.FILTERS.ALL}>
                 {UI_COPY.IAM.TOOLBAR.ALL_APPLICATIONS}
               </SelectItem>

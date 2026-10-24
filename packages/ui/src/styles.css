@@ -61,3 +61,23 @@
   transition: none !important;
   animation: none !important;
 }
+
+/* ── Select Dropdown Trigger & Popover Alignment ── */
+.dl-select-trigger {
+  width: 100%;
+}
+
+.dl-select-content {
+  min-width: var(--radix-select-trigger-width, 8rem);
+  width: var(--radix-select-trigger-width, max-content);
+  max-width: var(--radix-select-content-available-width, 100vw);
+}
+
+.dl-select-viewport {
+  width: 100%;
+  min-width: var(--radix-select-trigger-width, 8rem);
+}
+
+.dl-select-item {
+  width: 100%;
+}
