@@ -7,17 +7,11 @@
  */
 
 import React from "react";
-import { AuditMetrics } from "./audit-metrics";
 import { AuditTable } from "./audit-table";
 import { useAuditLogsQuery } from "@/features/audit/api";
 
 export function AuditView(): React.JSX.Element {
   const { data: logs = [] } = useAuditLogsQuery();
 
-  return (
-    <>
-      <AuditMetrics logs={logs} />
-      <AuditTable logs={logs} />
-    </>
-  );
+  return <AuditTable logs={logs} />;
 }
