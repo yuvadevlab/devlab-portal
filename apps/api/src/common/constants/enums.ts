@@ -29,6 +29,7 @@ export enum AuditAction {
   API_KEY_CREATED = "API_KEY_CREATED",
   API_KEY_REVOKED = "API_KEY_REVOKED",
   USER_INVITED = "USER_INVITED",
+  STATUS_UPDATED = "STATUS_UPDATED",
 }
 
 /** Target entity types for audit trail tracking */

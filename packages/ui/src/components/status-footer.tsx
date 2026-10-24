@@ -14,8 +14,8 @@ export interface StatusFooterProps {
   appsActiveLabel: string;
   versionLabel: string;
   environmentLabel: string;
-  docsUrl: string;
-  docsLabel: string;
+  docsUrl?: string;
+  docsLabel?: string;
 }
 
 /**
@@ -58,15 +58,17 @@ export function StatusFooter({
       <span className="flex items-center gap-5">
         <span>{versionLabel}</span>
         <span className="tag text-[9px]!">{environmentLabel}</span>
-        <Button
-          variant="link"
-          size="sm"
-          className="text-muted-foreground hover:text-foreground h-auto gap-1 p-0 text-xs"
-          onClick={() => window.open(docsUrl, "_blank", "noopener,noreferrer")}
-        >
-          {docsLabel}
-          <ArrowUpRight className="size-3" />
-        </Button>
+        {docsUrl ? (
+          <Button
+            variant="link"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground h-auto gap-1 p-0 text-xs"
+            onClick={() => window.open(docsUrl, "_blank", "noopener,noreferrer")}
+          >
+            {docsLabel}
+            <ArrowUpRight className="size-3" />
+          </Button>
+        ) : null}
       </span>
     </footer>
   );

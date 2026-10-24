@@ -185,7 +185,7 @@ export class PlatformService {
       version,
       environment: process.env.NODE_ENV || "development",
       environmentLabel,
-      docsUrl: process.env.DOCS_URL || "https://docs.devlab.io",
+      docsUrl: process.env.DOCS_URL || undefined,
       docsLabel: "Documentation",
     };
   }

@@ -16,6 +16,11 @@ export const COMMON_COPY = {
     TITLE: "DevLab Portal — Ecosystem Control Plane",
     DESCRIPTION: "Unified IAM, Kill-Switch, and App Launcher for DevLab Micro-Frontend Swarms",
   },
+  TIME: {
+    JUST_NOW: "just now",
+    RECENTLY: "recently",
+  },
+
   ACTIONS: {
     SAVE: "Save Changes",
     CANCEL: "Cancel",

@@ -36,3 +36,8 @@ export const SOCKET_EVENTS = {
   KEY_REVOKED: "key.revoked",
   AUDIT_LOGGED: "audit.logged",
 } as const;
+
+/** External documentation and repository links */
+export const EXTERNAL_ROUTES = {
+  DOCS: process.env.NEXT_PUBLIC_DOCS_URL,
+} as const;

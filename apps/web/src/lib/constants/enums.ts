@@ -73,6 +73,7 @@ export enum AuditAction {
   API_KEY_CREATED = "API_KEY_CREATED",
   API_KEY_REVOKED = "API_KEY_REVOKED",
   USER_INVITED = "USER_INVITED",
+  STATUS_UPDATED = "STATUS_UPDATED",
 }
 
 /** Standard HTTP verbs */
@@ -91,4 +92,11 @@ export enum SeverityLevel {
   WARNING = "warning",
   ERROR = "error",
   CRITICAL = "critical",
+}
+
+/** Telemetry status class indicators for UI status badge dots */
+export enum HealthStatusClass {
+  HEALTHY = "healthy",
+  WARNING = "warning",
+  ERROR = "error",
 }
