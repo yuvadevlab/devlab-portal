@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/team/components/invite-member-modal.tsx
  * @description Modal dialog for inviting new team members to the workspace.

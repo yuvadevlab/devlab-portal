@@ -7,7 +7,7 @@
  */
 
 import React from "react";
-import { Box, Activity, ShieldCheck, Zap } from "lucide-react";
+import { Box, Activity, CalendarDays, Users } from "lucide-react";
 import { MetricsBar, type MetricItem } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
@@ -18,8 +18,16 @@ interface AuditMetricsProps {
 
 export const AuditMetrics: React.FC<AuditMetricsProps> = ({ logs }) => {
   const criticalCount = logs.filter(
-    (l) => l.action.includes("kill") || l.action.includes("deactivated"),
+    (l) =>
+      l.action.toLowerCase().includes("kill") ||
+      l.action.toLowerCase().includes("deactivat") ||
+      l.action.toLowerCase().includes("revok"),
   ).length;
+
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const todaysCount = logs.filter((l) => new Date(l.createdAt).getTime() >= startOfDay).length;
+  const uniqueActors = new Set(logs.map((l) => l.actor?.email || l.actorId).filter(Boolean)).size;
 
   const items: MetricItem[] = [
     {
@@ -32,21 +40,22 @@ export const AuditMetrics: React.FC<AuditMetricsProps> = ({ logs }) => {
       label: UI_COPY.AUDIT.METRICS.CRITICAL,
       value: criticalCount,
       note: UI_COPY.AUDIT.METRICS.CRITICAL_NOTE,
+      positive: criticalCount === 0,
       icon: Activity,
     },
     {
-      label: UI_COPY.AUDIT.METRICS.POSTURE,
-      value: UI_COPY.AUDIT.METRICS.POSTURE_VAL,
-      note: UI_COPY.AUDIT.METRICS.POSTURE_NOTE,
+      label: UI_COPY.AUDIT.METRICS.TODAYS_EVENTS,
+      value: todaysCount,
+      note: UI_COPY.AUDIT.METRICS.TODAYS_NOTE,
       positive: true,
-      icon: ShieldCheck,
+      icon: CalendarDays,
     },
     {
-      label: UI_COPY.AUDIT.METRICS.INTEGRITY,
-      value: UI_COPY.AUDIT.METRICS.INTEGRITY_VAL,
-      note: UI_COPY.AUDIT.METRICS.INTEGRITY_NOTE,
+      label: UI_COPY.AUDIT.METRICS.UNIQUE_ACTORS,
+      value: uniqueActors,
+      note: UI_COPY.AUDIT.METRICS.UNIQUE_ACTORS_NOTE,
       positive: true,
-      icon: Zap,
+      icon: Users,
     },
   ];
 

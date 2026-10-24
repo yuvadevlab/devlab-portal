@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @file apps/web/src/features/iam/components/api-key-modal.tsx
  * @description Modal dialog for configuring and provisioning scoped API credentials.
