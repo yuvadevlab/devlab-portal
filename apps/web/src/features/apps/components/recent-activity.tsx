@@ -8,6 +8,7 @@
 
 import React from "react";
 import { Activity, ArrowUpRight, KeyRound, ShieldAlert, Plus, ChevronRight } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 import { Button } from "@devlab-portal/ui";
 import { TabKey } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -27,11 +28,15 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
     return <Plus className="size-3.5" />;
   };
 
-  const getRelativeTime = (index: number) => {
-    if (index === 0) return `5 ${UI_COPY.APPS.RECENT_ACTIVITY.MINUTES_AGO}`;
-    if (index === 1) return `17 ${UI_COPY.APPS.RECENT_ACTIVITY.MINUTES_AGO}`;
-    if (index === 2) return `28 ${UI_COPY.APPS.RECENT_ACTIVITY.MINUTES_AGO}`;
-    return `${(index + 1) * 15} ${UI_COPY.APPS.RECENT_ACTIVITY.MINUTES_AGO}`;
+  const getRelativeTime = (timestamp?: string) => {
+    if (!timestamp) return "just now";
+    try {
+      const date = new Date(timestamp);
+      if (Number.isNaN(date.getTime())) return "just now";
+      return formatDistanceToNow(date, { addSuffix: true });
+    } catch {
+      return "just now";
+    }
   };
 
   return (
@@ -54,12 +59,15 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
       </div>
 
       <div className="activity-list">
-        {auditLogs.slice(0, 3).map((event, i) => (
+        {auditLogs.slice(0, 3).map((event) => (
           <div className="activity-row" key={event.id}>
             <span className="text-muted-foreground">{getEventIcon(event.action)}</span>
             <span>
               <span className="text-foreground font-medium">
-                {event.actorId || UI_COPY.COMMON.MEMBER.SYSTEM}
+                {event.actor?.name ||
+                  event.actor?.email ||
+                  event.actorId ||
+                  UI_COPY.COMMON.MEMBER.SYSTEM}
               </span>{" "}
               <span className="text-muted-foreground">
                 {event.action
@@ -71,7 +79,9 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
               <span className="text-foreground font-semibold">{event.targetId}</span>
             </span>
             <span className="tag hidden sm:inline-flex">{event.action}</span>
-            <time>{getRelativeTime(i)}</time>
+            <time dateTime={event.createdAt} suppressHydrationWarning>
+              {getRelativeTime(event.createdAt)}
+            </time>
             <ChevronRight className="text-muted-foreground size-3" />
           </div>
         ))}
