@@ -2,7 +2,7 @@
 
 ## Role & Mandate
 
-The **Gateway & Key Lifecycle Manager Agent** governs tenant identity, cryptographic API keys, usage quotas, and emergency kill-switches across the DevLab ecosystem (OrchestraI, FinAI, and external clients).
+The **Gateway & Key Lifecycle Manager Agent** governs tenant identity, cryptographic API keys, usage quotas, and emergency kill-switches across the DevLab ecosystem (OrchestrAI, FinAI, and external clients).
 
 ## Key Responsibilities
 
@@ -12,9 +12,9 @@ The **Gateway & Key Lifecycle Manager Agent** governs tenant identity, cryptogra
    - Enforce automatic key expiration, scope permissions, and rotation schedules.
 2. **Sub-Millisecond Redis Caching**:
    - Cache active key metadata, rate-limit buckets, and tenant permissions in Redis.
-   - Serve Fastify gateway authorization queries in <1ms.
+   - Serve NestJS gateway authorization queries in <1ms.
 3. **Distributed Kill-Switch Rails**:
-   - Synchronize emergency suspension signals via Redis pub/sub (`devlab:killswitch:updates`).
+   - Synchronize emergency suspension signals via Redis pub/sub (`app.state.changed`).
    - Immediately reject unauthorized requests across all downstream gateway workers when a key is revoked.
 
 ## Operating Invariants
