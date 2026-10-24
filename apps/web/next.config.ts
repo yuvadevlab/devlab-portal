@@ -6,7 +6,7 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@yuva-devlab/ui", "@yuva-devlab/tokens"],
+  transpilePackages: ["@devlab-portal/ui", "@yuva-devlab/ui", "@yuva-devlab/tokens"],
   eslint: {
     // ESLint is run across the workspace via root `pnpm lint` and quality gates
     ignoreDuringBuilds: true,

@@ -37,8 +37,21 @@ export function middleware(request: NextRequest): NextResponse {
     return response;
   }
 
-  // 2. Authenticated users attempting to access /login, /forgot-password, etc. get redirected to dashboard /
+  // 2. Authenticated users attempting to access /login, /forgot-password, etc. get redirected to dashboard / or SSO return URL
   if (isAuthenticated && isAuthRoute) {
+    const redirectParam = request.nextUrl.searchParams.get("redirect");
+    if (redirectParam && redirectParam !== "/" && tokenValue) {
+      try {
+        const targetUrl = new URL(redirectParam, request.url);
+        targetUrl.searchParams.set("token", tokenValue);
+        return NextResponse.redirect(targetUrl);
+      } catch {
+        const sep = redirectParam.includes("?") ? "&" : "?";
+        return NextResponse.redirect(
+          new URL(`${redirectParam}${sep}token=${encodeURIComponent(tokenValue)}`, request.url),
+        );
+      }
+    }
     const dashboardUrl = new URL("/", request.url);
     return NextResponse.redirect(dashboardUrl);
   }

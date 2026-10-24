@@ -7,10 +7,11 @@
 import React from "react";
 import type { Metadata } from "next";
 import { ForgotPasswordView } from "@/features/auth";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export const metadata: Metadata = {
-  title: "Forgot Password — DevLab Portal",
-  description: "Reset your DevLab workspace account password",
+  title: UI_COPY.AUTH.FORGOT_PASSWORD.TITLE,
+  description: UI_COPY.AUTH.FORGOT_PASSWORD.DESCRIPTION,
 };
 
 export default function ForgotPasswordPage(): React.JSX.Element {

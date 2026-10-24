@@ -11,6 +11,8 @@ import { IAM_COPY } from "./iam";
 import { AUDIT_COPY } from "./audit";
 import { TEAM_COPY } from "./team";
 import { SETTINGS_COPY } from "./settings";
+import { AUTH_COPY } from "./auth";
+import { DASHBOARD_COPY } from "./dashboard";
 
 export * from "./common";
 export * from "./apps";
@@ -18,6 +20,8 @@ export * from "./iam";
 export * from "./audit";
 export * from "./team";
 export * from "./settings";
+export * from "./auth";
+export * from "./dashboard";
 
 /** Master dictionary of all user-facing UI text strings */
 export const UI_COPY = {
@@ -27,6 +31,8 @@ export const UI_COPY = {
   AUDIT: AUDIT_COPY,
   TEAM: TEAM_COPY,
   SETTINGS: SETTINGS_COPY,
+  AUTH: AUTH_COPY,
+  DASHBOARD: DASHBOARD_COPY,
 } as const;
 
 export type UiCopyCatalog = typeof UI_COPY;

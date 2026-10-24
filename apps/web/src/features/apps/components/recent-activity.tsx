@@ -8,7 +8,7 @@
 
 import React from "react";
 import { Activity, ArrowUpRight, KeyRound, ShieldAlert, Plus, ChevronRight } from "lucide-react";
-import { Button } from "@yuva-devlab/ui";
+import { Button } from "@devlab-portal/ui";
 import { TabKey } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { AuditLog } from "@/features/audit/types";
@@ -58,7 +58,9 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
           <div className="activity-row" key={event.id}>
             <span className="text-muted-foreground">{getEventIcon(event.action)}</span>
             <span>
-              <span className="text-foreground font-medium">{event.actorId || "System"}</span>{" "}
+              <span className="text-foreground font-medium">
+                {event.actorId || UI_COPY.COMMON.MEMBER.SYSTEM}
+              </span>{" "}
               <span className="text-muted-foreground">
                 {event.action
                   .replaceAll(".", " ")

@@ -3,15 +3,14 @@
 /**
  * @file apps/web/src/features/apps/components/app-card.tsx
  * @description Application catalog card with thematic color palettes, live telemetry, and control actions.
- * Fully built with @yuva-devlab/ui Button and design tokens.
+ * Fully built with @devlab-portal/ui Button and design tokens.
  * @module @devlab/portal-web/features/apps/components/app-card
  */
 
 import React from "react";
 import { Link2, HeartPulse, ArrowUpRight, Settings2, Power, Server } from "lucide-react";
-import { Button } from "@yuva-devlab/ui";
+import { Button, getNavIcon } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import { getNavIcon } from "@/components/layout";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppCardProps {

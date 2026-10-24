@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/iam/components/api-keys-table.tsx
  * @description Tabular view of scoped machine-to-machine credentials with search and filtering.
- * Fully built with @yuva-devlab/ui Table, Input, Select, and Button primitives.
+ * Fully built with @devlab-portal/ui Table, Input, Select, and Button primitives.
  * @module @devlab/portal-web/features/iam/components/api-keys-table
  */
 
@@ -23,8 +23,8 @@ import {
   TableHead,
   TableRow,
   TableCell,
-} from "@yuva-devlab/ui";
-import { Heading } from "@/components/layout";
+} from "@devlab-portal/ui";
+import { Heading } from "@devlab-portal/ui";
 import { IamMetrics } from "./iam-metrics";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { ApiKey } from "@/features/iam/types";
@@ -59,12 +59,12 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
     const matched = resolvedApps.find((a) => a.appId === appId || a.id === appId);
     return matched ? matched.name : appId;
   };
-  const [selectedApp, setSelectedApp] = useState("All");
+  const [selectedApp, setSelectedApp] = useState<string>(UI_COPY.COMMON.FILTERS.ALL);
 
   const appsInKeys = Array.from(new Set(apiKeys.map((k) => k.appId)));
 
   const filteredKeys = apiKeys.filter((k) => {
-    const matchesApp = selectedApp === "All" || k.appId === selectedApp;
+    const matchesApp = selectedApp === UI_COPY.COMMON.FILTERS.ALL || k.appId === selectedApp;
     const matchesSearch =
       k.name.toLowerCase().includes(search.toLowerCase()) ||
       k.keyPrefix.toLowerCase().includes(search.toLowerCase());
@@ -73,7 +73,11 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
 
   return (
     <>
-      <Heading title={UI_COPY.IAM.HEADER.TITLE} description={UI_COPY.IAM.HEADER.DESCRIPTION}>
+      <Heading
+        title={UI_COPY.IAM.HEADER.TITLE}
+        description={UI_COPY.IAM.HEADER.DESCRIPTION}
+        eyebrowLabel={UI_COPY.COMMON.HEADER.WORKSPACE}
+      >
         <Button onClick={onOpenGenerateModal}>
           <Plus className="mr-1.5 size-4" />
           {UI_COPY.IAM.HEADER.CREATE_BTN}
@@ -101,7 +105,9 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="All">{UI_COPY.IAM.TOOLBAR.ALL_APPLICATIONS}</SelectItem>
+              <SelectItem value={UI_COPY.COMMON.FILTERS.ALL}>
+                {UI_COPY.IAM.TOOLBAR.ALL_APPLICATIONS}
+              </SelectItem>
               {appsInKeys.map((appId) => (
                 <SelectItem key={appId} value={appId}>
                   {getAppName(appId)}

@@ -3,7 +3,7 @@
 /**
  * @file apps/web/src/features/apps/components/register-wizard/wizard-step-identity.tsx
  * @description Step 1 of App Registration Wizard: Identity, names, environment, and base origins.
- * Fully built with @yuva-devlab/ui Label, Input, Select, and Textarea components.
+ * Fully built with @devlab-portal/ui Label, Input, Select, and Textarea components.
  * @module @devlab/portal-web/features/apps/components/register-wizard/step1
  */
 
@@ -17,7 +17,7 @@ import {
   SelectContent,
   SelectItem,
   Textarea,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { AppEnvironment } from "@/lib/constants";
 import type { RegisterWizardFormState } from "@/features/apps/types";

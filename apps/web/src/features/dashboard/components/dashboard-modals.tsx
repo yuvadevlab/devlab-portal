@@ -7,7 +7,9 @@
  */
 
 import React from "react";
-import { CommandDialog, TenantModal } from "@/components/layout";
+import { NavigationCommandDialog } from "@devlab-portal/ui";
+import { TenantModal } from "@/components/layout";
+import { UI_COPY } from "@/lib/ui-copy";
 import {
   RegisterAppModal,
   AppSettingsDrawer,
@@ -75,11 +77,17 @@ export const DashboardModals: React.FC<DashboardModalsProps> = ({
   return (
     <>
       {/* Global Command Dialog & Tenant Creation Modal */}
-      <CommandDialog
+      <NavigationCommandDialog
         isOpen={isCommandOpen}
         onClose={onCloseCommand}
-        onNavigateTab={onNavigateTab}
+        onSelectItem={onNavigateTab}
         items={navigationItems}
+        copy={{
+          title: UI_COPY.COMMON.COMMAND.TITLE,
+          description: UI_COPY.COMMON.COMMAND.DESCRIPTION,
+          placeholder: UI_COPY.COMMON.COMMAND.PLACEHOLDER,
+          emptyResult: UI_COPY.COMMON.COMMAND.EMPTY,
+        }}
       />
 
       <TenantModal

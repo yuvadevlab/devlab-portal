@@ -7,10 +7,11 @@
 
 import type { Metadata } from "next";
 import { ResetPasswordView } from "@/features/auth";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export const metadata: Metadata = {
-  title: "Set Password | DevLab Portal",
-  description: "Set or reset your DevLab workspace credentials.",
+  title: UI_COPY.AUTH.RESET_PASSWORD.TITLE,
+  description: UI_COPY.AUTH.RESET_PASSWORD.DESCRIPTION,
 };
 
 export default function ResetPasswordPage(): React.JSX.Element {

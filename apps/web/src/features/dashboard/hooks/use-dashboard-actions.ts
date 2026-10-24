@@ -5,7 +5,7 @@
  * @module @devlab/portal-web/features/dashboard/hooks/use-dashboard-actions
  */
 
-import { toast } from "@yuva-devlab/ui";
+import { toast } from "@devlab-portal/ui";
 import {
   useCreateAppMutation,
   useUpdateAppSettingsMutation,
@@ -14,6 +14,7 @@ import {
 import { useRevokeApiKeyMutation } from "@/features/iam/api";
 import { useCreateTenantMutation } from "@/features/dashboard/api";
 import type { RegisteredApp, CreateAppPayload, UpdateAppSettingsPayload } from "@/lib/api-client";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export interface UseDashboardActionsReturn {
   handleCreateTenant: (name: string) => Promise<void>;
@@ -35,36 +36,38 @@ export function useDashboardActions(apps: RegisteredApp[]): UseDashboardActionsR
 
   const handleCreateTenant = async (name: string): Promise<void> => {
     const promise = createTenantMutation.mutateAsync({ name });
+    const copy = UI_COPY.DASHBOARD.ACTIONS;
     toast.promise(promise, {
-      loading: `Provisioning workspace "${name}"...`,
+      loading: copy.CREATE_TENANT_LOADING(name),
       success: (newTenant) => {
         if (typeof window !== "undefined") {
           localStorage.setItem("devlab_active_tenant_id", newTenant.id);
         }
-        return `Workspace tenant "${name}" created successfully`;
+        return copy.CREATE_TENANT_SUCCESS(name);
       },
-      error: (err: unknown) => (err instanceof Error ? err.message : "Failed to create tenant"),
+      error: (err: unknown) => (err instanceof Error ? err.message : copy.CREATE_TENANT_FAILURE),
     });
     await promise;
   };
 
   const handleRevokeKey = async (id: string): Promise<void> => {
     const promise = revokeApiKey.mutateAsync(id);
+    const copy = UI_COPY.DASHBOARD.ACTIONS;
     toast.promise(promise, {
-      loading: "Revoking API key...",
-      success: "API key revoked successfully",
-      error: (err: unknown) => (err instanceof Error ? err.message : "Failed to revoke API key"),
+      loading: copy.REVOKE_KEY_LOADING,
+      success: copy.REVOKE_KEY_SUCCESS,
+      error: (err: unknown) => (err instanceof Error ? err.message : copy.REVOKE_KEY_FAILURE),
     });
     await promise;
   };
 
   const handleCreateApp = async (payload: CreateAppPayload): Promise<{ clientSecret: string }> => {
     const promise = createApp.mutateAsync(payload);
+    const copy = UI_COPY.DASHBOARD.ACTIONS;
     toast.promise(promise, {
-      loading: `Registering application "${payload.name}"...`,
-      success: `Application "${payload.name}" registered successfully`,
-      error: (err: unknown) =>
-        err instanceof Error ? err.message : "Failed to register application",
+      loading: copy.REGISTER_APP_LOADING(payload.name),
+      success: copy.REGISTER_APP_SUCCESS(payload.name),
+      error: (err: unknown) => (err instanceof Error ? err.message : copy.REGISTER_APP_FAILURE),
     });
     return promise;
   };
@@ -76,10 +79,11 @@ export function useDashboardActions(apps: RegisteredApp[]): UseDashboardActionsR
     const target = apps.find((a) => a.id === id);
     const appName = target?.name || id;
     const promise = updateAppSettings.mutateAsync({ id, payload });
+    const copy = UI_COPY.DASHBOARD.ACTIONS;
     toast.promise(promise, {
-      loading: `Updating settings for "${appName}"...`,
-      success: `Settings updated for "${appName}"`,
-      error: (err: unknown) => (err instanceof Error ? err.message : "Failed to update settings"),
+      loading: copy.UPDATE_SETTINGS_LOADING(appName),
+      success: copy.UPDATE_SETTINGS_SUCCESS(appName),
+      error: (err: unknown) => (err instanceof Error ? err.message : copy.UPDATE_SETTINGS_FAILURE),
     });
     await promise;
   };
@@ -92,15 +96,11 @@ export function useDashboardActions(apps: RegisteredApp[]): UseDashboardActionsR
     const target = apps.find((a) => a.id === id);
     const appName = target?.name || id;
     const promise = toggleKillSwitch.mutateAsync({ id, nextState, maintenanceNote: note });
+    const copy = UI_COPY.DASHBOARD.ACTIONS;
     toast.promise(promise, {
-      loading: nextState
-        ? `Activating application "${appName}"...`
-        : `Engaging kill-switch for "${appName}"...`,
-      success: nextState
-        ? `Application "${appName}" activated`
-        : `Application "${appName}" deactivated (kill-switch engaged)`,
-      error: (err: unknown) =>
-        err instanceof Error ? err.message : "Failed to toggle kill switch",
+      loading: nextState ? copy.ACTIVATE_APP_LOADING(appName) : copy.KILL_SWITCH_LOADING(appName),
+      success: nextState ? copy.ACTIVATE_APP_SUCCESS(appName) : copy.KILL_SWITCH_SUCCESS(appName),
+      error: (err: unknown) => (err instanceof Error ? err.message : copy.KILL_SWITCH_FAILURE),
     });
     await promise;
   };

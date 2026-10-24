@@ -47,7 +47,7 @@ export const SETTINGS_COPY = {
   },
   CONNECTION: {
     TITLE: "Cluster connection",
-    PORT: "Gateway port",
+    PORT: "Portal API port",
     PORT_VAL: ":3015",
     TRANSPORT: "Transport",
     TRANSPORT_VAL: "Redis Pub/Sub",

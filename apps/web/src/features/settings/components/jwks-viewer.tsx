@@ -3,14 +3,13 @@
 /**
  * @file apps/web/src/features/settings/components/jwks-viewer.tsx
  * @description OIDC identity metadata, cryptographic JWKS signing keys, and Pub/Sub telemetry.
- * Fully built with @yuva-devlab/ui CopyButton and layout primitives.
+ * Fully built with @devlab-portal/ui CopyButton and layout primitives.
  * @module @devlab/portal-web/features/settings/components/jwks-viewer
  */
 
 import React from "react";
 import { LockKeyhole, Radio, ShieldCheck, Globe } from "lucide-react";
-import { CopyButton } from "@yuva-devlab/ui";
-import { Heading } from "@/components/layout";
+import { CopyButton, Heading } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { API_BASE_URL, type JwksData, type OpenIdConfig } from "@/lib/api-client";
 
@@ -46,6 +45,7 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
       <Heading
         title={UI_COPY.SETTINGS.HEADER.TITLE}
         description={UI_COPY.SETTINGS.HEADER.DESCRIPTION}
+        eyebrowLabel={UI_COPY.COMMON.HEADER.WORKSPACE}
       />
 
       <div className="settings-layout">

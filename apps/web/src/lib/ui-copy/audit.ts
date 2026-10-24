@@ -9,6 +9,7 @@ export const AUDIT_COPY = {
     TITLE: "Security & Audit Ledger",
     DESCRIPTION: "Every action, accounted for. A complete record of your ecosystem’s security.",
     EXPORT_BTN: "Export ledger",
+    EXPORT_FILENAME: "devlab-audit-ledger.json",
   },
   METRICS: {
     RECORDED: "Recorded events",

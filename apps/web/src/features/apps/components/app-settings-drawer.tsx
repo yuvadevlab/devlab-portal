@@ -20,7 +20,7 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@yuva-devlab/ui";
+} from "@devlab-portal/ui";
 import { logger } from "@/lib/logger";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { RegisteredApp, UpdateAppSettingsPayload } from "@/features/apps/types";
@@ -163,7 +163,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
               type="url"
               value={apiUrl}
               onChange={(e) => setApiUrl(e.target.value)}
-              placeholder="e.g. http://localhost:4000"
+              placeholder={UI_COPY.APPS.DRAWER.API_PLACEHOLDER}
               className="h-9 font-mono text-xs"
             />
           </div>
@@ -197,7 +197,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    aria-label="Remove callback URL"
+                    aria-label={UI_COPY.APPS.DRAWER.REMOVE_CALLBACK_ARIA}
                     className="text-destructive hover:bg-destructive/10 shrink-0"
                     onClick={() => handleRemoveCallback(i)}
                   >

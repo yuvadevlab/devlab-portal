@@ -12,6 +12,10 @@ export const COMMON_COPY = {
     SUBTITLE: "Micro-Frontend Identity & Governance Hub",
     VERSION: "v2.0.0-enterprise",
   },
+  METADATA: {
+    TITLE: "DevLab Portal — Ecosystem Control Plane",
+    DESCRIPTION: "Unified IAM, Kill-Switch, and App Launcher for DevLab Micro-Frontend Swarms",
+  },
   ACTIONS: {
     SAVE: "Save Changes",
     CANCEL: "Cancel",
@@ -70,6 +74,24 @@ export const COMMON_COPY = {
     ENTERPRISE_PLAN: "Enterprise",
     ACCOUNT_SETTINGS: "Account settings",
     SIGN_OUT: "Sign out",
+    MEMBER_FALLBACK: "Member",
+    SIGNED_OUT_MESSAGE: "Signed out of DevLab Portal",
+  },
+  A11Y: {
+    MAIN_NAVIGATION: "Main navigation",
+  },
+  FOOTER: {
+    API: "API :4000",
+    REDIS: "Redis active",
+    DOCS: "Docs",
+    APPS_ACTIVE: "Apps Active",
+  },
+  MEMBER: {
+    ALL_APPLICATIONS: "All Applications",
+    SYSTEM: "System",
+  },
+  FILTERS: {
+    ALL: "All",
   },
   COMMAND: {
     TITLE: "Search DevLab Portal",
