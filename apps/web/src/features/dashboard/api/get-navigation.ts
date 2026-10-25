@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * @file apps/web/src/features/dashboard/api/get-navigation.ts
  * @description TanStack Query hook and SSR prefetch helper for dynamic platform navigation menus.
@@ -31,8 +29,10 @@ export function useNavigationQuery() {
  * @param queryClient Active server QueryClient instance
  */
 export async function prefetchNavigation(queryClient: QueryClient): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: navigationQueryKey(),
-    queryFn: () => serverFetch<NavigationItem[]>(API_ROUTES.PLATFORM_NAVIGATION),
-  });
+  await queryClient
+    .query({
+      queryKey: navigationQueryKey(),
+      queryFn: () => serverFetch<NavigationItem[]>(API_ROUTES.PLATFORM_NAVIGATION),
+    })
+    .catch(() => {});
 }

@@ -32,8 +32,10 @@ export function useTelemetryQuery(): UseQueryResult<SystemTelemetry, Error> {
  * @param token Optional bearer token for server authorization
  */
 export async function prefetchTelemetry(queryClient: QueryClient): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: telemetryQueryKey(),
-    queryFn: () => serverFetch<SystemTelemetry>(API_ROUTES.PLATFORM_TELEMETRY),
-  });
+  await queryClient
+    .query({
+      queryKey: telemetryQueryKey(),
+      queryFn: () => serverFetch<SystemTelemetry>(API_ROUTES.PLATFORM_TELEMETRY),
+    })
+    .catch(() => {});
 }
