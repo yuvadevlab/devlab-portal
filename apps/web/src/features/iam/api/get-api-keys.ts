@@ -28,8 +28,10 @@ export function useApiKeysQuery(): UseQueryResult<ApiKey[], Error> {
  * @param queryClient Active server QueryClient instance
  */
 export async function prefetchApiKeys(queryClient: QueryClient, token?: string): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: apiKeysQueryKey(),
-    queryFn: () => serverFetch<ApiKey[]>(API_ROUTES.API_KEYS, token),
-  });
+  await queryClient
+    .query({
+      queryKey: apiKeysQueryKey(),
+      queryFn: () => serverFetch<ApiKey[]>(API_ROUTES.API_KEYS, token),
+    })
+    .catch(() => {});
 }

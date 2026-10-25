@@ -36,8 +36,10 @@ export async function prefetchAuditLogs(
   limit = 100,
   token?: string,
 ): Promise<void> {
-  await queryClient.prefetchQuery({
-    queryKey: auditLogsQueryKey(limit),
-    queryFn: () => serverFetch<AuditLog[]>(`${API_ROUTES.AUDIT_LOGS}?limit=${limit}`, token),
-  });
+  await queryClient
+    .query({
+      queryKey: auditLogsQueryKey(limit),
+      queryFn: () => serverFetch<AuditLog[]>(`${API_ROUTES.AUDIT_LOGS}?limit=${limit}`, token),
+    })
+    .catch(() => {});
 }
