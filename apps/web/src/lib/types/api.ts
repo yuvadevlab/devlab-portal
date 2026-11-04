@@ -164,3 +164,20 @@ export interface Tenant {
   readonly createdAt: string;
   readonly updatedAt: string;
 }
+
+/** Payload for generating a new application API key */
+export interface CreateApiKeyPayload {
+  name: string;
+  appId: string;
+  scopes: string[];
+  rateLimitRpm?: number;
+  expiresAt?: string;
+}
+
+/** Payload for inviting or provisioning a user member */
+export interface CreateUserPayload {
+  email: string;
+  name: string;
+  role?: string;
+  allowedApps?: string[];
+}
