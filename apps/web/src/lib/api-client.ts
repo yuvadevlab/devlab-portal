@@ -5,14 +5,25 @@
  */
 
 import { io, Socket } from "socket.io-client";
-import { API_ROUTES } from "@/lib/constants/routes";
-import { HttpMethod } from "@/lib/constants/enums";
+import { API_ROUTES, APP_ROUTES } from "@/lib/constants/routes";
+import {
+  HttpMethod,
+  AuthToastType,
+  StorageKey,
+  CookieKey,
+  HttpHeader,
+  ContentType,
+  AuthQueryParamKey,
+} from "@/lib/constants/enums";
+import { AUTH_COPY } from "@/lib/ui-copy/auth";
 import { isJwtExpired } from "@/lib/jwt";
 import type {
   NavigationItem,
   RegisteredApp,
   CreateAppPayload,
   UpdateAppSettingsPayload,
+  CreateApiKeyPayload,
+  CreateUserPayload,
   ApiKey,
   AuditLog,
   UserMember,
@@ -20,9 +31,9 @@ import type {
   OpenIdConfig,
   SystemTelemetry,
   Tenant,
-} from "@/lib/types/api";
+} from "./types/api";
 
-export * from "@/lib/types/api";
+export * from "./types/api";
 
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL || "http://localhost:4000";
@@ -34,10 +45,8 @@ let isPurgingSession = false;
  * Retrieves valid authentication token from browser storage or cookie.
  * Preemptively clears expired tokens without making dead network requests.
  */
-function getAuthToken(): string {
-  if (typeof window === "undefined") {
-    return "";
-  }
+export function getAuthToken(): string {
+  if (typeof window === "undefined") return "";
 
   if (cachedToken) {
     if (isJwtExpired(cachedToken)) {
@@ -48,7 +57,7 @@ function getAuthToken(): string {
   }
 
   try {
-    const stored = window.localStorage.getItem("devlab_access_token");
+    const stored = window.localStorage.getItem(StorageKey.ACCESS_TOKEN);
     if (stored && stored.trim().length > 0) {
       if (isJwtExpired(stored)) {
         purgeClientSession();
@@ -62,7 +71,8 @@ function getAuthToken(): string {
   }
 
   try {
-    const match = document.cookie.match(/(?:^|;\s*)devlab_access_token=([^;]+)/);
+    const pattern = new RegExp(`(?:^|;\\s*)${CookieKey.ACCESS_TOKEN}=([^;]+)`);
+    const match = document.cookie.match(pattern);
     if (match && match[1]) {
       const decoded = decodeURIComponent(match[1]).trim();
       if (decoded.length > 0) {
@@ -85,44 +95,58 @@ function getAuthToken(): string {
  * Clears client session tokens and triggers redirection to /login with mutex protection.
  */
 export function purgeClientSession(): void {
-  if (isPurgingSession) {
-    return;
-  }
+  if (isPurgingSession) return;
   isPurgingSession = true;
   cachedToken = null;
 
   if (typeof window !== "undefined") {
     try {
-      window.localStorage.removeItem("devlab_access_token");
-      window.localStorage.removeItem("devlab_auth_token");
-      window.localStorage.removeItem("devlab_auth_user");
-      document.cookie = "devlab_access_token=; path=/; max-age=0; SameSite=Lax";
+      window.localStorage.removeItem(StorageKey.ACCESS_TOKEN);
+      window.localStorage.removeItem(StorageKey.AUTH_TOKEN);
+      window.localStorage.removeItem(StorageKey.AUTH_USER);
+      document.cookie = `${CookieKey.ACCESS_TOKEN}=; path=/; max-age=0; SameSite=Lax`;
     } catch {
       // Ignore teardown errors
     }
     const current = window.location.pathname;
-    if (current !== "/login" && current !== "/forgot-password" && current !== "/reset-password") {
-      window.location.href = "/login";
-    }
+    const isAuth =
+      current === APP_ROUTES.LOGIN ||
+      current === APP_ROUTES.FORGOT_PASSWORD ||
+      current === APP_ROUTES.RESET_PASSWORD;
+    if (!isAuth) window.location.href = APP_ROUTES.LOGIN;
   }
 }
 
 /** Standard fetch wrapper with JSON serialization, bearer auth, and short-circuit 401 interception */
 async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   if (isPurgingSession) {
-    throw new Error("Session expired. Redirecting to login...");
+    throw new Error(AUTH_COPY.TOAST.SESSION_EXPIRED_DESC);
   }
 
   const token = getAuthToken();
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    [HttpHeader.CONTENT_TYPE]: ContentType.APPLICATION_JSON,
+    ...(token ? { [HttpHeader.AUTHORIZATION]: `Bearer ${token}` } : {}),
     ...((options.headers as Record<string, string>) || {}),
   };
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
   if (!res.ok) {
     if (res.status === 401) {
+      if (typeof window !== "undefined") {
+        try {
+          window.sessionStorage.setItem(
+            StorageKey.PENDING_AUTH_TOAST,
+            JSON.stringify({
+              type: AuthToastType.WARNING,
+              title: AUTH_COPY.TOAST.SESSION_EXPIRED_TITLE,
+              description: AUTH_COPY.TOAST.SESSION_EXPIRED_DESC,
+            }),
+          );
+        } catch {
+          // Ignore session storage errors
+        }
+      }
       purgeClientSession();
     }
     const err = await res.json().catch(() => ({}));
@@ -174,37 +198,24 @@ export const api = {
 
   getApiKeys: (appId?: string): Promise<ApiKey[]> =>
     fetchJson<ApiKey[]>(
-      `${API_ROUTES.API_KEYS}${appId ? `?app_id=${encodeURIComponent(appId)}` : ""}`,
+      `${API_ROUTES.API_KEYS}${appId ? `?${AuthQueryParamKey.APP_ID}=${encodeURIComponent(appId)}` : ""}`,
     ),
 
-  createApiKey: (payload: {
-    name: string;
-    appId: string;
-    scopes: string[];
-    rateLimitRpm?: number;
-    expiresAt?: string;
-  }): Promise<ApiKey & { rawKey: string }> =>
+  createApiKey: (payload: CreateApiKeyPayload): Promise<ApiKey & { rawKey: string }> =>
     fetchJson<ApiKey & { rawKey: string }>(API_ROUTES.API_KEYS, {
       method: HttpMethod.POST,
       body: JSON.stringify(payload),
     }),
 
   revokeApiKey: (id: string): Promise<ApiKey> =>
-    fetchJson<ApiKey>(API_ROUTES.API_KEY_BY_ID(id), {
-      method: HttpMethod.DELETE,
-    }),
+    fetchJson<ApiKey>(API_ROUTES.API_KEY_BY_ID(id), { method: HttpMethod.DELETE }),
 
   getAuditLogs: (limit = 50, offset = 0): Promise<AuditLog[]> =>
     fetchJson<AuditLog[]>(API_ROUTES.AUDIT_LOGS(limit, offset)),
 
   getUsers: (): Promise<UserMember[]> => fetchJson<UserMember[]>(API_ROUTES.USERS),
 
-  createUser: (payload: {
-    email: string;
-    name: string;
-    role?: string;
-    allowedApps?: string[];
-  }): Promise<UserMember> =>
+  createUser: (payload: CreateUserPayload): Promise<UserMember> =>
     fetchJson<UserMember>(API_ROUTES.USERS, {
       method: HttpMethod.POST,
       body: JSON.stringify(payload),

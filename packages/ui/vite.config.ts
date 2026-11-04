@@ -1,0 +1,65 @@
+/**
+ * @file packages/ui/vite.config.ts
+ * @description Vite configuration for bundling @devlab-portal/ui.
+ * Emits ESM and CJS bundles, preserves 'use client' directives,
+ * extracts CSS into dist/ui.css, and generates TypeScript declarations.
+ */
+
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import dts from "vite-plugin-dts";
+import { resolve } from "node:path";
+import MagicString from "magic-string";
+
+/**
+ * Rollup plugin to restore 'use client' directives on chunks that contain client-only code.
+ */
+function preserveUseClient() {
+  return {
+    name: "preserve-use-client",
+    renderChunk(code: string) {
+      const hasClientDirective = /["']use client["']/.test(code);
+      if (hasClientDirective) return null;
+      const ms = new MagicString(code);
+      ms.prepend(`"use client";\n`);
+      return { code: ms.toString(), map: ms.generateMap({ hires: true }) };
+    },
+  };
+}
+
+export default defineConfig({
+  plugins: [
+    react(),
+    dts({
+      tsconfigPath: "./tsconfig.json",
+      insertTypesEntry: true,
+      exclude: ["**/*.stories.*", "**/__tests__/**", "**/*.test.*", "**/*.mdx"],
+    }),
+  ],
+  build: {
+    outDir: "dist",
+    sourcemap: true,
+    emptyOutDir: true,
+    cssMinify: "esbuild",
+    cssCodeSplit: false,
+    lib: {
+      entry: resolve(import.meta.dirname, "src/index.ts"),
+      name: "PortalUI",
+      formats: ["es", "cjs"],
+      fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
+    },
+    rollupOptions: {
+      external: (id) => {
+        if (id.includes("node_modules")) return true;
+        if (id.startsWith(".") || id.startsWith("/") || id.startsWith("\0")) return false;
+        return true;
+      },
+      plugins: [preserveUseClient()],
+      output: {
+        preserveModules: false,
+        exports: "named",
+        globals: { react: "React", "react-dom": "ReactDOM" },
+      },
+    },
+  },
+});

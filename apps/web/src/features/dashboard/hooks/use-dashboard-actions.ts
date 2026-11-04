@@ -14,6 +14,7 @@ import {
 import { useRevokeApiKeyMutation } from "@/features/iam/api";
 import { useCreateTenantMutation } from "@/features/dashboard/api";
 import type { RegisteredApp, CreateAppPayload, UpdateAppSettingsPayload } from "@/lib/api-client";
+import { StorageKey } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
 
 export interface UseDashboardActionsReturn {
@@ -41,7 +42,7 @@ export function useDashboardActions(apps: RegisteredApp[]): UseDashboardActionsR
       loading: copy.CREATE_TENANT_LOADING(name),
       success: (newTenant) => {
         if (typeof window !== "undefined") {
-          localStorage.setItem("devlab_active_tenant_id", newTenant.id);
+          localStorage.setItem(StorageKey.ACTIVE_TENANT_ID, newTenant.id);
         }
         return copy.CREATE_TENANT_SUCCESS(name);
       },

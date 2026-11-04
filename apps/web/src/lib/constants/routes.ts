@@ -8,6 +8,9 @@
 /** Client-side URL paths and tab queries */
 export const APP_ROUTES = {
   HOME: "/",
+  LOGIN: "/login",
+  FORGOT_PASSWORD: "/forgot-password",
+  RESET_PASSWORD: "/reset-password",
   APPS: "/apps",
   IAM: "/iam",
   AUDIT: "/audit",
@@ -20,6 +23,7 @@ export const APP_ROUTES = {
 export const API_ROUTES = {
   AUTH_LOGIN: "/auth/login",
   AUTH_ME: "/auth/me",
+  AUTH_RESET_PASSWORD: "/auth/reset-password",
   PLATFORM_NAVIGATION: "/api/v1/platform/navigation",
   PLATFORM_TENANTS: "/api/v1/platform/tenants",
   PLATFORM_TELEMETRY: "/api/v1/platform/telemetry",

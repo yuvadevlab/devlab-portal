@@ -8,6 +8,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { ConfigProvider, Toaster } from "@devlab-portal/ui";
 import { QueryProvider } from "@/providers";
+import { AuthToastListener } from "@/features/auth";
 import { appearanceScript } from "@/lib/appearance-script";
 import { UI_COPY } from "@/lib/ui-copy";
 import "./globals.css";
@@ -30,7 +31,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
         <ConfigProvider brand="portal" defaultTheme="dark" storageKey="portal-theme">
           <QueryProvider>
             {children}
-            <Toaster />
+            <Toaster position="bottom-right" closeButton />
+            <AuthToastListener />
           </QueryProvider>
         </ConfigProvider>
       </body>
