@@ -4,7 +4,7 @@
  * @module @devlab/portal-web/providers/get-query-client
  */
 
-import { QueryClient, defaultShouldDehydrateQuery, isServer } from "@tanstack/react-query";
+import { QueryClient, defaultShouldDehydrateQuery } from "@tanstack/react-query";
 
 /**
  * Creates a configured QueryClient instance for SSR and browser caching.
@@ -35,7 +35,7 @@ let browserQueryClient: QueryClient | undefined = undefined;
  * Returns a cached singleton QueryClient for the browser or fresh client for SSR.
  */
 export function getQueryClient(): QueryClient {
-  if (isServer) {
+  if (typeof window === "undefined") {
     // Server runtime: always create a fresh QueryClient per request
     return makeQueryClient();
   }

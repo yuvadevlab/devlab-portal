@@ -1,17 +1,20 @@
 @import "tailwindcss";
-@source "../../../apps/web/src";
-@source "../node_modules/@yuva-devlab/ui";
 @import "@yuva-devlab/tokens/preset.css";
 @import "@yuva-devlab/tokens/themes/portal.css";
 @import "@yuva-devlab/ui/styles.css";
-@source "../src";
-
 @import "./styles/topbar.css";
 @import "./styles/ecosystem-launcher.css";
 @import "./styles/metrics-grid.css";
 @import "./styles/app-cards.css";
 @import "./styles/app-activity.css";
 @import "./styles/widgets-layout.css";
+@import "./styles/auth.css";
+@import "./styles/toast.css";
+
+@source "../../../apps/web/src";
+@source "../node_modules/@yuva-devlab/ui";
+@source "../src";
+@source ".";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import { Layers, ChevronDown, Check, Plus } from "lucide-react";
 import { Button, Input, useTheme } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import { TabKey, UserRole } from "@/lib/constants/enums";
+import { TabKey, UserRole, StorageKey } from "@/lib/constants/enums";
 import { useAuthMeQuery } from "@/features/auth";
 import { useTenantsQuery } from "@/features/dashboard";
 import type { AuditLog } from "@/features/audit/types";
@@ -54,7 +54,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   // Synchronize active tenant identity with localStorage or user profile
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedId = localStorage.getItem("devlab_active_tenant_id");
+      const storedId = localStorage.getItem(StorageKey.ACTIVE_TENANT_ID);
       if (storedId && tenants.some((t) => t.id === storedId)) {
         setActiveTenantId(storedId);
         return;
@@ -129,7 +129,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
                       onClick={() => {
                         setActiveTenantId(t.id);
                         if (typeof window !== "undefined") {
-                          localStorage.setItem("devlab_active_tenant_id", t.id);
+                          localStorage.setItem(StorageKey.ACTIVE_TENANT_ID, t.id);
                         }
                         setIsTenantMenuOpen(false);
                       }}

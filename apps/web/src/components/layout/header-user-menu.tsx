@@ -8,8 +8,10 @@
 
 import React from "react";
 import { ChevronDown, Settings2, LogOut } from "lucide-react";
-import { Button, toast } from "@devlab-portal/ui";
+import { Button } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
+import { AUTH_COPY } from "@/lib/ui-copy/auth";
+import { setPendingAuthToast, AuthToastType } from "@/features/auth";
 import { purgeClientSession, type UserMember } from "@/lib/api-client";
 import { UserRole } from "@/lib/constants/enums";
 
@@ -39,11 +41,15 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
       .map((part) => part[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2) || "U";
+      .slice(0, 2) || AUTH_COPY.INITIALS_FALLBACK;
 
   const handleSignOut = () => {
     onClose();
-    toast.info(UI_COPY.COMMON.HEADER.SIGNED_OUT_MESSAGE);
+    setPendingAuthToast({
+      type: AuthToastType.INFO,
+      title: AUTH_COPY.TOAST.SIGNED_OUT_TITLE,
+      description: AUTH_COPY.TOAST.SIGNED_OUT_DESC,
+    });
     purgeClientSession();
   };
 

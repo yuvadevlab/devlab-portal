@@ -21,6 +21,11 @@ export default tseslint.config(
       "**/out/**",
       "**/next-env.d.ts",
       "**/prisma/generated/**",
+      "**/tsup.config.*",
+      "**/vite.config.*",
+      "**/vitest.config.*",
+      "**/next.config.*",
+      "**/postcss.config.*",
     ],
   },
   {
@@ -44,12 +49,17 @@ export default tseslint.config(
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2022,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: rootDir,
+      },
       globals: {
         ...globals.node,
         ...globals.browser,
       },
     },
     rules: {
+      "@typescript-eslint/no-deprecated": "warn",
       "no-console": "warn",
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-explicit-any": "warn",
