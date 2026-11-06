@@ -10,6 +10,7 @@ import React from "react";
 import { Server, Activity, AlertOctagon, Gauge } from "lucide-react";
 import { MetricsBar, type MetricItem } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
+import { AppStatus } from "@/lib/constants/enums";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppMetricsProps {
@@ -19,7 +20,14 @@ interface AppMetricsProps {
 export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
   const totalCount = apps.length;
   const suspendedCount = apps.filter((app) => !app.isActive).length;
-  const activeCount = totalCount - suspendedCount;
+  const healthyCount = apps.filter(
+    (app) => app.isActive && app.healthStatus === AppStatus.HEALTHY,
+  ).length;
+  const issueCount = apps.filter(
+    (app) =>
+      app.isActive &&
+      (app.healthStatus === AppStatus.UNREACHABLE || app.healthStatus === AppStatus.DEGRADED),
+  ).length;
 
   const validLatencies = apps
     .map((app) => app.latencyMs)
@@ -27,7 +35,13 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
   const avgLatency =
     validLatencies.length > 0
       ? Math.round(validLatencies.reduce((sum, val) => sum + val, 0) / validLatencies.length)
-      : 1;
+      : 0;
+
+  const resolveActiveNote = () => {
+    if (suspendedCount > 0) return UI_COPY.APPS.METRICS.SUSPENDED_NOTE;
+    if (issueCount > 0) return UI_COPY.APPS.METRICS.DEGRADED_NOTE;
+    return UI_COPY.APPS.METRICS.HEALTHY_NOTE;
+  };
 
   const items: MetricItem[] = [
     {
@@ -38,12 +52,9 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
     },
     {
       label: UI_COPY.APPS.METRICS.ACTIVE_SERVICES,
-      value: activeCount,
-      note:
-        suspendedCount > 0
-          ? UI_COPY.APPS.METRICS.SUSPENDED_NOTE
-          : UI_COPY.APPS.METRICS.HEALTHY_NOTE,
-      positive: suspendedCount === 0,
+      value: `${healthyCount}/${totalCount}`,
+      note: resolveActiveNote(),
+      positive: issueCount === 0 && suspendedCount === 0,
       icon: Activity,
     },
     {
@@ -58,9 +69,9 @@ export const AppMetrics: React.FC<AppMetricsProps> = ({ apps }) => {
     },
     {
       label: UI_COPY.APPS.METRICS.AVG_LATENCY,
-      value: `${avgLatency}ms`,
+      value: avgLatency > 0 ? `${avgLatency}ms` : "—",
       note: UI_COPY.APPS.METRICS.AVG_LATENCY_NOTE,
-      positive: avgLatency < 50,
+      positive: avgLatency > 0 && avgLatency < 50,
       icon: Gauge,
     },
   ];

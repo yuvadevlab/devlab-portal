@@ -4,6 +4,8 @@
  * @module @devlab/portal-web/lib/types/api
  */
 
+import type { AppStatus } from "@/lib/constants/enums";
+
 /** DB-driven platform navigation menu item */
 export interface NavigationItem {
   id: string;
@@ -34,7 +36,7 @@ export interface RegisteredApp {
   maintenanceNote?: string;
   tenantId?: string;
   latencyMs?: number;
-  healthStatus?: string;
+  healthStatus?: AppStatus | string;
   createdAt: string;
   updatedAt: string;
 }
