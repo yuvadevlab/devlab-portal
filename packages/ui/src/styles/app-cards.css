@@ -145,8 +145,18 @@
   gap: 6px;
 }
 
-.status.suspended {
+.status.suspended,
+.status.offline {
   color: var(--destructive);
+}
+
+.status.degraded,
+.status.starting {
+  color: var(--amber);
+}
+
+.status.unknown {
+  color: var(--muted-foreground);
 }
 
 .status-dot {

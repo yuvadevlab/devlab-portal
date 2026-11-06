@@ -17,7 +17,7 @@ import { PrismaService } from "../../prisma/prisma.service";
 import { RedisService } from "../redis/redis.service";
 import { EventsGateway } from "../websocket/events.gateway";
 import { CreateAppDto, UpdateAppSettingsDto, UpdateAppStatusDto } from "./dto/app.dto";
-import { AuditAction, AuditTargetType, UserRole } from "../../common/constants/enums";
+import { AuditAction, AuditTargetType, UserRole, AppStatus } from "../../common/constants/enums";
 import { isValidUuid } from "@yuva-devlab/regex";
 import { Logger } from "@yuva-devlab/logger";
 
@@ -55,9 +55,11 @@ export class AppsService {
     return Promise.all(
       apps.map(async (app) => {
         let latencyMs = 0;
-        let healthStatus = "healthy";
+        let healthStatus: AppStatus = AppStatus.UNKNOWN;
 
-        if (app.isActive && app.healthUrl) {
+        if (!app.isActive) {
+          healthStatus = AppStatus.MAINTENANCE;
+        } else if (app.healthUrl) {
           const start = Date.now();
           try {
             const controller = new AbortController();
@@ -65,13 +67,11 @@ export class AppsService {
             const response = await fetch(app.healthUrl, { signal: controller.signal });
             clearTimeout(timer);
             latencyMs = Date.now() - start;
-            healthStatus = response.ok ? "healthy" : "degraded";
+            healthStatus = response.ok ? AppStatus.HEALTHY : AppStatus.DEGRADED;
           } catch {
-            healthStatus = "unreachable";
+            healthStatus = AppStatus.UNREACHABLE;
             latencyMs = -1;
           }
-        } else if (!app.isActive) {
-          healthStatus = "maintenance";
         }
 
         return { ...app, latencyMs, healthStatus };
