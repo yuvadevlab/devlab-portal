@@ -28,12 +28,9 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
-    "@yuva-devlab/tokens": "^1.3.0",
-    "@yuva-devlab/ui": "^1.4.3",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.475.0",
-    "sonner": "^2.0.8",
-    "tailwind-merge": "^3.0.1"
+    "@yuva-devlab/tokens": "^2.0.0",
+    "@yuva-devlab/ui": "^2.1.0",
+    "lucide-react": "^0.475.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.8",
