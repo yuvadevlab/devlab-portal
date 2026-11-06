@@ -11,6 +11,7 @@ import React from "react";
 import { Link2, HeartPulse, ArrowUpRight, Settings2, Power, Server } from "lucide-react";
 import { Button, getNavIcon } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
+import { AppStatus } from "@/lib/constants/enums";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppCardProps {
@@ -33,6 +34,65 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
     return PALETTE[hash % PALETTE.length];
   };
 
+  /**
+   * Resolves visual indicators and status copy based on operational health probes and kill-switch status.
+   */
+  const resolveStatusMeta = () => {
+    if (!isRoutingActive) {
+      return {
+        label: UI_COPY.APPS.CARD.STATUS_SUSPENDED,
+        cssClass: "status suspended",
+        probeCode: UI_COPY.APPS.CARD.CODE_503,
+        probeCodeClass: "text-destructive",
+        canLaunch: false,
+      };
+    }
+
+    switch (app.healthStatus) {
+      case AppStatus.HEALTHY:
+        return {
+          label: UI_COPY.APPS.CARD.STATUS_ONLINE,
+          cssClass: "status",
+          probeCode: UI_COPY.APPS.CARD.CODE_200,
+          probeCodeClass: "text-success",
+          canLaunch: true,
+        };
+      case AppStatus.DEGRADED:
+        return {
+          label: UI_COPY.APPS.CARD.STATUS_DEGRADED,
+          cssClass: "status degraded",
+          probeCode: UI_COPY.APPS.CARD.CODE_DEGRADED,
+          probeCodeClass: "text-amber-500",
+          canLaunch: true,
+        };
+      case AppStatus.STARTING:
+        return {
+          label: UI_COPY.APPS.CARD.STATUS_STARTING,
+          cssClass: "status starting",
+          probeCode: UI_COPY.APPS.CARD.CODE_STARTING,
+          probeCodeClass: "text-amber-500",
+          canLaunch: false,
+        };
+      case AppStatus.UNREACHABLE:
+        return {
+          label: UI_COPY.APPS.CARD.STATUS_OFFLINE,
+          cssClass: "status offline",
+          probeCode: UI_COPY.APPS.CARD.CODE_OFFLINE,
+          probeCodeClass: "text-destructive",
+          canLaunch: false,
+        };
+      default:
+        return {
+          label: UI_COPY.APPS.CARD.STATUS_UNKNOWN,
+          cssClass: "status unknown",
+          probeCode: UI_COPY.APPS.CARD.CODE_UNKNOWN,
+          probeCodeClass: "text-muted-foreground",
+          canLaunch: false,
+        };
+    }
+  };
+
+  const statusMeta = resolveStatusMeta();
   const appColor = getAppColor(app);
   const IconComponent = getNavIcon(app.iconUrl);
 
@@ -43,9 +103,9 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
         <div className="app-icon">
           <IconComponent className="size-5" />
         </div>
-        <span className={`status ${!isRoutingActive ? "suspended" : ""}`}>
+        <span className={statusMeta.cssClass}>
           <span className="status-dot" />
-          {isRoutingActive ? UI_COPY.APPS.CARD.STATUS_ONLINE : UI_COPY.APPS.CARD.STATUS_SUSPENDED}
+          {statusMeta.label}
         </span>
       </div>
 
@@ -79,11 +139,9 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
         <HeartPulse className="size-3 shrink-0" />
         <span className="truncate">{app.healthUrl || "/health"}</span>
         <span
-          className={`ml-auto font-mono text-[10px] font-semibold ${
-            isRoutingActive ? "text-success" : "text-destructive"
-          }`}
+          className={`ml-auto font-mono text-[10px] font-semibold ${statusMeta.probeCodeClass}`}
         >
-          {isRoutingActive ? UI_COPY.APPS.CARD.CODE_200 : UI_COPY.APPS.CARD.CODE_503}
+          {statusMeta.probeCode}
         </span>
       </div>
 
@@ -94,7 +152,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, onOpenSettings, onToggleK
           variant="ghost"
           className="text-muted-foreground hover:text-foreground gap-1 px-2 text-xs"
           onClick={() => window.open(app.originUrl, "_blank", "noopener,noreferrer")}
-          disabled={!isRoutingActive}
+          disabled={!statusMeta.canLaunch}
         >
           {UI_COPY.APPS.CARD.OPEN_CONSOLE}
           <ArrowUpRight className="size-3" />

@@ -91,6 +91,15 @@ export const AppGrid: React.FC<AppGridProps> = ({
               </Button>
             ))}
           </div>
+
+          <Button
+            size="sm"
+            onClick={onOpenRegisterModal}
+            className="h-8 gap-1.5 px-3 text-xs font-medium"
+          >
+            <Plus className="size-3.5" />
+            {UI_COPY.APPS.CARD.REGISTER_BTN}
+          </Button>
         </div>
       </div>
 
@@ -104,19 +113,6 @@ export const AppGrid: React.FC<AppGridProps> = ({
             onToggleKillSwitch={onToggleKillSwitch}
           />
         ))}
-
-        {/* Bring Next Idea Dotted Register Card */}
-        <div className="register-card">
-          <span className="register-symbol">
-            <Plus className="text-muted-foreground size-5" />
-          </span>
-          <strong>{UI_COPY.APPS.CARD.REGISTER_TITLE}</strong>
-          <p>{UI_COPY.APPS.CARD.REGISTER_DESC}</p>
-          <Button variant="outline" size="sm" onClick={onOpenRegisterModal}>
-            <Plus className="mr-1 size-3.5" />
-            {UI_COPY.APPS.CARD.REGISTER_BTN}
-          </Button>
-        </div>
       </div>
 
       {filteredApps.length === 0 && <p className="empty-state">{UI_COPY.APPS.CARD.EMPTY_SEARCH}</p>}

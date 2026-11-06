@@ -20,6 +20,8 @@ export enum AppStatus {
   DEGRADED = "degraded",
   UNREACHABLE = "unreachable",
   MAINTENANCE = "maintenance",
+  STARTING = "starting",
+  UNKNOWN = "unknown",
 }
 
 /** Runtime environment scope for registered applications */

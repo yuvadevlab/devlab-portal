@@ -46,3 +46,13 @@ export enum AppEnvironment {
   STAGING = "staging",
   PRODUCTION = "production",
 }
+
+/** Operational health status of an ecosystem microservice */
+export enum AppStatus {
+  HEALTHY = "healthy",
+  DEGRADED = "degraded",
+  UNREACHABLE = "unreachable",
+  MAINTENANCE = "maintenance",
+  STARTING = "starting",
+  UNKNOWN = "unknown",
+}
