@@ -6,9 +6,15 @@
 
 import { NextResponse, type NextRequest } from "next/server";
 import { isJwtExpired } from "@/lib/jwt";
+import { APP_ROUTES } from "@/lib/constants/routes";
+import { CookieKey, AuthQueryParamKey } from "@/lib/constants/enums";
 
 /** Public authentication routes accessible without an active session */
-const AUTH_ROUTES = new Set(["/login", "/forgot-password", "/reset-password"]);
+const AUTH_ROUTES: ReadonlySet<string> = new Set<string>([
+  APP_ROUTES.LOGIN,
+  APP_ROUTES.FORGOT_PASSWORD,
+  APP_ROUTES.RESET_PASSWORD,
+]);
 
 /**
  * Edge middleware intercepting requests to enforce active session cookies.
@@ -18,7 +24,7 @@ const AUTH_ROUTES = new Set(["/login", "/forgot-password", "/reset-password"]);
  */
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
-  const tokenCookie = request.cookies.get("devlab_access_token");
+  const tokenCookie = request.cookies.get(CookieKey.ACCESS_TOKEN);
   const tokenValue = tokenCookie?.value?.trim();
   const isAuthenticated = Boolean(tokenValue && !isJwtExpired(tokenValue));
 
@@ -26,33 +32,36 @@ export function middleware(request: NextRequest): NextResponse {
 
   // 1. Unauthenticated or expired users attempting to access protected routes get redirected to /login
   if (!isAuthenticated && !isAuthRoute) {
-    const loginUrl = new URL("/login", request.url);
-    if (pathname !== "/") {
-      loginUrl.searchParams.set("redirect", pathname);
+    const loginUrl = new URL(APP_ROUTES.LOGIN, request.url);
+    if (pathname !== APP_ROUTES.HOME) {
+      loginUrl.searchParams.set(AuthQueryParamKey.REDIRECT, pathname);
     }
     const response = NextResponse.redirect(loginUrl);
     if (tokenCookie) {
-      response.cookies.delete("devlab_access_token");
+      response.cookies.delete(CookieKey.ACCESS_TOKEN);
     }
     return response;
   }
 
   // 2. Authenticated users attempting to access /login, /forgot-password, etc. get redirected to dashboard / or SSO return URL
   if (isAuthenticated && isAuthRoute) {
-    const redirectParam = request.nextUrl.searchParams.get("redirect");
-    if (redirectParam && redirectParam !== "/" && tokenValue) {
+    const redirectParam = request.nextUrl.searchParams.get(AuthQueryParamKey.REDIRECT);
+    if (redirectParam && redirectParam !== APP_ROUTES.HOME && tokenValue) {
       try {
         const targetUrl = new URL(redirectParam, request.url);
-        targetUrl.searchParams.set("token", tokenValue);
+        targetUrl.searchParams.set(AuthQueryParamKey.TOKEN, tokenValue);
         return NextResponse.redirect(targetUrl);
       } catch {
         const sep = redirectParam.includes("?") ? "&" : "?";
         return NextResponse.redirect(
-          new URL(`${redirectParam}${sep}token=${encodeURIComponent(tokenValue)}`, request.url),
+          new URL(
+            `${redirectParam}${sep}${AuthQueryParamKey.TOKEN}=${encodeURIComponent(tokenValue)}`,
+            request.url,
+          ),
         );
       }
     }
-    const dashboardUrl = new URL("/", request.url);
+    const dashboardUrl = new URL(APP_ROUTES.HOME, request.url);
     return NextResponse.redirect(dashboardUrl);
   }
 

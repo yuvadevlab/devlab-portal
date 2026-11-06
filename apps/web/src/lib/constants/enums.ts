@@ -94,9 +94,78 @@ export enum SeverityLevel {
   CRITICAL = "critical",
 }
 
+/** Toast notification severity level enum for authentication and session events */
+export enum AuthToastType {
+  SUCCESS = "success",
+  ERROR = "error",
+  INFO = "info",
+  WARNING = "warning",
+}
+
 /** Telemetry status class indicators for UI status badge dots */
 export enum HealthStatusClass {
   HEALTHY = "healthy",
   WARNING = "warning",
   ERROR = "error",
+}
+
+/** URL query parameter keys used across authentication and SSO routing */
+export enum AuthQueryParamKey {
+  APP = "app",
+  APP_ID = "app_id",
+  BRAND = "brand",
+  REDIRECT = "redirect",
+  TOKEN = "token",
+  WELCOME = "welcome",
+  AUTH_ERROR = "auth_error",
+  ERROR_DESCRIPTION = "error_description",
+  ERROR = "error",
+  SIGNED_OUT = "signed_out",
+  SESSION_EXPIRED = "session_expired",
+}
+
+/** Standard query parameter values for flags and state */
+export enum QueryParamValue {
+  TRUE = "true",
+  FALSE = "false",
+}
+
+/** Browser Storage keys (localStorage / sessionStorage) */
+export enum StorageKey {
+  PENDING_AUTH_TOAST = "devlab_pending_auth_toast",
+  ACTIVE_TENANT_ID = "devlab_active_tenant_id",
+  ACCESS_TOKEN = "devlab_access_token",
+  AUTH_TOKEN = "devlab_auth_token",
+  AUTH_USER = "devlab_auth_user",
+  PORTAL_THEME = "portal-theme",
+}
+
+/** Browser Cookie keys */
+export enum CookieKey {
+  ACCESS_TOKEN = "devlab_access_token",
+}
+
+/** Form field names used in authentication inputs */
+export enum AuthFormField {
+  TOKEN = "token",
+  NEW_PASSWORD = "newPassword",
+  PASSWORD = "password",
+  CONFIRM_PASSWORD = "confirmPassword",
+  EMAIL = "email",
+}
+
+/** Standard brand and theme identifiers */
+export enum AuthBrandTheme {
+  PORTAL = "portal",
+}
+
+/** Standard HTTP header names */
+export enum HttpHeader {
+  CONTENT_TYPE = "Content-Type",
+  AUTHORIZATION = "Authorization",
+}
+
+/** Standard MIME content types */
+export enum ContentType {
+  APPLICATION_JSON = "application/json",
 }
