@@ -30,7 +30,24 @@ export function middleware(request: NextRequest): NextResponse {
 
   const isAuthRoute = AUTH_ROUTES.has(pathname);
 
-  // 1. Unauthenticated or expired users attempting to access protected routes get redirected to /login
+  // Check for explicit re-authentication flags or upstream auth failure signals
+  const promptParam = request.nextUrl.searchParams.get("prompt");
+  const errorParam =
+    request.nextUrl.searchParams.get(AuthQueryParamKey.ERROR) ||
+    request.nextUrl.searchParams.get(AuthQueryParamKey.AUTH_ERROR) ||
+    request.nextUrl.searchParams.get(AuthQueryParamKey.SESSION_EXPIRED);
+  const isForceReAuth = promptParam === "login" || promptParam === "consent" || Boolean(errorParam);
+
+  // 1. If explicit re-authentication is requested on auth routes, clear stale cookie and pass through to login form
+  if (isAuthRoute && isForceReAuth) {
+    const response = NextResponse.next();
+    if (tokenCookie) {
+      response.cookies.delete(CookieKey.ACCESS_TOKEN);
+    }
+    return response;
+  }
+
+  // 2. Unauthenticated or expired users attempting to access protected routes get redirected to /login
   if (!isAuthenticated && !isAuthRoute) {
     const loginUrl = new URL(APP_ROUTES.LOGIN, request.url);
     if (pathname !== APP_ROUTES.HOME) {
@@ -43,24 +60,16 @@ export function middleware(request: NextRequest): NextResponse {
     return response;
   }
 
-  // 2. Authenticated users attempting to access /login, /forgot-password, etc. get redirected to dashboard / or SSO return URL
+  // 3. Authenticated users attempting to access /login, /forgot-password, etc.
   if (isAuthenticated && isAuthRoute) {
     const redirectParam = request.nextUrl.searchParams.get(AuthQueryParamKey.REDIRECT);
-    if (redirectParam && redirectParam !== APP_ROUTES.HOME && tokenValue) {
-      try {
-        const targetUrl = new URL(redirectParam, request.url);
-        targetUrl.searchParams.set(AuthQueryParamKey.TOKEN, tokenValue);
-        return NextResponse.redirect(targetUrl);
-      } catch {
-        const sep = redirectParam.includes("?") ? "&" : "?";
-        return NextResponse.redirect(
-          new URL(
-            `${redirectParam}${sep}${AuthQueryParamKey.TOKEN}=${encodeURIComponent(tokenValue)}`,
-            request.url,
-          ),
-        );
-      }
+    // If navigating to an external application (SSO redirect), allow /login to render
+    // so LoginForm can cryptographically verify the token against the backend and provide
+    // the smooth handoff experience (or catch 401s and prompt for login without looping).
+    if (redirectParam && redirectParam !== APP_ROUTES.HOME) {
+      return NextResponse.next();
     }
+    // Direct navigation to portal login while already authenticated redirects to portal dashboard
     const dashboardUrl = new URL(APP_ROUTES.HOME, request.url);
     return NextResponse.redirect(dashboardUrl);
   }

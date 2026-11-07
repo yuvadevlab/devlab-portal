@@ -53,7 +53,7 @@ In a distributed AI and financial services infrastructure, distributed security 
 
 #### 1. Developer Web Console (`apps/web` — Dev: Port `3000` | Prod: Port `3010`)
 
-- **Technology Stack**: Next.js 15, React 19, Tailwind CSS v4, `@yuva-devlab/ui`, `@yuva-devlab/tokens`.
+- **Technology Stack**: Next.js 15, React 19, Platform CSS Utilities, `@yuva-devlab/ui`, `@yuva-devlab/tokens`.
 - **Purpose**: Modern administrative web application for tenant, user authentication, and API key lifecycle management.
 - **Detailed Features**:
   - **API Key Management Dashboard**: Create, view, copy (one-time display), rotate, and revoke live and test API keys.

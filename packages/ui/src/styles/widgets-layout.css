@@ -4,9 +4,9 @@
  */
 
 .page-content {
-  max-width: 1440px;
+  max-width: var(--page-max-width, 1440px);
   margin: auto;
-  padding: 39px 46px 28px;
+  padding: var(--page-padding-y, 39px) var(--page-padding-x, 46px) 28px;
 }
 
 .eyebrow {

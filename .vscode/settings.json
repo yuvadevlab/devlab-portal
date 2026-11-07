@@ -39,19 +39,6 @@
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "tailwindCSS.experimental.configFile": "apps/web/src/app/globals.css",
-  "tailwindCSS.lint.cssConflict": "ignore",
-  "tailwindCSS.lint.invalidApply": "error",
-  "tailwindCSS.lint.invalidScreen": "error",
-  "tailwindCSS.lint.invalidVariant": "error",
-  "tailwindCSS.lint.recommendedVariantOrder": "warning",
-  "tailwindCSS.includeLanguages": {
-    "typescript": "javascript",
-    "typescriptreact": "javascript"
-  },
-  "files.associations": {
-    "*.css": "tailwindcss"
-  },
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.watcherExclude": {
     "**/.git/objects/**": true,
