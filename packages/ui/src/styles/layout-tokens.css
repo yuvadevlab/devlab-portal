@@ -1,0 +1,71 @@
+/**
+ * @file packages/ui/src/styles/layout-tokens.css
+ * @description Canonical structural layout variables for DevLab Portal Control Plane.
+ * Governed under @layer dl-tokens.
+ */
+
+@layer dl-tokens {
+  :root {
+    /* ── Header Topbar Dimensions ── */
+    --topbar-height: 78px;
+    --topbar-padding-x: 38px;
+
+    /* ── Navigation Bar Dimensions ── */
+    --navbar-height: 61px;
+    --navbar-padding-x: 38px;
+
+    /* ── Status Footer Dimensions ── */
+    --footer-height: 40px;
+    --footer-padding-x: 38px;
+
+    /* ── Page Layout & Viewport Containers ── */
+    --page-max-width: 1440px;
+    --page-padding-x: 46px;
+    --page-padding-y: 39px;
+
+    /* ── Card & Surface Metrics ── */
+    --card-padding-x: 23px;
+    --card-padding-y: 21px;
+    --card-gap: 16px;
+    --card-radius: 8px;
+
+    /* ── Interactive Controls & Heights ── */
+    --control-height-sm: 2rem;
+    --control-height-md: 2.25rem;
+    --control-height-lg: 2.5rem;
+
+    /* ── Semantic Layer Z-Index Stack ── */
+    --z-base: 0;
+    --z-card: 1;
+    --z-sticky: 10;
+    --z-topbar: 20;
+    --z-dropdown: 30;
+    --z-drawer: 40;
+    --z-modal: 50;
+    --z-popover: 60;
+    --z-toast: 80;
+  }
+
+  /* ── Responsive Viewport Scaling ── */
+  @media (max-width: 1100px) {
+    :root {
+      --topbar-padding-x: 20px;
+      --navbar-padding-x: 20px;
+      --footer-padding-x: 20px;
+      --page-padding-x: 20px;
+      --page-padding-y: 24px;
+    }
+  }
+
+  @media (max-width: 680px) {
+    :root {
+      --topbar-height: 65px;
+      --topbar-padding-x: 16px;
+      --navbar-height: 54px;
+      --navbar-padding-x: 16px;
+      --footer-padding-x: 16px;
+      --page-padding-x: 16px;
+      --page-padding-y: 16px;
+    }
+  }
+}

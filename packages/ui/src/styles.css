@@ -1,7 +1,23 @@
-@import "tailwindcss";
+/**
+ * @file packages/ui/src/styles.css
+ * @description Master stylesheet for DevLab Portal Control Plane.
+ * Architecture: W3C Cascade Layers (dl-reset -> dl-tokens -> dl-components -> dl-layout -> dl-utilities -> dl-app).
+ * Pure Platform CSS with zero Tailwind dependencies.
+ */
+
+/* ── 0. Establish Ecosystem Layer Precedence ──────────────────────────────── */
+@layer dl-reset, dl-tokens, dl-components, dl-layout, dl-utilities, dl-app;
+
+/* ── 1. Canonical Design Tokens & Themes ──────────────────────────────────── */
 @import "@yuva-devlab/tokens/preset.css";
 @import "@yuva-devlab/tokens/themes/portal.css";
 @import "@yuva-devlab/ui/styles.css";
+
+/* ── 2. Structural Layout Tokens & Platform Utilities ─────────────────────── */
+@import "./styles/layout-tokens.css";
+@import "./styles/utilities.css";
+
+/* ── 3. Modular Domain Stylesheets ────────────────────────────────────────── */
 @import "./styles/topbar.css";
 @import "./styles/ecosystem-launcher.css";
 @import "./styles/metrics-grid.css";
@@ -11,39 +27,10 @@
 @import "./styles/auth.css";
 @import "./styles/toast.css";
 
-@source "../../../apps/web/src";
-@source "../node_modules/@yuva-devlab/ui";
-@source "../src";
-@source ".";
-
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  --font-sans: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono Variable", monospace;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--cardForeground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popoverForeground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primaryForeground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondaryForeground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--mutedForeground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accentForeground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructiveForeground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-}
-
-@layer base {
+/* ── 4. Baseline Resets ───────────────────────────────────────────────────── */
+@layer dl-reset {
   * {
+    box-sizing: border-box;
     border-color: var(--border);
   }
 
@@ -56,50 +43,53 @@
     margin: 0;
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans);
+    font-family: var(--font-sans, "Inter", sans-serif);
     -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
   }
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+/* ── 5. App Overrides & Interop ───────────────────────────────────────────── */
+@layer dl-app {
+  .portal-no-transition * {
+    transition: none !important;
+    animation: none !important;
+  }
 
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
+  /* ── Select Dropdown Trigger & Popover Alignment ── */
+  .dl-select-trigger {
+    width: 100%;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
+  .dl-select-content {
+    min-width: var(--radix-select-trigger-width, 8rem);
+    width: var(--radix-select-trigger-width, max-content);
+    max-width: var(--radix-select-content-available-width, 100vw);
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-foreground);
-}
+  .dl-select-viewport {
+    width: 100%;
+    min-width: var(--radix-select-trigger-width, 8rem);
+  }
 
-.portal-no-transition * {
-  transition: none !important;
-  animation: none !important;
-}
-
-/* ── Select Dropdown Trigger & Popover Alignment ── */
-.dl-select-trigger {
-  width: 100%;
-}
-
-.dl-select-content {
-  min-width: var(--radix-select-trigger-width, 8rem);
-  width: var(--radix-select-trigger-width, max-content);
-  max-width: var(--radix-select-content-available-width, 100vw);
-}
-
-.dl-select-viewport {
-  width: 100%;
-  min-width: var(--radix-select-trigger-width, 8rem);
-}
-
-.dl-select-item {
-  width: 100%;
+  .dl-select-item {
+    width: 100%;
+  }
 }
