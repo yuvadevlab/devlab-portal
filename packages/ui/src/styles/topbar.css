@@ -8,12 +8,12 @@
 }
 
 .topbar {
-  height: 78px;
+  height: var(--topbar-height, 78px);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 38px;
+  padding: 0 var(--topbar-padding-x, 38px);
   gap: 20px;
   background: var(--card);
 }
@@ -133,8 +133,8 @@
 }
 
 .navbar {
-  height: 61px;
-  padding: 0 38px;
+  height: var(--navbar-height, 61px);
+  padding: 0 var(--navbar-padding-x, 38px);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: stretch;

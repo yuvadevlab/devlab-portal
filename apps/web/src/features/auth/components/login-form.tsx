@@ -10,7 +10,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SignIn, type AuthUser } from "@yuva-devlab/auth-client";
 import { toast } from "@devlab-portal/ui";
-import { API_BASE_URL, getAuthToken } from "@/lib/api-client";
+import { API_BASE_URL, getAuthToken, purgeClientSession, api } from "@/lib/api-client";
 import { isJwtExpired, parseJwtClaims } from "@/lib/jwt";
 import { APP_ROUTES } from "@/lib/constants/routes";
 import { AUTH_COPY } from "@/lib/ui-copy/auth";
@@ -44,34 +44,117 @@ export function LoginForm(): React.JSX.Element {
     [appParam, redirectParam],
   );
 
-  // Preemptive SSO pass-through if session is already active
+  const SSO_GUARD_KEY = "devlab_sso_handoff_guard";
+
+  // Preemptive SSO pass-through if session is already active and cryptographically verified
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Check for explicit re-auth / error flags
+    const promptParam = searchParams.get("prompt");
+    const errorParam =
+      searchParams.get(AuthQueryParamKey.ERROR) ||
+      searchParams.get(AuthQueryParamKey.AUTH_ERROR) ||
+      searchParams.get(AuthQueryParamKey.SESSION_EXPIRED);
+    const isForceReAuth =
+      promptParam === "login" || promptParam === "consent" || Boolean(errorParam);
+
+    if (isForceReAuth) {
+      sessionStorage.removeItem(SSO_GUARD_KEY);
+      purgeClientSession();
+      setHandoff(null);
+      if (errorParam) {
+        toast.warning(AUTH_COPY.TOAST.SESSION_EXPIRED_TITLE, {
+          description: AUTH_COPY.TOAST.SESSION_EXPIRED_DESC,
+          duration: 5000,
+        });
+      }
+      return;
+    }
+
     const existingToken = getAuthToken();
-    if (existingToken && !isJwtExpired(existingToken)) {
-      const claims = parseJwtClaims(existingToken);
-      const name = resolveUserDisplayName(
-        { name: claims?.name as string, email: claims?.email as string },
-        existingToken,
-      );
+    if (!existingToken || isJwtExpired(existingToken)) {
+      return;
+    }
 
-      if (redirectParam && redirectParam !== APP_ROUTES.HOME) {
-        setHandoff({ isHandoff: true, displayName: name });
-
-        const timer = setTimeout(() => {
-          try {
-            const url = new URL(redirectParam, window.location.origin);
-            url.searchParams.set(AuthQueryParamKey.TOKEN, existingToken);
-            window.location.href = url.toString();
-          } catch {
-            const separator = redirectParam.includes("?") ? "&" : "?";
-            window.location.href = `${redirectParam}${separator}${AuthQueryParamKey.TOKEN}=${encodeURIComponent(existingToken)}`;
+    // SSO Loop Guard: Detect rapid ping-pong bounces to the same destination
+    if (redirectParam && redirectParam !== APP_ROUTES.HOME) {
+      try {
+        const lastHandoffRaw = sessionStorage.getItem(SSO_GUARD_KEY);
+        if (lastHandoffRaw) {
+          const { url, time } = JSON.parse(lastHandoffRaw);
+          if (url === redirectParam && Date.now() - time < 5000) {
+            // Infinite bounce detected! Clear token and require explicit user login
+            sessionStorage.removeItem(SSO_GUARD_KEY);
+            purgeClientSession();
+            setHandoff(null);
+            toast.error(AUTH_COPY.TOAST.SESSION_EXPIRED_TITLE, {
+              description: "Session validation failed for this application. Please sign in again.",
+              duration: 6000,
+            });
+            return;
           }
-        }, 800);
-        return () => clearTimeout(timer);
+        }
+      } catch {
+        sessionStorage.removeItem(SSO_GUARD_KEY);
       }
     }
-  }, [appParam, redirectParam, targetAppName]);
+
+    let isCancelled = false;
+
+    // Cryptographically verify token validity with DevLab backend before handing off
+    async function verifyAndHandoff() {
+      try {
+        await api.getMe();
+        if (isCancelled) return;
+
+        const claims = parseJwtClaims(existingToken);
+        const name = resolveUserDisplayName(
+          { name: claims?.name as string, email: claims?.email as string },
+          existingToken,
+        );
+
+        if (redirectParam && redirectParam !== APP_ROUTES.HOME) {
+          // Record handoff attempt in session storage for loop prevention
+          try {
+            sessionStorage.setItem(
+              SSO_GUARD_KEY,
+              JSON.stringify({ url: redirectParam, time: Date.now() }),
+            );
+          } catch {
+            // Ignore storage errors
+          }
+
+          setHandoff({ isHandoff: true, displayName: name });
+
+          const timer = setTimeout(() => {
+            try {
+              const url = new URL(redirectParam, window.location.origin);
+              url.searchParams.set(AuthQueryParamKey.TOKEN, existingToken);
+              window.location.href = url.toString();
+            } catch {
+              const separator = redirectParam.includes("?") ? "&" : "?";
+              window.location.href = `${redirectParam}${separator}${AuthQueryParamKey.TOKEN}=${encodeURIComponent(existingToken)}`;
+            }
+          }, 800);
+
+          return () => clearTimeout(timer);
+        }
+      } catch {
+        // Backend rejected token (401 or invalid signature)
+        if (!isCancelled) {
+          purgeClientSession();
+          setHandoff(null);
+        }
+      }
+    }
+
+    verifyAndHandoff();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [appParam, redirectParam, searchParams, targetAppName]);
 
   // Enterprise SSO authentication success handler
   const handleSuccess = (user: AuthUser, token: string) => {
@@ -79,6 +162,12 @@ export function LoginForm(): React.JSX.Element {
     const isExternalRedirect = Boolean(redirectParam && redirectParam !== APP_ROUTES.HOME);
 
     if (isExternalRedirect) {
+      try {
+        sessionStorage.removeItem(SSO_GUARD_KEY);
+      } catch {
+        // Ignore storage errors
+      }
+
       // Option A: Smooth in-card SSO handoff (Google / Okta standard, zero toast flicker)
       setHandoff({ isHandoff: true, displayName });
 
