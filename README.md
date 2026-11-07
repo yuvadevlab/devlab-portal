@@ -2,6 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status" />
+  <img src="https://img.shields.io/badge/license-MIT-emerald" alt="License" />
   <img src="https://img.shields.io/badge/typescript-5.8.2-blue" alt="TypeScript" />
   <img src="https://img.shields.io/badge/nestjs-11.0.0-E0234E" alt="NestJS" />
   <img src="https://img.shields.io/badge/next.js-15.5.27-black" alt="Next.js" />
@@ -10,6 +11,18 @@
 </p>
 
 **DevLab Portal** is the centralized control plane, tenant management, and API key governance platform for the DevLab ecosystem. It coordinates authorization, usage quotas, emergency kill-switches, and audit logging for AI agent gateways (OrchestrAI, FinAI, VitalAI).
+
+---
+
+## 📜 Governance & Architecture Documentation
+
+- 📄 **[MIT License](LICENSE)**: Open-source legal licensing and terms.
+- 🛡️ **[Security Policy (`SECURITY.md`)](SECURITY.md)**: Vulnerability disclosure, patch response SLAs, and security controls.
+- 🤝 **[Contributing Guidelines (`CONTRIBUTING.md`)](CONTRIBUTING.md)**: Monorepo setup, conventional commits, and pre-commit quality gates.
+- 📬 **Maintainer & Support**: Yuva DevLab ([yuva.devlab@gmail.com](mailto:yuva.devlab@gmail.com))
+- 📐 **[Architecture Decision Records (`docs/adr/`)](docs/adr/)**:
+  - [ADR 0001: Centralized SSO Control Plane & Asymmetric RS256 Tokens](docs/adr/0001-centralized-sso-control-plane-rs256.md)
+  - [ADR 0002: SHA-256 Hashed API Keys & Sub-Millisecond Redis Kill Switch](docs/adr/0002-sha256-hashed-api-keys-and-redis-kill-switch.md)
 
 ---
 
@@ -36,7 +49,7 @@ graph TD
 ```
 
 The web app consumes shared design-system components through `@devlab-portal/ui`. The UI
-package owns reusable presentation components, Tailwind setup, theme/token imports, and Portal
+package owns reusable presentation components, platform CSS utilities, theme/token imports, and Portal
 styles; `apps/web/src/app/globals.css` only imports the package stylesheet. Keep user-facing
 labels, notifications, and accessibility copy in modular dictionaries under
 `apps/web/src/lib/ui-copy/`.

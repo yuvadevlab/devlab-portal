@@ -5,7 +5,18 @@
  */
 
 @layer dl-tokens {
-  :root {
+  :root,
+  [data-brand="portal"],
+  [data-theme="portal"],
+  [data-theme="portal-light"] {
+    /* ── Typography Baseline Tokens ── */
+    --font-sans:
+      "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono Variable", monospace;
+    --theme-font-sans:
+      "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --theme-font-mono: "JetBrains Mono Variable", monospace;
+
     /* ── Header Topbar Dimensions ── */
     --topbar-height: 78px;
     --topbar-padding-x: 38px;
