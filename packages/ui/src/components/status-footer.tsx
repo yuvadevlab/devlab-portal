@@ -40,17 +40,17 @@ export function StatusFooter({
 }: StatusFooterProps) {
   return (
     <footer className="footer">
-      <span className="flex items-center gap-2">
-        <span className="status text-[10px]">
+      <span className="footer-left">
+        <span className="status status-pill">
           <span className={`status-dot ${statusClass}`} />
           {statusLabel}
         </span>
 
         {latencyMs !== undefined && (
           <>
-            <span className="text-muted-foreground/60">·</span>
-            <span className="text-muted-foreground inline-flex items-center gap-1 font-mono text-[10px]">
-              <Zap className="size-2.5 text-amber-500" />
+            <span className="footer-sep">·</span>
+            <span className="footer-latency">
+              <Zap className="footer-latency-icon" />
               {latencyMs}ms latency
             </span>
           </>
@@ -58,43 +58,41 @@ export function StatusFooter({
 
         {statusClass !== "healthy" && redisLabel && (
           <>
-            <span className="text-muted-foreground/60">·</span>
-            <span className="text-[10px] text-amber-500">{redisLabel}</span>
+            <span className="footer-sep">·</span>
+            <span className="footer-redis-warning">{redisLabel}</span>
           </>
         )}
 
         {apiLabel && !latencyMs && (
           <>
-            <span className="text-muted-foreground/60">·</span>
-            <span className="text-[10px]">{apiLabel}</span>
+            <span className="footer-sep">·</span>
+            <span className="footer-api-label">{apiLabel}</span>
           </>
         )}
 
         {totalApps !== undefined && appsActiveLabel && (
           <>
-            <span className="text-muted-foreground/60">·</span>
-            <span className="text-[10px]">
+            <span className="footer-sep">·</span>
+            <span className="footer-apps-stat">
               {activeApps ?? 0}/{totalApps} {appsActiveLabel}
             </span>
           </>
         )}
       </span>
 
-      <span className="flex items-center gap-4">
-        {commandHint && (
-          <span className="text-muted-foreground hidden text-[10px] md:inline">{commandHint}</span>
-        )}
-        <span className="text-muted-foreground text-[10px]">{versionLabel}</span>
-        <span className="tag text-[9px]!">{environmentLabel}</span>
+      <span className="footer-right">
+        {commandHint && <span className="footer-hint">{commandHint}</span>}
+        <span className="footer-version">{versionLabel}</span>
+        <span className="tag tag-mini">{environmentLabel}</span>
         {docsUrl ? (
           <Button
             variant="link"
             size="sm"
-            className="text-muted-foreground hover:text-foreground h-auto gap-1 p-0 text-xs"
+            className="footer-docs-link"
             onClick={() => window.open(docsUrl, "_blank", "noopener,noreferrer")}
           >
             {docsLabel}
-            <ArrowUpRight className="size-3" />
+            <ArrowUpRight className="footer-docs-icon" />
           </Button>
         ) : null}
       </span>

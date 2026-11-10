@@ -27,6 +27,9 @@ export class AuditService {
     const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
     const isAdmin = user?.role === UserRole.ADMIN;
     const tenantId = user?.tenant_id;
+    this.logger.info(
+      `[listLogs] Querying audit logs for actor=${user?.sub} (tenant=${tenantId || "all"})`,
+    );
 
     const where: Prisma.AuditLogWhereInput = {};
     if (!isSuperAdmin) {
@@ -39,7 +42,7 @@ export class AuditService {
       }
     }
 
-    return this.prisma.auditLog.findMany({
+    const logs = await this.prisma.auditLog.findMany({
       where,
       take: Math.min(limit, 100),
       skip: offset,
@@ -50,6 +53,8 @@ export class AuditService {
         },
       },
     });
+    this.logger.info(`[listLogs] Found ${logs.length} audit entry(s)`);
+    return logs;
   }
 
   /**
@@ -63,7 +68,7 @@ export class AuditService {
     metadata?: Record<string, unknown>;
   }) {
     this.logger.info(
-      `Recording audit event: ${params.action} on ${params.targetType}:${params.targetId}`,
+      `[record] Recording audit event: action=${params.action} on ${params.targetType}:${params.targetId} by actor=${params.actorId}`,
     );
     return this.prisma.auditLog.create({
       data: {

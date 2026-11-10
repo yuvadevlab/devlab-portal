@@ -90,8 +90,8 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
         description={UI_COPY.AUDIT.HEADER.DESCRIPTION}
         eyebrowLabel={UI_COPY.COMMON.HEADER.WORKSPACE}
       >
-        <Button variant="outline" onClick={exportLedger} className="gap-1.5">
-          <Download className="size-4" />
+        <Button variant="outline" onClick={exportLedger} className="export-ledger-btn">
+          <Download className="button-icon-prefix" />
           {UI_COPY.AUDIT.HEADER.EXPORT_BTN}
         </Button>
       </Heading>
@@ -101,23 +101,23 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
       {/* Toolbar */}
       <div className="app-toolbar">
         <div className="search-field">
-          <Search className="size-3.5" />
+          <Search className="search-field-icon" />
           <Input
             placeholder={UI_COPY.AUDIT.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             aria-label={UI_COPY.AUDIT.TOOLBAR.SEARCH_PLACEHOLDER}
-            className="bg-card border-border h-9 w-72 pl-9 text-xs"
+            className="app-search-input"
           />
         </div>
 
-        <div className="flex gap-2.5">
-          <div className="w-44">
+        <div className="audit-toolbar-filters">
+          <div className="filter-select-wrap filter-select-action">
             <Select value={actionFilter} onValueChange={setActionFilter}>
-              <SelectTrigger className="bg-card border-border h-9 w-full text-xs">
+              <SelectTrigger className="filter-select-trigger">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="w-full min-w-(--radix-select-trigger-width)">
+              <SelectContent className="filter-select-content">
                 <SelectItem value={UI_COPY.COMMON.FILTERS.ALL}>
                   {UI_COPY.AUDIT.TOOLBAR.ALL_ACTIONS}
                 </SelectItem>
@@ -132,7 +132,7 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
 
           <Input
             type="date"
-            className="bg-card border-border h-9 w-40 cursor-pointer text-xs scheme-dark"
+            className="audit-date-input"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
             onClick={(e) => {
@@ -157,7 +157,7 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
               <TableHead>{UI_COPY.AUDIT.TABLE.ACTOR}</TableHead>
               <TableHead>{UI_COPY.AUDIT.TABLE.TARGET_ENTITY}</TableHead>
               <TableHead>{UI_COPY.AUDIT.TABLE.IP_ADDRESS}</TableHead>
-              <TableHead className="text-right" />
+              <TableHead className="cell-actions" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -166,33 +166,29 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
                 log.action.includes("kill") || log.action.includes("deactivated");
               return (
                 <TableRow key={log.id}>
-                  <TableCell className="text-muted-foreground text-[11px] whitespace-nowrap">
+                  <TableCell className="cell-timestamp">
                     {new Date(log.createdAt).toLocaleString()}
                   </TableCell>
                   <TableCell>
-                    <span className={`tag ${isKillswitch ? "text-destructive" : "text-primary"}`}>
-                      <ShieldCheck className="size-3" />
+                    <span className={`tag ${isKillswitch ? "tag-destructive" : "tag-primary"}`}>
+                      <ShieldCheck className="tag-icon" />
                       {log.action}
                     </span>
                   </TableCell>
-                  <TableCell className="text-foreground text-xs font-medium">
-                    {log.actor?.email || log.actorId}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground font-mono text-xs">
+                  <TableCell className="cell-actor">{log.actor?.email || log.actorId}</TableCell>
+                  <TableCell className="cell-target">
                     {log.targetType}: {log.targetId.slice(0, 8)}…
                   </TableCell>
-                  <TableCell className="text-muted-foreground font-mono text-[11px]">
-                    192.168.1.24
-                  </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="cell-ip">192.168.1.24</TableCell>
+                  <TableCell className="cell-actions">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setSelectedLog(log)}
-                      className="gap-1 text-xs"
+                      className="inspect-btn"
                     >
                       {UI_COPY.AUDIT.TABLE.INSPECT}
-                      <ArrowUpRight className="size-3" />
+                      <ArrowUpRight className="inspect-btn-icon" />
                     </Button>
                   </TableCell>
                 </TableRow>

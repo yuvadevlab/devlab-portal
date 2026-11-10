@@ -5,24 +5,7 @@
  */
 
 import { Field, ObjectType } from "@nestjs/graphql";
-import { GraphQLScalarType, Kind } from "graphql";
-
-export const GraphQLJSON = new GraphQLScalarType({
-  name: "JSON",
-  description: "Arbitrary JSON value",
-  serialize: (value) => value,
-  parseValue: (value) => value,
-  parseLiteral: (ast) => {
-    if (ast.kind === Kind.STRING) {
-      try {
-        return JSON.parse(ast.value);
-      } catch {
-        return ast.value;
-      }
-    }
-    return null;
-  },
-});
+import GraphQLJSON from "graphql-type-json";
 
 @ObjectType()
 export class AuditActorType {
@@ -58,6 +41,12 @@ export class AuditLogType {
 
   @Field(() => GraphQLJSON, { nullable: true })
   metadata?: Record<string, unknown>;
+
+  @Field()
+  ipAddress!: string;
+
+  @Field()
+  userAgent!: string;
 
   @Field()
   createdAt!: Date;

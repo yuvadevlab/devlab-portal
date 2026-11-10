@@ -79,7 +79,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
         eyebrowLabel={UI_COPY.COMMON.HEADER.WORKSPACE}
       >
         <Button onClick={onOpenGenerateModal}>
-          <Plus className="mr-1.5 size-4" />
+          <Plus className="button-icon-prefix" />
           {UI_COPY.IAM.HEADER.CREATE_BTN}
         </Button>
       </Heading>
@@ -89,22 +89,22 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
       {/* Toolbar */}
       <div className="app-toolbar">
         <div className="search-field">
-          <Search className="size-3.5" />
+          <Search className="search-field-icon" />
           <Input
             placeholder={UI_COPY.IAM.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             aria-label={UI_COPY.IAM.TOOLBAR.SEARCH_PLACEHOLDER}
-            className="bg-card border-border h-9 w-72 pl-9 text-xs"
+            className="app-search-input"
           />
         </div>
 
-        <div className="w-48">
+        <div className="filter-select-wrap">
           <Select value={selectedApp} onValueChange={setSelectedApp}>
-            <SelectTrigger className="bg-card border-border h-9 w-full text-xs">
+            <SelectTrigger className="filter-select-trigger">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="w-full min-w-(--radix-select-trigger-width)">
+            <SelectContent className="filter-select-content">
               <SelectItem value={UI_COPY.COMMON.FILTERS.ALL}>
                 {UI_COPY.IAM.TOOLBAR.ALL_APPLICATIONS}
               </SelectItem>
@@ -130,25 +130,21 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
               <TableHead>{UI_COPY.IAM.TABLE.RATE_LIMIT}</TableHead>
               <TableHead>{UI_COPY.IAM.TABLE.LAST_USED}</TableHead>
               <TableHead>{UI_COPY.IAM.TABLE.STATUS}</TableHead>
-              <TableHead className="text-right">{UI_COPY.IAM.TABLE.ACTIONS}</TableHead>
+              <TableHead className="cell-actions">{UI_COPY.IAM.TABLE.ACTIONS}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredKeys.map((k) => (
               <TableRow key={k.id}>
                 <TableCell>
-                  <div className="flex items-center gap-2 font-medium">
-                    <KeyRound className="text-muted-foreground size-3.5" />
+                  <div className="table-cell-title-wrap">
+                    <KeyRound className="cell-icon" />
                     {k.name}
                   </div>
                 </TableCell>
-                <TableCell className="text-muted-foreground font-mono text-xs">
-                  {getAppName(k.appId)}
-                </TableCell>
+                <TableCell className="cell-mono-muted">{getAppName(k.appId)}</TableCell>
                 <TableCell>
-                  <code className="text-muted-foreground font-mono text-[11px]">
-                    {k.keyPrefix}…
-                  </code>
+                  <code className="cell-code-muted">{k.keyPrefix}…</code>
                 </TableCell>
                 <TableCell>
                   <div className="scope-list">
@@ -159,13 +155,11 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                     ))}
                   </div>
                 </TableCell>
-                <TableCell className="font-mono text-xs">
+                <TableCell className="cell-mono">
                   {k.rateLimitRpm.toLocaleString()}{" "}
-                  <span className="text-muted-foreground font-sans text-[10px]">
-                    {UI_COPY.IAM.TABLE.RPM}
-                  </span>
+                  <span className="cell-unit">{UI_COPY.IAM.TABLE.RPM}</span>
                 </TableCell>
-                <TableCell className="text-muted-foreground text-xs">
+                <TableCell className="cell-date">
                   {new Date(k.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
@@ -174,8 +168,8 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                     {k.isRevoked ? UI_COPY.COMMON.STATUS.REVOKED : UI_COPY.COMMON.STATUS.ACTIVE}
                   </span>
                 </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-1">
+                <TableCell className="cell-actions">
+                  <div className="cell-action-buttons">
                     <Button
                       size="icon"
                       variant="ghost"
@@ -183,18 +177,18 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                       aria-label={`${UI_COPY.COMMON.ACTIONS.REFRESH} ${k.name}`}
                       disabled={k.isRevoked}
                     >
-                      <RefreshCw className="size-3.5" />
+                      <RefreshCw className="btn-icon-xs" />
                     </Button>
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="text-destructive hover:bg-destructive/10"
+                      className="cell-action-destructive"
                       title={`${UI_COPY.COMMON.ACTIONS.REVOKE} ${k.name}`}
                       aria-label={`${UI_COPY.COMMON.ACTIONS.REVOKE} ${k.name}`}
                       disabled={k.isRevoked}
                       onClick={() => onRevokeKey(k.id)}
                     >
-                      <Ban className="text-destructive size-3.5" />
+                      <Ban className="cell-action-icon-danger" />
                     </Button>
                   </div>
                 </TableCell>
@@ -206,7 +200,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
         {filteredKeys.length === 0 && <p className="empty-state">{UI_COPY.IAM.TABLE.EMPTY_TEXT}</p>}
       </div>
 
-      <div className="text-muted-foreground mt-4 text-xs">
+      <div className="table-footer-info">
         {filteredKeys.length} {UI_COPY.IAM.TABLE.FOOTER_INFO}
       </div>
     </>

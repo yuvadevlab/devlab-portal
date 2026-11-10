@@ -116,26 +116,26 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent size="lg">
         <DialogHeader>
-          <div className="flex items-center gap-2.5">
-            <div
-              className={`flex size-8 items-center justify-center rounded-lg ${
-                generatedKey ? "bg-success/15 text-success" : "bg-primary/15 text-primary"
-              }`}
-            >
-              {generatedKey ? <CheckCircle2 className="size-4" /> : <Key className="size-4" />}
+          <div className="modal-header-row">
+            <div className={`modal-header-icon-box ${generatedKey ? "success" : "primary"}`}>
+              {generatedKey ? (
+                <CheckCircle2 className="modal-header-icon" />
+              ) : (
+                <Key className="modal-header-icon" />
+              )}
             </div>
             <div>
-              <DialogTitle className="text-base font-bold">
+              <DialogTitle className="modal-title-bold">
                 {generatedKey ? UI_COPY.IAM.MODAL.TITLE_STEP_2 : UI_COPY.IAM.MODAL.TITLE}
               </DialogTitle>
-              <DialogDescription className="text-muted-foreground text-xs">
+              <DialogDescription className="modal-desc">
                 {generatedKey ? UI_COPY.IAM.MODAL.DESC_STEP_2 : UI_COPY.IAM.MODAL.DESCRIPTION}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        <DialogBody className="space-y-4 py-3">
+        <DialogBody className="modal-body-padded">
           {generatedKey ? (
             <ApiKeyRevealPane generatedKey={generatedKey} />
           ) : (
@@ -160,20 +160,25 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ apps, isOpen, onClose,
             <Button
               type="button"
               onClick={handleClose}
-              className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
+              className="modal-footer-btn modal-footer-btn-primary"
             >
               {UI_COPY.IAM.MODAL.DONE_BTN}
             </Button>
           ) : (
             <>
-              <Button type="button" variant="outline" onClick={handleClose} className="h-9 text-xs">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                className="modal-footer-btn"
+              >
                 {UI_COPY.COMMON.ACTIONS.CANCEL}
               </Button>
               <Button
                 type="submit"
                 form="api-key-form"
                 disabled={createApiKeyMutation.isPending || !name}
-                className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
+                className="modal-footer-btn modal-footer-btn-primary"
               >
                 {createApiKeyMutation.isPending
                   ? UI_COPY.COMMON.ACTIONS.GENERATING

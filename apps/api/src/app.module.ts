@@ -17,6 +17,7 @@ import { AuditModule } from "./modules/audit/audit.module";
 import { WebsocketModule } from "./modules/websocket/websocket.module";
 import { UsersModule } from "./modules/users/users.module";
 import { PlatformModule } from "./modules/platform/platform.module";
+import { SupervisorModule } from "./modules/supervisor/supervisor.module";
 
 const INITIAL_GRAPHQL_DOCUMENT = `# Welcome to DevLab Portal GraphQL Explorer
 query PlaceholderQuery {
@@ -62,6 +63,7 @@ query PlaceholderQuery {
     WebsocketModule,
     UsersModule,
     PlatformModule,
+    SupervisorModule,
   ],
 })
 export class AppModule {}

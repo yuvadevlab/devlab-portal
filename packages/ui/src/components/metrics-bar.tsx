@@ -33,12 +33,12 @@ export const MetricsBar: React.FC<MetricsBarProps> = ({ items }) => {
           <div className="metric" key={item.label}>
             <div className="metric-label">
               <span>{item.label}</span>
-              <IconComponent className="text-muted-foreground size-3.5" />
+              <IconComponent className="metric-icon" />
             </div>
 
             <div className="metric-value">
               <span>{item.value}</span>
-              {item.positive && <ArrowUpRight className="text-success size-4" />}
+              {item.positive && <ArrowUpRight className="metric-trend-icon" />}
             </div>
 
             <div className={`metric-note ${item.positive ? "positive" : ""}`}>{item.note}</div>

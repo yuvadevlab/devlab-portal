@@ -1,0 +1,226 @@
+/**
+ * @file packages/ui/src/styles/team.css
+ * @description Organization team roster, RBAC role hierarchy overview, and member invitations.
+ * Governed under @layer dl-components.
+ */
+
+@layer dl-components {
+  /* ── Team Member Table Row ── */
+  .member-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .member-name-row {
+    color: var(--foreground);
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .tag-self {
+    margin-left: 8px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .member-email {
+    color: var(--muted-foreground);
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .member-apps-row {
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .member-app-badge {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+
+  .member-role-select-wrap {
+    width: 144px;
+  }
+
+  .member-role-select-trigger {
+    background-color: var(--secondary);
+    height: 32px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .member-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .member-status-label {
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .member-status-label.active {
+    color: var(--success);
+  }
+
+  .member-status-label.inactive {
+    color: var(--muted-foreground);
+  }
+
+  /* ── Role Hierarchy Section ── */
+  .role-hierarchy-section {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+    padding: 24px 0;
+  }
+
+  .role-hierarchy-header {
+    color: var(--foreground);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .role-hierarchy-icon {
+    color: var(--primary);
+    width: 16px;
+    height: 16px;
+  }
+
+  .role-hierarchy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .role-hierarchy-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+
+  .role-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .role-item-index {
+    color: var(--primary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .role-item-name {
+    color: var(--foreground);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .role-item-desc {
+    color: var(--muted-foreground);
+    margin-top: 8px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  /* ── Invite Member Dialog & Form ── */
+  .invite-success-alert {
+    border: 1px solid color-mix(in oklch, var(--success) 20%, transparent);
+    background-color: color-mix(in oklch, var(--success) 10%, transparent);
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .invite-dev-box {
+    background-color: color-mix(in oklch, var(--secondary) 70%, transparent);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .invite-dev-hint {
+    color: var(--primary);
+    font-weight: 500;
+  }
+
+  .invite-dev-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .invite-dev-input {
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .invite-copy-btn {
+    height: 32px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+  }
+
+  .invite-apps-grid {
+    background-color: color-mix(in oklch, var(--secondary) 40%, transparent);
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .invite-apps-empty {
+    color: var(--muted-foreground);
+    grid-column: span 2;
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  .invite-app-item {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .invite-app-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

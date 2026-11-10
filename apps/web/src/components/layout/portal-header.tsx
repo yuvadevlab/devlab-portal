@@ -83,15 +83,15 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   return (
     <header className="topbar">
       {/* Brand & Dynamic DB Tenant Selector */}
-      <div className="flex items-center">
+      <div className="topbar-brand-section">
         <div
-          className="brand cursor-pointer"
+          className="brand brand-clickable"
           onClick={() => onNavigateTab(TabKey.APPS)}
           role="button"
           tabIndex={0}
         >
           <span className="logo-mark">
-            <Layers className="size-5" />
+            <Layers className="brand-icon" />
           </span>
           {UI_COPY.COMMON.BRAND.NAME} Portal
         </div>
@@ -99,7 +99,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
 
         {/* Role-Gated Tenant Switcher: super_admin only */}
         {isSuperAdmin ? (
-          <div className="relative">
+          <div className="tenant-selector-wrap">
             <Button
               variant="ghost"
               className="tenant-button"
@@ -107,13 +107,13 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
             >
               <span className="tenant-avatar">{initials}</span>
               <span className="tenant-label">{activeTenantName}</span>
-              <ChevronDown className="size-3" />
+              <ChevronDown className="tenant-chevron" />
             </Button>
 
             {isTenantMenuOpen && (
               <div className="pop-menu tenant-menu">
                 <Input
-                  className="border-border bg-secondary mb-2 h-8 w-full p-2 text-xs"
+                  className="tenant-search-input"
                   placeholder={UI_COPY.COMMON.HEADER.SEARCH_TENANTS}
                   aria-label={UI_COPY.COMMON.HEADER.SEARCH_TENANTS}
                   value={tenantSearch}
@@ -125,7 +125,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
                     <Button
                       key={t.id}
                       variant="ghost"
-                      className="menu-item justify-between"
+                      className="menu-item menu-item-spread"
                       onClick={() => {
                         setActiveTenantId(t.id);
                         if (typeof window !== "undefined") {
@@ -135,27 +135,27 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
                       }}
                     >
                       <span>{t.name}</span>
-                      {activeTenantId === t.id && <Check className="text-primary size-3" />}
+                      {activeTenantId === t.id && <Check className="tenant-check-icon" />}
                     </Button>
                   ))}
                 <Button
                   variant="ghost"
-                  className="menu-item text-primary"
+                  className="menu-item menu-item-primary"
                   onClick={() => {
                     setIsTenantMenuOpen(false);
                     onOpenNewTenant();
                   }}
                 >
-                  <Plus className="mr-1 size-3" />
+                  <Plus className="menu-item-icon" />
                   {UI_COPY.COMMON.HEADER.CREATE_TENANT}
                 </Button>
               </div>
             )}
           </div>
         ) : (
-          <div className="flex items-center gap-2 px-2 py-1 text-xs">
+          <div className="tenant-static-badge">
             <span className="tenant-avatar">{initials}</span>
-            <span className="tenant-label text-foreground font-medium">{activeTenantName}</span>
+            <span className="tenant-label tenant-label-static">{activeTenantName}</span>
           </div>
         )}
       </div>

@@ -81,3 +81,74 @@
   font-size: 11px;
   white-space: nowrap;
 }
+
+.section-heading-icon {
+  color: var(--muted-foreground);
+  width: 16px;
+  height: 16px;
+}
+
+.tag-compact {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.view-ledger-btn {
+  color: var(--muted-foreground);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.view-ledger-btn:hover {
+  color: var(--foreground);
+}
+
+.activity-icon-wrap {
+  color: var(--muted-foreground);
+  display: inline-flex;
+  align-items: center;
+}
+
+.activity-actor {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.activity-action-label {
+  color: var(--muted-foreground);
+}
+
+.activity-target {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.tag-responsive {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .tag-responsive {
+    display: inline-flex;
+  }
+}
+
+.activity-arrow {
+  color: var(--muted-foreground);
+  width: 12px;
+  height: 12px;
+}
+
+.activity-event-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.activity-empty {
+  color: var(--muted-foreground);
+  padding: 16px;
+  text-align: center;
+  font-size: 12px;
+}

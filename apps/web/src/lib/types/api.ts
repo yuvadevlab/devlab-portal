@@ -35,6 +35,12 @@ export interface RegisteredApp {
   isActive: boolean;
   maintenanceNote?: string;
   tenantId?: string;
+  workingDir?: string;
+  devCommand?: string;
+  buildCommand?: string;
+  startCommand?: string;
+  envVars?: Record<string, unknown>;
+  dependsOn?: string[];
   latencyMs?: number;
   healthStatus?: AppStatus | string;
   createdAt: string;
@@ -53,18 +59,34 @@ export interface CreateAppPayload {
   callbackUrls?: string[];
   healthUrl?: string;
   environment?: string;
+  workingDir?: string;
+  devCommand?: string;
+  buildCommand?: string;
+  startCommand?: string;
+  envVars?: Record<string, unknown>;
+  dependsOn?: string[];
 }
 
 /** Payload for updating application configuration */
 export interface UpdateAppSettingsPayload {
+  appId?: string;
   name?: string;
+  slug?: string;
   description?: string;
+  iconUrl?: string;
+  themeColor?: string;
   originUrl?: string;
   apiUrl?: string;
   callbackUrls?: string[];
   healthUrl?: string;
-  themeColor?: string;
+  environment?: string;
   maintenanceNote?: string;
+  workingDir?: string;
+  devCommand?: string;
+  buildCommand?: string;
+  startCommand?: string;
+  envVars?: Record<string, unknown>;
+  dependsOn?: string[];
 }
 
 /** IAM API key entity */

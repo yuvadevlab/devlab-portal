@@ -17,9 +17,11 @@ import { PrismaService } from "../../prisma/prisma.service";
 import { RedisService } from "../redis/redis.service";
 import { EventsGateway } from "../websocket/events.gateway";
 import { CreateAppDto, UpdateAppSettingsDto, UpdateAppStatusDto } from "./dto/app.dto";
-import { AuditAction, AuditTargetType, UserRole, AppStatus } from "../../common/constants/enums";
+import { AuditAction, AuditTargetType, UserRole } from "../../common/constants/enums";
 import { isValidUuid } from "@yuva-devlab/regex";
 import { Logger } from "@yuva-devlab/logger";
+import { probeAppHealth } from "./apps-health-checker";
+import { buildAppUpdateData } from "./apps-update.helper";
 
 @Injectable()
 export class AppsService {
@@ -37,64 +39,45 @@ export class AppsService {
   async listApps(user?: { sub?: string; role?: string; tenant_id?: string }) {
     const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
     const tenantId = user?.tenant_id;
+    this.logger.info(
+      `[listApps] Querying apps for actor=${user?.sub} (tenant=${tenantId || "all"})`,
+    );
 
-    const where: Prisma.RegisteredAppWhereInput = {};
-    if (!isSuperAdmin) {
-      if (tenantId) {
-        where.tenantId = tenantId;
-      } else {
-        return [];
-      }
-    }
+    if (!isSuperAdmin && !tenantId) return [];
+    const where: Prisma.RegisteredAppWhereInput = isSuperAdmin ? {} : { tenantId };
 
-    const apps = await this.prisma.registeredApp.findMany({
-      where,
-      orderBy: { name: "asc" },
-    });
+    const apps = await this.prisma.registeredApp.findMany({ where, orderBy: { name: "asc" } });
 
-    return Promise.all(
+    const results = await Promise.all(
       apps.map(async (app) => {
-        let latencyMs = 0;
-        let healthStatus: AppStatus = AppStatus.UNKNOWN;
-
-        if (!app.isActive) {
-          healthStatus = AppStatus.MAINTENANCE;
-        } else if (app.healthUrl) {
-          const start = Date.now();
-          try {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 1500);
-            const response = await fetch(app.healthUrl, { signal: controller.signal });
-            clearTimeout(timer);
-            latencyMs = Date.now() - start;
-            healthStatus = response.ok ? AppStatus.HEALTHY : AppStatus.DEGRADED;
-          } catch {
-            healthStatus = AppStatus.UNREACHABLE;
-            latencyMs = -1;
-          }
-        }
-
+        const { latencyMs, healthStatus } = await probeAppHealth(app);
         return { ...app, latencyMs, healthStatus };
       }),
     );
+    this.logger.info(`[listApps] Returning ${results.length} app(s) with health statuses`);
+    return results;
   }
 
   /**
    * Finds a registered application by ID or unique appId.
    */
   async getApp(idOrAppId: string, user?: { sub?: string; role?: string; tenant_id?: string }) {
+    this.logger.info(`[getApp] Looking up application "${idOrAppId}"`);
     const app = await this.prisma.registeredApp.findFirst({
       where: isValidUuid(idOrAppId)
         ? { OR: [{ id: idOrAppId }, { appId: idOrAppId }] }
         : { appId: idOrAppId },
     });
     if (!app) {
+      this.logger.warn(`[getApp] Application "${idOrAppId}" not found`);
       throw new NotFoundException(`Application "${idOrAppId}" not found`);
     }
     const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
     if (!isSuperAdmin && app.tenantId && app.tenantId !== user?.tenant_id) {
+      this.logger.warn(`[getApp] Forbidden access to "${app.appId}" for actor=${user?.sub}`);
       throw new ForbiddenException("You do not have permission to access this application");
     }
+    this.logger.info(`[getApp] Found app "${app.name}" (${app.appId})`);
     return app;
   }
 
@@ -102,10 +85,16 @@ export class AppsService {
    * Registers a new application, provisions client credentials, and commits audit log.
    */
   async createApp(dto: CreateAppDto, actor: { sub: string; role?: string; tenant_id?: string }) {
+    const start = Date.now();
+    this.logger.info(
+      `[createApp] Starting registration for appId="${dto.appId}" by actor=${actor.sub}`,
+    );
+
     const existing = await this.prisma.registeredApp.findFirst({
       where: { OR: [{ appId: dto.appId }, { slug: dto.slug || dto.appId }] },
     });
     if (existing) {
+      this.logger.warn(`[createApp] App with ID "${dto.appId}" or slug already exists`);
       throw new ConflictException(`App with ID "${dto.appId}" or slug already exists`);
     }
 
@@ -131,6 +120,12 @@ export class AppsService {
         isActive: true,
         clientSecretHash: secretHash,
         tenantId: actor.tenant_id ?? null,
+        workingDir: dto.workingDir ?? null,
+        devCommand: dto.devCommand ?? "pnpm dev",
+        buildCommand: dto.buildCommand ?? "pnpm build",
+        startCommand: dto.startCommand ?? "pnpm start",
+        envVars: dto.envVars ? JSON.parse(JSON.stringify(dto.envVars)) : undefined,
+        dependsOn: dto.dependsOn ?? [],
       },
     });
 
@@ -144,8 +139,9 @@ export class AppsService {
       },
     });
 
+    const duration = Date.now() - start;
     this.logger.info(
-      `App "${app.name}" registered by actor "${actor.sub}" in tenant "${actor.tenant_id ?? "none"}"`,
+      `[createApp] App "${app.name}" registered in tenant="${actor.tenant_id ?? "none"}" (${duration}ms)`,
     );
     return { ...app, clientSecret: rawSecret };
   }
@@ -158,21 +154,31 @@ export class AppsService {
     dto: UpdateAppSettingsDto,
     actor: { sub: string; role?: string; tenant_id?: string },
   ) {
+    const start = Date.now();
+    this.logger.info(
+      `[updateAppSettings] Modifying settings for app "${idOrAppId}" by actor=${actor.sub}`,
+    );
     const app = await this.getApp(idOrAppId, actor);
+
+    if (dto.appId && dto.appId !== app.appId) {
+      const exists = await this.prisma.registeredApp.findUnique({ where: { appId: dto.appId } });
+      if (exists && exists.id !== app.id) {
+        this.logger.warn(`[updateAppSettings] Conflict: App ID "${dto.appId}" already registered`);
+        throw new ConflictException(`App ID "${dto.appId}" is already registered`);
+      }
+    }
+
+    if (dto.slug && dto.slug !== app.slug) {
+      const exists = await this.prisma.registeredApp.findUnique({ where: { slug: dto.slug } });
+      if (exists && exists.id !== app.id) {
+        this.logger.warn(`[updateAppSettings] Conflict: Slug "${dto.slug}" already taken`);
+        throw new ConflictException(`Slug "${dto.slug}" is already taken`);
+      }
+    }
 
     const updated = await this.prisma.registeredApp.update({
       where: { id: app.id },
-      data: {
-        name: dto.name ?? app.name,
-        description: dto.description ?? app.description,
-        originUrl: dto.originUrl ?? app.originUrl,
-        apiUrl: dto.apiUrl !== undefined ? dto.apiUrl : app.apiUrl,
-        callbackUrls: dto.callbackUrls ?? app.callbackUrls,
-        healthUrl: dto.healthUrl ?? app.healthUrl,
-        themeColor: dto.themeColor !== undefined ? dto.themeColor : app.themeColor,
-        maintenanceNote:
-          dto.maintenanceNote !== undefined ? dto.maintenanceNote : app.maintenanceNote,
-      },
+      data: buildAppUpdateData(app, dto),
     });
 
     await this.prisma.auditLog.create({
@@ -181,10 +187,14 @@ export class AppsService {
         actorId: actor.sub,
         targetType: AuditTargetType.APP,
         targetId: app.id,
-        metadata: JSON.parse(JSON.stringify({ appId: app.appId, changes: dto })),
+        metadata: JSON.parse(JSON.stringify({ appId: updated.appId, changes: dto })),
       },
     });
 
+    const duration = Date.now() - start;
+    this.logger.info(
+      `[updateAppSettings] App "${updated.appId}" settings updated successfully (${duration}ms)`,
+    );
     return updated;
   }
 
@@ -196,6 +206,10 @@ export class AppsService {
     dto: UpdateAppStatusDto,
     actor: { sub: string; role?: string; tenant_id?: string },
   ) {
+    const start = Date.now();
+    this.logger.info(
+      `[updateAppStatus] Setting app "${idOrAppId}" isActive=${dto.isActive} by actor=${actor.sub}`,
+    );
     const app = await this.getApp(idOrAppId, actor);
 
     const updated = await this.prisma.registeredApp.update({
@@ -232,8 +246,10 @@ export class AppsService {
     await this.redis.publish("app.state.changed", JSON.stringify(payload));
     this.eventsGateway.broadcastAppStateChanged(payload);
 
-    this.logger.info(`Kill-switch toggled for "${app.name}": isActive=${updated.isActive}`);
-
+    const duration = Date.now() - start;
+    this.logger.info(
+      `[updateAppStatus] Kill-switch toggled for "${app.name}": isActive=${updated.isActive} (${duration}ms)`,
+    );
     return updated;
   }
 }

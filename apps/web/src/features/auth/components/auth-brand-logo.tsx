@@ -29,7 +29,7 @@ export function AuthBrandLogo({
     <div className="dl-auth-brand-container">
       <div className="dl-auth-brand-header">
         <span className="dl-auth-brand-icon">
-          <Layers className="size-5" />
+          <Layers className="dl-auth-brand-svg" />
         </span>
         <span className="dl-auth-brand-text">{UI_COPY.AUTH.BRAND}</span>
       </div>

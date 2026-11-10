@@ -65,42 +65,30 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent size="md">
         <DialogHeader>
-          <div className="flex items-center gap-3">
-            <div
-              className={`flex size-10 items-center justify-center rounded-xl ${
-                app.isActive
-                  ? "border-destructive/30 bg-destructive/15 text-destructive border"
-                  : "border-success/30 bg-success/15 text-success border"
-              }`}
-            >
+          <div className="kill-switch-header-group">
+            <div className={`kill-switch-icon-box ${app.isActive ? "danger" : "success"}`}>
               {app.isActive ? (
-                <AlertTriangle className="size-5" />
+                <AlertTriangle className="modal-header-icon" />
               ) : (
-                <CheckCircle className="size-5" />
+                <CheckCircle className="modal-header-icon" />
               )}
             </div>
             <div>
-              <DialogTitle className="text-base font-bold">
+              <DialogTitle className="modal-title-bold">
                 {app.isActive
                   ? UI_COPY.APPS.KILL_SWITCH.TITLE_TRIGGER
                   : UI_COPY.APPS.KILL_SWITCH.TITLE_RESTORE}
               </DialogTitle>
-              <DialogDescription className="text-muted-foreground font-mono text-xs">
+              <DialogDescription className="modal-desc-mono">
                 {app.name} ({app.appId})
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        <DialogBody className="space-y-4 py-3">
+        <DialogBody className="kill-switch-body">
           {/* Warning Callout Banner */}
-          <div
-            className={`rounded-xl border p-3.5 text-xs leading-relaxed ${
-              app.isActive
-                ? "border-destructive/30 bg-destructive/10 text-destructive"
-                : "border-success/30 bg-success/10 text-success"
-            }`}
-          >
+          <div className={`kill-switch-banner ${app.isActive ? "danger" : "success"}`}>
             {app.isActive
               ? UI_COPY.APPS.KILL_SWITCH.WARNING_TRIGGER
               : UI_COPY.APPS.KILL_SWITCH.WARNING_RESTORE}
@@ -108,8 +96,8 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
 
           {/* Optional Incident / Maintenance Note input */}
           {app.isActive && (
-            <div className="space-y-1.5">
-              <Label htmlFor="kill-switch-reason" className="text-xs font-semibold">
+            <div className="form-field-group">
+              <Label htmlFor="kill-switch-reason" className="form-field-label">
                 {UI_COPY.APPS.KILL_SWITCH.REASON_LABEL}
               </Label>
               <Textarea
@@ -118,14 +106,14 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
                 value={maintenanceNote}
                 onChange={(e) => setMaintenanceNote(e.target.value)}
                 placeholder={UI_COPY.APPS.KILL_SWITCH.REASON_PLACEHOLDER}
-                className="resize-none text-xs"
+                className="kill-switch-textarea"
               />
             </div>
           )}
         </DialogBody>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose} className="h-9 text-xs">
+          <Button type="button" variant="outline" onClick={onClose} className="modal-footer-btn">
             {UI_COPY.COMMON.ACTIONS.CANCEL}
           </Button>
 
@@ -134,20 +122,18 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
             onClick={handleAction}
             disabled={isSubmitting}
             variant={app.isActive ? "destructive" : "default"}
-            className={`h-9 text-xs font-semibold ${
-              app.isActive
-                ? "bg-destructive text-destructive-foreground hover:opacity-90"
-                : "bg-success text-success-foreground hover:opacity-90"
+            className={`modal-footer-btn ${
+              app.isActive ? "kill-switch-btn-danger" : "kill-switch-btn-success"
             }`}
           >
             {app.isActive ? (
               <>
-                <Power className="mr-1.5 size-3.5" />
+                <Power className="button-icon-prefix" />
                 {UI_COPY.APPS.KILL_SWITCH.CONFIRM_TRIGGER}
               </>
             ) : (
               <>
-                <CheckCircle className="mr-1.5 size-3.5" />
+                <CheckCircle className="button-icon-prefix" />
                 {UI_COPY.APPS.KILL_SWITCH.CONFIRM_RESTORE}
               </>
             )}

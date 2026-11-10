@@ -1,0 +1,70 @@
+/**
+ * @file packages/ui/src/styles/runtime-forms.css
+ * @description Runtime presets, path verification badges, and dependency selector controls.
+ * Architecture: W3C Cascade Layers under @layer dl-components.
+ */
+
+@layer dl-components {
+  /* ── Runtime Form & Preset Controls (Wizard & Settings) ── */
+  .runtime-preset-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .runtime-preset-btn {
+    height: 28px;
+    font-size: 11px;
+    padding: 0 10px;
+  }
+
+  .runtime-label-with-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .runtime-path-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 9999px;
+  }
+
+  .runtime-path-badge.valid {
+    background-color: color-mix(in oklch, var(--success, #10b981) 15%, transparent);
+    color: var(--success, #10b981);
+  }
+
+  .runtime-path-badge.invalid {
+    background-color: color-mix(in oklch, var(--destructive, #ef4444) 15%, transparent);
+    color: var(--destructive, #ef4444);
+  }
+
+  .runtime-path-badge .badge-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .runtime-dep-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .runtime-dep-btn {
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .settings-field-input-mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+}

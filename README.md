@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status" />
   <img src="https://img.shields.io/badge/license-MIT-emerald" alt="License" />
-  <img src="https://img.shields.io/badge/typescript-5.8.2-blue" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/typescript-6.x-blue" alt="TypeScript" />
   <img src="https://img.shields.io/badge/nestjs-11.0.0-E0234E" alt="NestJS" />
   <img src="https://img.shields.io/badge/next.js-15.5.27-black" alt="Next.js" />
   <img src="https://img.shields.io/badge/prisma-7.10.0-2D3748" alt="Prisma" />
@@ -69,6 +69,11 @@ labels, notifications, and accessibility copy in modular dictionaries under
    - Built with `@yuva-devlab/ui` design system components.
 4. **Prisma ORM & PostgreSQL (`prisma/`)**:
    - Type-safe schema migrations for tenants, keys, audit logs, and rate limit tiers.
+5. **Process Supervisor & Host IDE Integration (`apps/api/src/modules/supervisor`)**:
+   - Detached process lifecycle management (`start`, `stop`, `restart`, `build`) with cross-platform tree kills.
+   - Circular log ring-buffer with real-time Socket.IO stream multiplexing.
+   - TCP port occupancy probing and HTTP readiness health checks.
+   - Host IDE Launcher bar in web UI: one-click workspace opening in Google Antigravity IDE, VS Code, or Cursor.
 
 ---
 
@@ -139,3 +144,10 @@ devlab-portal/
 ├── commitlint.config.ts        # Conventional commits configuration
 └── turbo.json                  # Turborepo task pipeline configuration
 ```
+
+---
+
+## Author & Attribution
+
+- **Author**: Yuva DevLab (`yuva.devlab@gmail.com`)
+- **License**: MIT

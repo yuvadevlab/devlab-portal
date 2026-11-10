@@ -2,18 +2,14 @@
 
 /**
  * @file apps/web/src/features/apps/components/app-settings-drawer.tsx
- * @description Slide-over settings panel matching Lovable console with Textarea for description,
- * dynamic callback URLs list with individual row actions, and zero raw HTML.
+ * @description Slide-over settings panel enabling modification of all application fields configured during registration.
  * @module @devlab/portal-web/features/apps/components/app-settings-drawer
  */
 
 import React, { useState, useEffect } from "react";
-import { Check, Sliders, CheckCircle2, Plus, X } from "lucide-react";
+import { Check, Sliders, CheckCircle2 } from "lucide-react";
 import {
   Button,
-  Input,
-  Textarea,
-  Label,
   Sheet,
   SheetContent,
   SheetHeader,
@@ -23,6 +19,12 @@ import {
 } from "@devlab-portal/ui";
 import { logger } from "@/lib/logger";
 import { UI_COPY } from "@/lib/ui-copy";
+import { AppEnvironment } from "@/lib/constants";
+import { SettingsIdentitySection } from "./settings-drawer/settings-identity-section";
+import { SettingsRuntimeSection } from "./settings-drawer/settings-runtime-section";
+import { SettingsEndpointsSection } from "./settings-drawer/settings-endpoints-section";
+import { SettingsCallbacksSection } from "./settings-drawer/settings-callbacks-section";
+import { SettingsAdvancedSection } from "./settings-drawer/settings-advanced-section";
 import type { RegisteredApp, UpdateAppSettingsPayload } from "@/features/apps/types";
 
 interface AppSettingsDrawerProps {
@@ -39,29 +41,50 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
   onSave,
 }) => {
   const [name, setName] = useState("");
+  const [appId, setAppId] = useState("");
+  const [slug, setSlug] = useState("");
+  const [environment, setEnvironment] = useState<string>(AppEnvironment.LOCAL_DEV);
   const [description, setDescription] = useState("");
+  const [workingDir, setWorkingDir] = useState("");
+  const [devCommand, setDevCommand] = useState("");
+  const [buildCommand, setBuildCommand] = useState("");
+  const [startCommand, setStartCommand] = useState("");
+  const [dependsOn, setDependsOn] = useState<string[]>([]);
   const [originUrl, setOriginUrl] = useState("");
   const [apiUrl, setApiUrl] = useState("");
   const [healthUrl, setHealthUrl] = useState("");
   const [callbacks, setCallbacks] = useState<string[]>([]);
+  const [themeColor, setThemeColor] = useState("");
+  const [iconUrl, setIconUrl] = useState("");
+  const [maintenanceNote, setMaintenanceNote] = useState("");
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
     if (app) {
-      setName(app.name);
+      setName(app.name || "");
+      setAppId(app.appId || "");
+      setSlug(app.slug || "");
+      setEnvironment(app.environment || AppEnvironment.LOCAL_DEV);
       setDescription(app.description || "");
-      setOriginUrl(app.originUrl);
+      setWorkingDir(app.workingDir || "");
+      setDevCommand(app.devCommand || "");
+      setBuildCommand(app.buildCommand || "");
+      setStartCommand(app.startCommand || "");
+      setDependsOn(app.dependsOn || []);
+      setOriginUrl(app.originUrl || "");
       setApiUrl(app.apiUrl || "");
-      setHealthUrl(app.healthUrl);
+      setHealthUrl(app.healthUrl || "");
       setCallbacks(app.callbackUrls || []);
+      setThemeColor(app.themeColor || "");
+      setIconUrl(app.iconUrl || "");
+      setMaintenanceNote(app.maintenanceNote || "");
       setSavedSuccess(false);
     }
   }, [app]);
 
-  if (!app) {
-    return null;
-  }
+  if (!app) return null;
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
@@ -69,12 +92,23 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
     try {
       const filteredCallbacks = callbacks.map((u) => u.trim()).filter(Boolean);
       await onSave(app.id, {
-        name,
-        description,
-        originUrl,
+        appId: appId.trim() || undefined,
+        name: name.trim() || undefined,
+        slug: slug.trim() || undefined,
+        environment,
+        description: description.trim() || undefined,
+        workingDir: workingDir.trim() || undefined,
+        devCommand: devCommand.trim() || undefined,
+        buildCommand: buildCommand.trim() || undefined,
+        startCommand: startCommand.trim() || undefined,
+        dependsOn: dependsOn.length > 0 ? dependsOn : undefined,
+        originUrl: originUrl.trim() || undefined,
         apiUrl: apiUrl.trim() || undefined,
-        healthUrl,
+        healthUrl: healthUrl.trim() || undefined,
         callbackUrls: filteredCallbacks,
+        themeColor: themeColor.trim() || undefined,
+        iconUrl: iconUrl.trim() || undefined,
+        maintenanceNote: maintenanceNote.trim() || undefined,
       });
       setSavedSuccess(true);
       setTimeout(() => {
@@ -88,149 +122,113 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
     }
   };
 
-  const handleUpdateCallback = (index: number, val: string) => {
-    const next = [...callbacks];
-    next[index] = val;
-    setCallbacks(next);
-  };
-
-  const handleRemoveCallback = (index: number) => {
-    setCallbacks((prev) => prev.filter((_, i) => i !== index));
-  };
-
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-lg">
+      <SheetContent side="right" className="app-drawer-content">
         <SheetHeader>
-          <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
-              <Sliders className="size-4" />
+          <div className="app-drawer-header-row">
+            <div className="app-drawer-icon-box">
+              <Sliders className="app-drawer-icon" />
             </div>
             <div>
-              <SheetTitle className="text-base font-bold">{UI_COPY.APPS.DRAWER.TITLE}</SheetTitle>
-              <SheetDescription className="text-muted-foreground font-mono text-xs">
+              <SheetTitle className="app-drawer-title">{UI_COPY.APPS.DRAWER.TITLE}</SheetTitle>
+              <SheetDescription className="app-drawer-subtitle">
                 {app.name} · {app.appId}
               </SheetDescription>
             </div>
           </div>
         </SheetHeader>
 
-        <form
-          id="app-settings-form"
-          onSubmit={handleSubmit}
-          className="flex-1 space-y-4 overflow-y-auto py-4 pr-1"
-        >
+        <form id="app-settings-form" onSubmit={handleSubmit} className="app-drawer-form">
           {savedSuccess && (
-            <div className="border-success/20 bg-success/10 text-success flex items-center gap-2 rounded-lg border p-3 text-xs">
-              <CheckCircle2 className="size-4 shrink-0" />
+            <div className="app-drawer-success-alert">
+              <CheckCircle2 className="alert-icon" />
               <span>{UI_COPY.APPS.DRAWER.SUCCESS_ALERT}</span>
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <Label htmlFor="drawer-app-desc" className="text-xs font-semibold">
-              {UI_COPY.APPS.DRAWER.DESC_LABEL}
-            </Label>
-            <Textarea
-              id="drawer-app-desc"
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="resize-none font-sans text-xs"
+          <div className="app-drawer-section">
+            <div className="app-drawer-section-label">{UI_COPY.APPS.DRAWER.SECTION_IDENTITY}</div>
+            <SettingsIdentitySection
+              name={name}
+              appId={appId}
+              slug={slug}
+              environment={environment}
+              description={description}
+              onChangeName={setName}
+              onChangeAppId={setAppId}
+              onChangeSlug={setSlug}
+              onChangeEnvironment={setEnvironment}
+              onChangeDescription={setDescription}
             />
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="drawer-app-origin" className="text-xs font-semibold">
-              {UI_COPY.APPS.DRAWER.ORIGIN_LABEL}
-            </Label>
-            <Input
-              id="drawer-app-origin"
-              type="url"
-              value={originUrl}
-              onChange={(e) => setOriginUrl(e.target.value)}
-              required
-              className="h-9 font-mono text-xs"
+          <div className="app-drawer-section app-drawer-section-divider">
+            <div className="app-drawer-section-label">{UI_COPY.APPS.DRAWER.SECTION_RUNTIME}</div>
+            <SettingsRuntimeSection
+              workingDir={workingDir}
+              devCommand={devCommand}
+              buildCommand={buildCommand}
+              startCommand={startCommand}
+              dependsOn={dependsOn}
+              onChangeWorkingDir={setWorkingDir}
+              onChangeDevCommand={setDevCommand}
+              onChangeBuildCommand={setBuildCommand}
+              onChangeStartCommand={setStartCommand}
+              onChangeDependsOn={setDependsOn}
             />
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="drawer-app-api" className="text-xs font-semibold">
-              {UI_COPY.APPS.DRAWER.API_LABEL}
-            </Label>
-            <Input
-              id="drawer-app-api"
-              type="url"
-              value={apiUrl}
-              onChange={(e) => setApiUrl(e.target.value)}
-              placeholder={UI_COPY.APPS.DRAWER.API_PLACEHOLDER}
-              className="h-9 font-mono text-xs"
+          <div className="app-drawer-section app-drawer-section-divider">
+            <div className="app-drawer-section-label">{UI_COPY.APPS.DRAWER.SECTION_ENDPOINTS}</div>
+            <SettingsEndpointsSection
+              originUrl={originUrl}
+              apiUrl={apiUrl}
+              healthUrl={healthUrl}
+              onChangeOriginUrl={setOriginUrl}
+              onChangeApiUrl={setApiUrl}
+              onChangeHealthUrl={setHealthUrl}
             />
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="drawer-app-health" className="text-xs font-semibold">
-              {UI_COPY.APPS.DRAWER.HEALTH_LABEL}
-            </Label>
-            <Input
-              id="drawer-app-health"
-              value={healthUrl}
-              onChange={(e) => setHealthUrl(e.target.value)}
-              required
-              className="h-9 font-mono text-xs"
+          <div className="app-drawer-section app-drawer-section-divider">
+            <div className="app-drawer-section-label">{UI_COPY.APPS.DRAWER.SECTION_CALLBACKS}</div>
+            <SettingsCallbacksSection
+              callbacks={callbacks}
+              onUpdateCallback={(i, val) => {
+                const next = [...callbacks];
+                next[i] = val;
+                setCallbacks(next);
+              }}
+              onRemoveCallback={(i) => setCallbacks((prev) => prev.filter((_, idx) => idx !== i))}
+              onAddCallback={() => setCallbacks((prev) => [...prev, ""])}
             />
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-xs font-semibold">{UI_COPY.APPS.DRAWER.CALLBACKS_LABEL}</Label>
-            <div className="space-y-2">
-              {callbacks.map((c, i) => (
-                <div className="flex items-center gap-2" key={i}>
-                  <Input
-                    type="url"
-                    value={c}
-                    onChange={(e) => handleUpdateCallback(i, e.target.value)}
-                    required
-                    className="h-9 flex-1 font-mono text-xs"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    aria-label={UI_COPY.APPS.DRAWER.REMOVE_CALLBACK_ARIA}
-                    className="text-destructive hover:bg-destructive/10 shrink-0"
-                    onClick={() => handleRemoveCallback(i)}
-                  >
-                    <X className="text-destructive size-3.5" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setCallbacks((prev) => [...prev, ""])}
-              className="h-8 text-xs"
-            >
-              <Plus className="mr-1 size-3.5" />
-              {UI_COPY.APPS.DRAWER.ADD_CALLBACK_BTN}
-            </Button>
+          <div className="app-drawer-section app-drawer-section-divider">
+            <div className="app-drawer-section-label">{UI_COPY.APPS.DRAWER.SECTION_BRANDING}</div>
+            <SettingsAdvancedSection
+              themeColor={themeColor}
+              iconUrl={iconUrl}
+              maintenanceNote={maintenanceNote}
+              onChangeThemeColor={setThemeColor}
+              onChangeIconUrl={setIconUrl}
+              onChangeMaintenanceNote={setMaintenanceNote}
+            />
           </div>
         </form>
 
-        <SheetFooter className="border-border border-t pt-4">
-          <Button type="button" variant="outline" onClick={onClose} className="h-9 text-xs">
+        <SheetFooter className="app-drawer-footer">
+          <Button type="button" variant="outline" onClick={onClose} className="drawer-btn">
             {UI_COPY.COMMON.ACTIONS.CANCEL}
           </Button>
           <Button
             type="submit"
             form="app-settings-form"
             disabled={isSubmitting}
-            className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
+            className="drawer-btn drawer-btn-primary"
           >
-            <Check className="mr-1.5 size-3.5" />
+            <Check className="btn-icon" />
             {UI_COPY.APPS.DRAWER.SAVE_BTN}
           </Button>
         </SheetFooter>

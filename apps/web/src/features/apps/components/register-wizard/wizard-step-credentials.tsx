@@ -22,34 +22,28 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
   clientSecret,
 }) => {
   return (
-    <div className="space-y-4">
+    <div className="wizard-step-container">
       {/* Success banner */}
-      <div className="border-success/20 bg-success/10 text-success flex items-center gap-2.5 rounded-xl border p-3.5">
-        <CheckCircle2 className="size-5 shrink-0" />
+      <div className="credentials-success-banner">
+        <CheckCircle2 className="banner-icon-success" />
         <div>
-          <p className="text-xs leading-none font-semibold">
-            {UI_COPY.APPS.WIZARD.CREDENTIALS.SUCCESS_TITLE}
-          </p>
-          <p className="text-success/80 mt-1 text-[11px]">
-            {UI_COPY.APPS.WIZARD.CREDENTIALS.SUCCESS_SUBTITLE}
-          </p>
+          <p className="banner-title">{UI_COPY.APPS.WIZARD.CREDENTIALS.SUCCESS_TITLE}</p>
+          <p className="banner-subtitle">{UI_COPY.APPS.WIZARD.CREDENTIALS.SUCCESS_SUBTITLE}</p>
         </div>
       </div>
 
       {/* Client ID field */}
-      <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">{UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_ID}</Label>
-        <div className="border-border bg-card flex items-center justify-between rounded-lg border px-3 py-2">
-          <span className="text-foreground font-mono text-xs">{appId}</span>
+      <div className="form-field-group">
+        <Label className="form-field-label">{UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_ID}</Label>
+        <div className="credentials-id-box">
+          <span className="credentials-id-text">{appId}</span>
           <CopyButton textToCopy={appId} />
         </div>
       </div>
 
       {/* Secret Reveal Card */}
-      <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">
-          {UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_SECRET}
-        </Label>
+      <div className="form-field-group">
+        <Label className="form-field-label">{UI_COPY.APPS.WIZARD.CREDENTIALS.CLIENT_SECRET}</Label>
         <SecretRevealCard
           secret={clientSecret}
           warningMessage={UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}
@@ -58,11 +52,9 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
       </div>
 
       {/* Security notice */}
-      <div className="border-warning/20 bg-warning/10 text-warning flex items-start gap-2 rounded-lg border p-3 text-xs">
-        <AlertTriangle className="text-warning mt-0.5 size-4 shrink-0" />
-        <p className="text-[11px] leading-relaxed">
-          {UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}
-        </p>
+      <div className="credentials-warning-banner">
+        <AlertTriangle className="banner-icon-warning" />
+        <p className="banner-text">{UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}</p>
       </div>
     </div>
   );

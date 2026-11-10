@@ -24,13 +24,13 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
     switch (action.toUpperCase().replace(/[\s.-]+/g, "_")) {
       case AuditAction.API_KEY_CREATED:
       case AuditAction.API_KEY_REVOKED:
-        return <KeyRound className="size-3.5" />;
+        return <KeyRound className="activity-event-icon" />;
       case AuditAction.APP_ACTIVATED:
       case AuditAction.APP_DEACTIVATED:
       case AuditAction.STATUS_UPDATED:
-        return <ShieldAlert className="size-3.5" />;
+        return <ShieldAlert className="activity-event-icon" />;
       default:
-        return <Plus className="size-3.5" />;
+        return <Plus className="activity-event-icon" />;
     }
   };
 
@@ -72,47 +72,45 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ auditLogs, onNav
     <section className="activity-section">
       <div className="section-heading">
         <h2>
-          <Activity className="text-muted-foreground size-4" />
+          <Activity className="section-heading-icon" />
           {UI_COPY.APPS.RECENT_ACTIVITY.TITLE}
-          <span className="tag py-0!">{UI_COPY.APPS.RECENT_ACTIVITY.LIVE_BADGE}</span>
+          <span className="tag tag-compact">{UI_COPY.APPS.RECENT_ACTIVITY.LIVE_BADGE}</span>
         </h2>
         <Button
           variant="ghost"
           size="sm"
-          className="text-muted-foreground hover:text-foreground gap-1 text-xs"
+          className="view-ledger-btn"
           onClick={() => onNavigateTab(TabKey.AUDIT)}
         >
           {UI_COPY.APPS.RECENT_ACTIVITY.VIEW_LEDGER}
-          <ArrowUpRight className="size-3" />
+          <ArrowUpRight className="activity-arrow" />
         </Button>
       </div>
 
       <div className="activity-list">
         {auditLogs.slice(0, 3).map((event) => (
           <div className="activity-row" key={event.id}>
-            <span className="text-muted-foreground">{getEventIcon(event.action)}</span>
+            <span className="activity-icon-wrap">{getEventIcon(event.action)}</span>
             <span>
-              <span className="text-foreground font-medium">
+              <span className="activity-actor">
                 {event.actor?.name ||
                   event.actor?.email ||
                   event.actorId ||
                   UI_COPY.COMMON.MEMBER.SYSTEM}
               </span>{" "}
-              <span className="text-muted-foreground">{formatEventAction(event.action)}</span>{" "}
-              <span className="text-foreground font-semibold">{event.targetId}</span>
+              <span className="activity-action-label">{formatEventAction(event.action)}</span>{" "}
+              <span className="activity-target">{event.targetId}</span>
             </span>
-            <span className="tag hidden sm:inline-flex">{event.action}</span>
+            <span className="tag tag-responsive">{event.action}</span>
             <time dateTime={event.createdAt} suppressHydrationWarning>
               {getRelativeTime(event.createdAt)}
             </time>
-            <ChevronRight className="text-muted-foreground size-3" />
+            <ChevronRight className="activity-arrow" />
           </div>
         ))}
 
         {auditLogs.length === 0 && (
-          <div className="text-muted-foreground p-4 text-center text-xs">
-            {UI_COPY.APPS.RECENT_ACTIVITY.EMPTY}
-          </div>
+          <div className="activity-empty">{UI_COPY.APPS.RECENT_ACTIVITY.EMPTY}</div>
         )}
       </div>
     </section>

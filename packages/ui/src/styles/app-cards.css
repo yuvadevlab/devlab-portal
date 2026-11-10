@@ -3,53 +3,6 @@
  * @description Ecosystem application cards, icon badging, and status indicators.
  */
 
-.app-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.search-field {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--muted-foreground);
-}
-
-.search-field input {
-  height: 36px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0 12px 0 35px;
-  outline: none;
-  background: var(--card);
-  font-size: 12px;
-  width: 280px;
-}
-
-.search-field svg {
-  position: absolute;
-  left: 12px;
-  width: 14px;
-}
-
-.segmented {
-  display: flex;
-  gap: 3px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 3px;
-  border-radius: 6px;
-}
-
-.segmented .segment.active {
-  background: var(--secondary);
-  color: var(--foreground);
-}
-
 .app-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -57,6 +10,7 @@
 }
 
 .app-card {
+  --app-color: var(--primary);
   border: 1px solid var(--border);
   background: var(--card);
   border-radius: 8px;
@@ -68,7 +22,7 @@
 }
 
 .app-card:hover {
-  border-color: color-mix(in oklch, var(--primary) 35%, var(--border));
+  border-color: color-mix(in oklch, var(--app-color) 35%, var(--border));
   transform: translateY(-2px);
 }
 
@@ -93,27 +47,6 @@
 .app-icon svg {
   width: 23px;
   height: 23px;
-}
-
-.app-card.mint,
-.app-icon.mint {
-  --app-color: var(--mint);
-}
-.app-card.blue,
-.app-icon.blue {
-  --app-color: var(--blue);
-}
-.app-card.amber,
-.app-icon.amber {
-  --app-color: var(--amber);
-}
-.app-card.rose,
-.app-icon.rose {
-  --app-color: var(--rose);
-}
-.app-card.teal,
-.app-icon.teal {
-  --app-color: var(--teal);
 }
 
 .app-card h2 {
@@ -199,14 +132,83 @@
   align-items: center;
 }
 
-/* Native HTML5 date input calendar picker icon in dark theme */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  filter: invert(0.8);
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
+.app-icon-svg {
+  width: 20px;
+  height: 20px;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
+.endpoint-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.endpoint-url {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.endpoint-status-code {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.probe-code-success {
+  color: var(--success);
+}
+
+.probe-code-danger {
+  color: var(--destructive);
+}
+
+.probe-code-warn {
+  color: #f59e0b;
+}
+
+.probe-code-muted {
+  color: var(--muted-foreground);
+}
+
+.app-card-launch-btn {
+  color: var(--muted-foreground);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+.app-card-launch-btn:hover {
+  color: var(--foreground);
+}
+
+.app-card-launch-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.app-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.app-action-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.app-card-kill-btn {
+  color: var(--destructive);
+}
+
+.app-card-kill-btn:hover {
+  background-color: color-mix(in oklch, var(--destructive) 10%, transparent);
+}
+
+.app-action-danger {
+  color: var(--destructive);
 }

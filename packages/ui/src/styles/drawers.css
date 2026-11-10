@@ -1,0 +1,153 @@
+/**
+ * @file packages/ui/src/styles/drawers.css
+ * @description Slide-over drawers for app configuration and audit forensic telemetry.
+ * Governed under @layer dl-components.
+ */
+
+@layer dl-components {
+  /* ── App Settings Drawer ── */
+  .app-drawer-content {
+    width: 100%;
+    max-width: 576px;
+    overflow-y: auto;
+  }
+
+  .app-drawer-header-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .app-drawer-icon-box {
+    background-color: color-mix(in oklch, var(--primary) 15%, transparent);
+    color: var(--primary);
+    display: flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .app-drawer-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .app-drawer-title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .app-drawer-subtitle {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .app-drawer-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+    padding: 16px 4px 16px 0;
+  }
+
+  .app-drawer-success-alert {
+    border: 1px solid color-mix(in oklch, var(--success) 20%, transparent);
+    background-color: color-mix(in oklch, var(--success) 10%, transparent);
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .app-drawer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .app-drawer-section-divider {
+    border-top: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+    padding-top: 16px;
+  }
+
+  .app-drawer-section-label {
+    color: var(--muted-foreground);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .app-drawer-footer {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .drawer-btn {
+    height: 36px;
+    font-size: 12px;
+  }
+
+  .drawer-btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    font-weight: 500;
+  }
+
+  .drawer-btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .callbacks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .callback-item-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .callback-input {
+    flex: 1;
+  }
+
+  .callback-remove-btn {
+    color: var(--destructive);
+    flex-shrink: 0;
+  }
+
+  .callback-remove-btn:hover {
+    background-color: color-mix(in oklch, var(--destructive) 10%, transparent);
+  }
+
+  .callback-remove-icon {
+    color: var(--destructive);
+    width: 14px;
+    height: 14px;
+  }
+
+  .callback-add-btn {
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .alert-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+}

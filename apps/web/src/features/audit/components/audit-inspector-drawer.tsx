@@ -42,52 +42,53 @@ export const AuditInspectorDrawer: React.FC<AuditInspectorDrawerProps> = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-lg">
+      <SheetContent side="right" className="audit-drawer-content">
         <SheetHeader>
-          <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
-              <ShieldCheck className="size-4" />
+          <div className="audit-drawer-header-row">
+            <div className="audit-drawer-icon-box">
+              <ShieldCheck className="audit-drawer-icon" />
             </div>
             <div>
-              <SheetTitle className="text-base font-bold">{UI_COPY.AUDIT.DRAWER.TITLE}</SheetTitle>
-              <SheetDescription className="text-muted-foreground font-mono text-xs">
-                {log.action}
-              </SheetDescription>
+              <SheetTitle className="audit-drawer-title">{UI_COPY.AUDIT.DRAWER.TITLE}</SheetTitle>
+              <SheetDescription className="audit-drawer-subtitle">{log.action}</SheetDescription>
             </div>
           </div>
         </SheetHeader>
 
-        <div className="flex-1 space-y-4 overflow-y-auto py-4">
+        <div className="audit-drawer-body">
           {/* Key Facts Summary */}
-          <div className="border-border bg-card space-y-2 rounded-xl border p-3.5 text-xs">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{UI_COPY.AUDIT.DRAWER.EVENT_ID}:</span>
-              <span className="text-foreground font-mono">{log.id}</span>
+          <div className="audit-facts-card">
+            <div className="audit-fact-row">
+              <span className="audit-fact-label">{UI_COPY.AUDIT.DRAWER.EVENT_ID}:</span>
+              <span className="audit-fact-value">{log.id}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{UI_COPY.AUDIT.DRAWER.ACTOR}:</span>
-              <span className="text-foreground font-mono">{log.actor?.email || log.actorId}</span>
+            <div className="audit-fact-row">
+              <span className="audit-fact-label">{UI_COPY.AUDIT.DRAWER.ACTOR}:</span>
+              <span className="audit-fact-value">{log.actor?.email || log.actorId}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{UI_COPY.AUDIT.DRAWER.TARGET_TYPE}:</span>
-              <span className="text-foreground font-mono">{log.targetType}</span>
+            <div className="audit-fact-row">
+              <span className="audit-fact-label">{UI_COPY.AUDIT.DRAWER.TARGET_TYPE}:</span>
+              <span className="audit-fact-value">{log.targetType}</span>
             </div>
           </div>
 
           {/* Raw JSON viewer */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label className="text-xs font-semibold">{UI_COPY.AUDIT.DRAWER.PAYLOAD_JSON}</Label>
+          <div className="form-field-group">
+            <div className="audit-json-header">
+              <Label className="form-field-label">{UI_COPY.AUDIT.DRAWER.PAYLOAD_JSON}</Label>
               <CopyButton textToCopy={jsonFormatted} />
             </div>
-            <pre className="border-border bg-card text-foreground max-h-[calc(100vh-280px)] overflow-auto rounded-lg border p-3 font-mono text-[11px]">
-              {jsonFormatted}
-            </pre>
+            <pre className="audit-json-viewer">{jsonFormatted}</pre>
           </div>
         </div>
 
-        <SheetFooter className="border-border border-t pt-4">
-          <Button type="button" variant="outline" onClick={onClose} className="h-9 text-xs">
+        <SheetFooter className="audit-drawer-footer">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            className="audit-drawer-close-btn"
+          >
             {UI_COPY.COMMON.ACTIONS.CLOSE}
           </Button>
         </SheetFooter>

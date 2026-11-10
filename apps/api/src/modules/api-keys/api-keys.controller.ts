@@ -21,9 +21,12 @@ import { ApiKeysService } from "./api-keys.service";
 import { AuthGuard } from "../auth/auth.guard";
 import { CreateApiKeyDto } from "./dto/api-key.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Logger } from "@yuva-devlab/logger";
 
 @Controller("api/v1/api-keys")
 export class ApiKeysController {
+  private readonly logger = new Logger("ApiKeysController");
+
   constructor(private readonly apiKeysService: ApiKeysService) {}
 
   /**
@@ -32,6 +35,9 @@ export class ApiKeysController {
   @Post()
   @UseGuards(AuthGuard)
   async createApiKey(@CurrentUser() user: { sub: string }, @Body() dto: CreateApiKeyDto) {
+    this.logger.info(
+      `[createApiKey] Generating key "${dto.name}" for app="${dto.appId}" by actor=${user?.sub}`,
+    );
     return this.apiKeysService.createApiKey(user.sub, dto);
   }
 
@@ -44,6 +50,9 @@ export class ApiKeysController {
     @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
     @Query("app_id") appId?: string,
   ) {
+    this.logger.info(
+      `[listApiKeys] Listing API keys for actor=${user?.sub} (appId=${appId || "all"})`,
+    );
     return this.apiKeysService.listApiKeys(appId, user);
   }
 
@@ -56,6 +65,7 @@ export class ApiKeysController {
     @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
     @Param("id") id: string,
   ) {
+    this.logger.info(`[revokeApiKey] Revoking key "${id}" by actor=${user?.sub}`);
     return this.apiKeysService.revokeApiKey(id, user.sub, user);
   }
 
@@ -68,6 +78,7 @@ export class ApiKeysController {
     @Headers("authorization") authHeader?: string,
     @Query("key") queryKey?: string,
   ) {
+    this.logger.info("[validateApiKey] Validating inbound machine key");
     const rawKey = authHeader?.startsWith("Bearer ")
       ? authHeader.substring(7).trim()
       : queryKey || "";

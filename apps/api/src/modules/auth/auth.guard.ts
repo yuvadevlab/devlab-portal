@@ -6,6 +6,7 @@
 
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { KeypairService } from "./keys/keypair.service";
+import { updateCorrelationContext } from "@yuva-devlab/logger";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -26,6 +27,12 @@ export class AuthGuard implements CanActivate {
     try {
       const { payload } = await this.keypairService.verifyJwt(token);
       request.user = payload;
+
+      updateCorrelationContext({
+        userId: (payload.sub as string) || (payload.id as string) || undefined,
+        tenantId: (payload.tenant_id as string) || undefined,
+      });
+
       return true;
     } catch {
       throw new UnauthorizedException("Invalid or expired authentication token");

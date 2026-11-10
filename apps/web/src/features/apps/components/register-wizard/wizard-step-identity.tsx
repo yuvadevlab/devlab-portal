@@ -29,9 +29,9 @@ interface WizardStepIdentityProps {
 
 export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, onChange }) => {
   return (
-    <div className="space-y-4">
-      <div className="space-y-1.5">
-        <Label htmlFor="app-name" className="text-xs font-semibold">
+    <div className="wizard-step-container">
+      <div className="form-field-group">
+        <Label htmlFor="app-name" className="form-field-label">
           {UI_COPY.APPS.WIZARD.FIELDS.NAME}
         </Label>
         <Input
@@ -40,13 +40,13 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
           onChange={(e) => onChange({ name: e.target.value })}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.NAME_PLACEHOLDER}
           required
-          className="h-9 text-xs"
+          className="form-field-input"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="app-id" className="text-xs font-semibold">
+      <div className="form-grid-2">
+        <div className="form-field-group">
+          <Label htmlFor="app-id" className="form-field-label">
             {UI_COPY.APPS.WIZARD.FIELDS.APP_ID}
           </Label>
           <Input
@@ -60,19 +60,19 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
             }
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.APP_ID_PLACEHOLDER}
             required
-            className="h-9 font-mono text-xs"
+            className="form-field-input-mono"
           />
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="app-env" className="text-xs font-semibold">
+        <div className="form-field-group">
+          <Label htmlFor="app-env" className="form-field-label">
             {UI_COPY.APPS.WIZARD.FIELDS.ENVIRONMENT}
           </Label>
           <Select
             value={form.environment}
             onValueChange={(val) => onChange({ environment: val as AppEnvironment })}
           >
-            <SelectTrigger id="app-env" className="h-9 w-full text-xs">
+            <SelectTrigger id="app-env" className="form-field-select">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -90,8 +90,8 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="app-desc" className="text-xs font-semibold">
+      <div className="form-field-group">
+        <Label htmlFor="app-desc" className="form-field-label">
           {UI_COPY.APPS.WIZARD.FIELDS.DESCRIPTION}
         </Label>
         <Textarea
@@ -100,13 +100,13 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
           value={form.description}
           onChange={(e) => onChange({ description: e.target.value })}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.DESCRIPTION_PLACEHOLDER}
-          className="resize-none text-xs"
+          className="form-field-textarea"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="app-origin" className="text-xs font-semibold">
+      <div className="form-grid-2">
+        <div className="form-field-group">
+          <Label htmlFor="app-origin" className="form-field-label">
             {UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_URL}
           </Label>
           <Input
@@ -115,12 +115,12 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
             onChange={(e) => onChange({ originUrl: e.target.value })}
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_PLACEHOLDER}
             required
-            className="h-9 font-mono text-xs"
+            className="form-field-input-mono"
           />
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="app-health" className="text-xs font-semibold">
+        <div className="form-field-group">
+          <Label htmlFor="app-health" className="form-field-label">
             {UI_COPY.APPS.WIZARD.FIELDS.HEALTH_URL}
           </Label>
           <Input
@@ -128,7 +128,7 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
             value={form.healthUrl}
             onChange={(e) => onChange({ healthUrl: e.target.value })}
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.HEALTH_PLACEHOLDER}
-            className="h-9 font-mono text-xs"
+            className="form-field-input-mono"
           />
         </div>
       </div>

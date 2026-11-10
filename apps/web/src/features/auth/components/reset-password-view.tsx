@@ -17,8 +17,8 @@ export const ResetPasswordView: React.FC = () => {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center">
-          <div className="text-muted-foreground text-sm">{UI_COPY.AUTH.RESET_PASSWORD.LOADING}</div>
+        <div className="dl-auth-fallback-wrap">
+          <div className="dl-auth-fallback-text">{UI_COPY.AUTH.RESET_PASSWORD.LOADING}</div>
         </div>
       }
     >

@@ -43,9 +43,9 @@ export function NavigationBar({
             className={`nav-link ${activeTab === item.key ? "active" : ""}`}
             onClick={() => onSelectTab(item.key)}
           >
-            <Icon className="size-3.75" />
+            <Icon className="nav-link-icon" />
             <span>{item.label}</span>
-            {count !== undefined && <span className="tag py-0!">{count}</span>}
+            {count !== undefined && <span className="tag tag-compact">{count}</span>}
           </button>
         );
       })}

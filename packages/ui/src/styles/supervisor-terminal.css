@@ -1,0 +1,95 @@
+/**
+ * @file packages/ui/src/styles/supervisor-terminal.css
+ * @description Monospace streaming log terminal styles for the Process Supervisor.
+ * Architecture: W3C Cascade Layers under @layer dl-components.
+ */
+
+@layer dl-components {
+  .supervisor-terminal-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .supervisor-terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .supervisor-terminal-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-foreground);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .supervisor-terminal-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    border: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  }
+
+  .supervisor-terminal {
+    background-color: #09090b;
+    color: #fafafa;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.6;
+    height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .supervisor-terminal-empty {
+    color: #71717a;
+    font-style: italic;
+    padding: 40px 0;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .supervisor-terminal-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    word-break: break-all;
+  }
+
+  .supervisor-log-time {
+    color: #71717a;
+    flex-shrink: 0;
+    user-select: none;
+    font-size: 10px;
+  }
+
+  .supervisor-log-level {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .supervisor-log-msg {
+    word-break: break-all;
+    white-space: pre-wrap;
+    flex: 1;
+  }
+}

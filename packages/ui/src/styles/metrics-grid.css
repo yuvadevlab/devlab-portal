@@ -48,6 +48,18 @@
   color: var(--success);
 }
 
+.metric-icon {
+  color: var(--muted-foreground);
+  width: 14px;
+  height: 14px;
+}
+
+.metric-trend-icon {
+  color: var(--success);
+  width: 16px;
+  height: 16px;
+}
+
 .latency-value {
   font-size: 54px;
   color: var(--success);

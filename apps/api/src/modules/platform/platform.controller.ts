@@ -20,9 +20,12 @@ import { AuthGuard } from "../auth/auth.guard";
 import { PlatformService } from "./platform.service";
 import { PlatformAppStatusService } from "./platform-app-status.service";
 import { CreateTenantDto } from "./dto/tenant.dto";
+import { Logger } from "@yuva-devlab/logger";
 
 @Controller("api/v1/platform")
 export class PlatformController {
+  private readonly logger = new Logger("PlatformController");
+
   constructor(
     private readonly platformService: PlatformService,
     private readonly appStatusService: PlatformAppStatusService,
@@ -34,6 +37,7 @@ export class PlatformController {
   @Get("apps/:appId/status")
   @HttpCode(HttpStatus.OK)
   async getAppStatus(@Param("appId") appId: string) {
+    this.logger.info(`[getAppStatus] Querying status for app="${appId}"`);
     return this.appStatusService.getAppStatus(appId);
   }
 
@@ -43,6 +47,7 @@ export class PlatformController {
   @Get("navigation")
   @HttpCode(HttpStatus.OK)
   async getNavigation() {
+    this.logger.info("[getNavigation] Fetching platform navigation menu");
     return this.platformService.getNavigationItems();
   }
 
@@ -53,6 +58,7 @@ export class PlatformController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async getTenants(@CurrentUser() user: { sub: string; role?: string; tenant_id?: string }) {
+    this.logger.info(`[getTenants] Fetching platform tenants for actor=${user?.sub}`);
     return this.platformService.getTenants(user);
   }
 
@@ -62,7 +68,11 @@ export class PlatformController {
   @Post("tenants")
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  async createTenant(@Body() dto: CreateTenantDto) {
+  async createTenant(
+    @Body() dto: CreateTenantDto,
+    @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
+  ) {
+    this.logger.info(`[createTenant] Provisioning tenant "${dto.name}" by actor=${user?.sub}`);
     return this.platformService.createTenant(dto);
   }
 
@@ -72,6 +82,7 @@ export class PlatformController {
   @Get("telemetry")
   @HttpCode(HttpStatus.OK)
   async getTelemetry(@CurrentUser() user?: { sub: string; role?: string; tenant_id?: string }) {
+    this.logger.info(`[getTelemetry] Fetching platform telemetry for actor=${user?.sub}`);
     return this.platformService.getSystemTelemetry(user);
   }
 }

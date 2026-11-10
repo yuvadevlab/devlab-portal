@@ -10,9 +10,12 @@ import { ApiKeysService } from "./api-keys.service";
 import { AuthGuard } from "../auth/auth.guard";
 import { ApiKeyType, ApiKeyWithSecretType, CreateApiKeyDto } from "./dto/api-key.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Logger } from "@yuva-devlab/logger";
 
 @Resolver(() => ApiKeyType)
 export class ApiKeysResolver {
+  private readonly logger = new Logger("ApiKeysResolver");
+
   constructor(private readonly apiKeysService: ApiKeysService) {}
 
   @Query(() => [ApiKeyType], { name: "apiKeys" })
@@ -21,6 +24,7 @@ export class ApiKeysResolver {
     @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
     @Args("appId", { type: () => String, nullable: true }) appId?: string,
   ) {
+    this.logger.info(`[getApiKeys] GraphQL query for apiKeys by actor=${user?.sub}`);
     return this.apiKeysService.listApiKeys(appId, user);
   }
 
@@ -30,6 +34,9 @@ export class ApiKeysResolver {
     if (!user?.sub) {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
+    this.logger.info(
+      `[createApiKey] GraphQL mutation for app="${input.appId}" by actor=${user.sub}`,
+    );
     return this.apiKeysService.createApiKey(user.sub, input);
   }
 
@@ -42,6 +49,7 @@ export class ApiKeysResolver {
     if (!user?.sub) {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
+    this.logger.info(`[revokeApiKey] GraphQL mutation to revoke key="${id}" by actor=${user.sub}`);
     await this.apiKeysService.revokeApiKey(id, user.sub, user);
     return true;
   }

@@ -8,6 +8,21 @@ import { AppEnvironment } from "@/lib/constants";
 import type { RegisteredApp, CreateAppPayload, UpdateAppSettingsPayload } from "@/lib/api-client";
 
 export type { RegisteredApp, CreateAppPayload, UpdateAppSettingsPayload };
+export type {
+  ProcessState,
+  ProcessLogLevel,
+  ProcessLogStream,
+  ProcessLogEntry,
+  PortStatus,
+  ProcessStatus,
+  ExecutionMode,
+  SupportedIde,
+  DependencyStatus,
+  OpenIdePayload,
+  OpenIdeResult,
+  PathValidationResult,
+  RegisterProcessPayload,
+} from "./types/supervisor";
 
 export interface AppFilterState {
   searchQuery: string;
@@ -24,4 +39,9 @@ export interface RegisterWizardFormState {
   healthUrl: string;
   callbackUrls: string;
   generatedSecret?: string;
+  workingDir?: string;
+  devCommand?: string;
+  buildCommand?: string;
+  startCommand?: string;
+  dependsOn?: string[];
 }

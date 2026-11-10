@@ -1,0 +1,184 @@
+/**
+ * @file packages/ui/src/styles/settings.css
+ * @description OIDC identity metadata, JWKS public keys, and Redis Pub/Sub latency telemetry.
+ * Governed under @layer dl-components.
+ */
+
+@layer dl-components {
+  .settings-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+  }
+
+  .settings-section {
+    border-top: 1px solid var(--border);
+    padding-top: 23px;
+    margin-top: 15px;
+  }
+
+  .settings-section h2 {
+    font-size: 16px;
+    margin-bottom: 9px;
+  }
+
+  .settings-section p {
+    font-size: 12px;
+    color: var(--muted-foreground);
+    line-height: 1.7;
+  }
+
+  .settings-section-first {
+    margin-top: 0 !important;
+    border-top-width: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .settings-card-header {
+    color: var(--primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .settings-card-header-spread {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .settings-header-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .settings-field-group {
+    margin-top: 24px;
+  }
+
+  .settings-field-label {
+    color: var(--foreground);
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .secret-box-spread {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .secret-box-code {
+    word-break: break-all;
+  }
+
+  .settings-field-note {
+    color: var(--muted-foreground);
+    margin-top: 8px;
+    font-size: 11px;
+  }
+
+  .secret-box-pem {
+    color: var(--muted-foreground);
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.75;
+  }
+
+  .settings-key-value-list {
+    border-top: 1px solid var(--border);
+    margin-top: 12px;
+  }
+
+  .settings-key-value-list > * + * {
+    border-top: 1px solid var(--border);
+  }
+
+  .settings-key-value-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    font-size: 12px;
+  }
+
+  .settings-key {
+    color: var(--muted-foreground);
+  }
+
+  .settings-val {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  .latency-unit {
+    color: var(--muted-foreground);
+    margin-left: 8px;
+    font-size: 18px;
+  }
+
+  .settings-sla-note {
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .sla-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .globe-icon {
+    color: var(--primary);
+    width: 16px;
+    height: 16px;
+  }
+
+  .benchmark-range-row {
+    color: var(--muted-foreground);
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+  }
+
+  .settings-metrics-grid {
+    border-top: 1px solid var(--border);
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .settings-metric-val {
+    color: var(--foreground);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .settings-metric-label {
+    color: var(--muted-foreground);
+    margin-top: 4px;
+    font-size: 10px;
+  }
+
+  .settings-subheading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .settings-warning-box {
+    margin-top: 16px;
+  }
+}

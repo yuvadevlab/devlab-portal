@@ -45,14 +45,12 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-1.5">
-        <Label htmlFor="callback-urls" className="text-xs font-semibold">
+    <div className="wizard-step-container">
+      <div className="form-field-group">
+        <Label htmlFor="callback-urls" className="form-field-label">
           {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_URLS}
         </Label>
-        <p className="text-muted-foreground text-[11px]">
-          {UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_HELP}
-        </p>
+        <p className="form-field-hint">{UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_HELP}</p>
         <Textarea
           id="callback-urls"
           rows={3}
@@ -60,29 +58,21 @@ export const WizardStepSecurity: React.FC<WizardStepSecurityProps> = ({ form, on
           onChange={(e) => onChange({ callbackUrls: e.target.value })}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.CALLBACK_PLACEHOLDER}
           required
-          className="resize-none font-mono text-xs"
+          className="form-field-textarea-mono"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label className="text-xs font-semibold">{UI_COPY.APPS.WIZARD.FIELDS.SCOPES_TITLE}</Label>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      <div className="scope-selector-group">
+        <Label className="form-field-label">{UI_COPY.APPS.WIZARD.FIELDS.SCOPES_TITLE}</Label>
+        <div className="scope-grid">
           {commonScopes.map((scope) => (
-            <div
-              key={scope.id}
-              className="border-border bg-card flex items-start gap-2.5 rounded-lg border p-2.5"
-            >
-              <Checkbox id={scope.id} defaultChecked={true} className="mt-0.5" />
+            <div key={scope.id} className="scope-card">
+              <Checkbox id={scope.id} defaultChecked={true} className="scope-checkbox" />
               <div>
-                <Label
-                  htmlFor={scope.id}
-                  className="text-foreground cursor-pointer font-mono text-xs font-medium"
-                >
+                <Label htmlFor={scope.id} className="scope-label">
                   {scope.label}
                 </Label>
-                <p className="text-muted-foreground mt-0.5 text-[10px] leading-tight">
-                  {scope.desc}
-                </p>
+                <p className="scope-desc">{scope.desc}</p>
               </div>
             </div>
           ))}

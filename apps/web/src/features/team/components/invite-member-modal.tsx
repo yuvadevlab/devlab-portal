@@ -134,42 +134,42 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent size="md">
         <DialogHeader>
-          <div className="flex items-center gap-2.5">
-            <div className="bg-primary/15 text-primary flex size-8 items-center justify-center rounded-lg">
-              <Users className="size-4" />
+          <div className="modal-header-row">
+            <div className="modal-header-icon-box primary">
+              <Users className="modal-header-icon" />
             </div>
             <div>
-              <DialogTitle className="text-base font-bold">{UI_COPY.TEAM.MODAL.TITLE}</DialogTitle>
-              <DialogDescription className="text-muted-foreground text-xs">
+              <DialogTitle className="modal-title-bold">{UI_COPY.TEAM.MODAL.TITLE}</DialogTitle>
+              <DialogDescription className="modal-desc">
                 {UI_COPY.TEAM.MODAL.DESCRIPTION}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        <DialogBody className="space-y-4 py-3">
+        <DialogBody className="modal-body-padded">
           {/* Success banner */}
           {isSuccess && (
-            <div className="border-success/20 bg-success/10 text-success flex items-center gap-2 rounded-lg border p-3 text-xs">
-              <CheckCircle2 className="size-4 shrink-0" />
+            <div className="invite-success-alert">
+              <CheckCircle2 className="alert-icon" />
               <span>{UI_COPY.TEAM.MODAL.SUCCESS_ALERT}</span>
             </div>
           )}
 
           {/* Dev-mode quick onboarding link */}
           {createdInviteUrl && (
-            <div className="bg-secondary/70 border-border space-y-2 rounded-lg border p-3 text-xs">
-              <p className="text-primary font-medium">{UI_COPY.TEAM.MODAL.DEV_LINK_HINT}</p>
-              <div className="flex items-center gap-2">
-                <Input readOnly value={createdInviteUrl} className="h-8 font-mono text-[11px]" />
+            <div className="invite-dev-box">
+              <p className="invite-dev-hint">{UI_COPY.TEAM.MODAL.DEV_LINK_HINT}</p>
+              <div className="invite-dev-input-row">
+                <Input readOnly value={createdInviteUrl} className="invite-dev-input" />
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="h-8 shrink-0 gap-1 text-xs"
+                  className="invite-copy-btn"
                   onClick={handleCopyLink}
                 >
-                  {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
+                  {copied ? <Check className="btn-icon-xs" /> : <Copy className="btn-icon-xs" />}
                   {copied ? UI_COPY.TEAM.MODAL.COPIED : UI_COPY.TEAM.MODAL.COPY}
                 </Button>
               </div>
@@ -197,7 +197,7 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
           {createdInviteUrl ? (
             <Button
               type="button"
-              className="h-9 text-xs"
+              className="modal-footer-btn modal-footer-btn-primary"
               onClick={() => {
                 handleClose();
                 onSuccess();
@@ -207,16 +207,21 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
             </Button>
           ) : (
             <>
-              <Button type="button" variant="outline" onClick={handleClose} className="h-9 text-xs">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                className="modal-footer-btn"
+              >
                 {UI_COPY.COMMON.ACTIONS.CANCEL}
               </Button>
               <Button
                 type="submit"
                 form="invite-member-form"
                 disabled={inviteMemberMutation.isPending || !name || !email}
-                className="bg-primary text-primary-foreground h-9 text-xs font-medium hover:opacity-90"
+                className="modal-footer-btn modal-footer-btn-primary"
               >
-                <UserPlus className="mr-1.5 size-3.5" />
+                <UserPlus className="btn-icon" />
                 {inviteMemberMutation.isPending
                   ? UI_COPY.COMMON.ACTIONS.INVITING
                   : UI_COPY.COMMON.ACTIONS.INVITE}
