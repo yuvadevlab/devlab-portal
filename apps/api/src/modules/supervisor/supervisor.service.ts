@@ -114,7 +114,9 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     }
 
     const statuses = await this.supervisor.getAllStatuses();
-    return tenantId ? statuses.filter((s) => this.appTenants.get(s.appId) === tenantId) : statuses;
+    return tenantId
+      ? statuses.filter((s: ProcessStatus) => this.appTenants.get(s.appId) === tenantId)
+      : statuses;
   }
 
   async getStatus(appId: string, tenantId?: string): Promise<ProcessStatus> {
