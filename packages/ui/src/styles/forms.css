@@ -1,0 +1,183 @@
+/**
+ * @file packages/ui/src/styles/forms.css
+ * @description Standardized form layouts, field stacks, label typography, and action buttons.
+ * Governed under @layer dl-components.
+ */
+
+@layer dl-components {
+  /* ── Form Stack & Layouts ── */
+  .settings-form-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .settings-form-stack.pt-tight {
+    padding-top: 8px;
+  }
+
+  .form-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .form-field-hint {
+    color: var(--muted-foreground);
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  /* ── Form Controls Normalization ── */
+  .form-field-input {
+    height: 36px;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .form-field-input-mono {
+    height: 36px;
+    font-size: 12px;
+    width: 100%;
+    font-family: var(--font-mono);
+  }
+
+  .form-field-input.font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .form-field-select {
+    height: 36px;
+    width: 100%;
+    font-size: 12px;
+  }
+
+  .form-field-textarea {
+    resize: none;
+    font-size: 12px;
+    font-family: var(--font-sans);
+  }
+
+  .form-field-textarea-mono {
+    resize: none;
+    font-size: 12px;
+    font-family: var(--font-mono);
+  }
+
+  .form-field-textarea.font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* ── Action Buttons & Icon Alignment ── */
+  .button-icon-prefix {
+    margin-right: 6px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .button-icon-suffix {
+    margin-left: 6px;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .btn-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+  }
+
+  .btn-icon-xs {
+    width: 12px;
+    height: 12px;
+  }
+
+  .modal-footer-btn {
+    height: 36px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .modal-footer-btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .modal-footer-btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .modal-header-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .modal-header-icon-box {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .modal-header-icon-box.primary {
+    background-color: color-mix(in oklch, var(--primary) 15%, transparent);
+    color: var(--primary);
+  }
+
+  .modal-header-icon-box.success {
+    background-color: color-mix(in oklch, var(--success) 15%, transparent);
+    color: var(--success);
+  }
+
+  .modal-header-icon-box.danger {
+    background-color: color-mix(in oklch, var(--destructive) 15%, transparent);
+    color: var(--destructive);
+  }
+
+  .modal-header-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .modal-title-bold {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .modal-desc {
+    color: var(--muted-foreground);
+    font-size: 12px;
+  }
+
+  .modal-desc-mono {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .modal-body-padded {
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--dialog-gap, 1rem);
+  }
+}

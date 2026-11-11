@@ -21,8 +21,9 @@ export function useCreateAppMutation(): UseMutationResult<
   return useMutation({
     mutationFn: (payload: CreateAppPayload) => api.createApp(payload),
     onSuccess: () => {
-      // Invalidate apps cache to reflect new service immediately
+      // Invalidate apps cache and audit logs to reflect new service and log immediately
       queryClient.invalidateQueries({ queryKey: appsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
     },
   });
 }

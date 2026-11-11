@@ -8,10 +8,10 @@
  */
 
 import React, { useState } from "react";
-import { UserPlus, Trash2, Search } from "lucide-react";
+import { UserPlus, Trash2 } from "lucide-react";
 import {
   Button,
-  Input,
+  SearchInput,
   Select,
   SelectTrigger,
   SelectValue,
@@ -113,7 +113,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({
         eyebrowLabel={UI_COPY.COMMON.HEADER.WORKSPACE}
       >
         <Button onClick={onOpenInviteModal}>
-          <UserPlus className="mr-1.5 size-4" />
+          <UserPlus className="button-icon-prefix" />
           {UI_COPY.TEAM.HEADER.INVITE_BTN}
         </Button>
       </Heading>
@@ -123,16 +123,16 @@ export const TeamTable: React.FC<TeamTableProps> = ({
       {/* Toolbar */}
       <div className="app-toolbar">
         <div className="search-field">
-          <Search className="size-3.5" />
-          <Input
+          <SearchInput
             placeholder={UI_COPY.TEAM.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onClear={() => setSearch("")}
             aria-label={UI_COPY.TEAM.TOOLBAR.SEARCH_PLACEHOLDER}
-            className="bg-card border-border h-9 w-72 pl-9 text-xs"
+            className="app-search-input"
           />
         </div>
-        <span className="text-muted-foreground text-xs whitespace-nowrap">
+        <span className="table-count-badge">
           {filteredMembers.length} {UI_COPY.TEAM.TOOLBAR.MEMBERS_SUFFIX}
         </span>
       </div>
@@ -145,7 +145,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({
               <TableHead>{UI_COPY.TEAM.TABLE.MEMBER}</TableHead>
               <TableHead>{UI_COPY.TEAM.TABLE.ROLE}</TableHead>
               <TableHead>{UI_COPY.TEAM.TABLE.STATUS}</TableHead>
-              <TableHead className="text-right" />
+              <TableHead className="cell-actions" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -155,26 +155,21 @@ export const TeamTable: React.FC<TeamTableProps> = ({
                 <TableRow key={m.id}>
                   {/* Member identity & authorized apps */}
                   <TableCell>
-                    <div className="flex items-center gap-3">
+                    <div className="member-cell">
                       <span className="avatar">{getInitials(m.name, m.email)}</span>
                       <div>
-                        <div className="text-foreground flex items-center text-xs font-semibold">
+                        <div className="member-name-row">
                           {m.name}
                           {isSelf && (
-                            <span className="tag ml-2 py-0!">{UI_COPY.TEAM.TABLE.YOU_TAG}</span>
+                            <span className="tag tag-self">{UI_COPY.TEAM.TABLE.YOU_TAG}</span>
                           )}
                         </div>
-                        <div className="text-muted-foreground mt-0.5 font-mono text-[11px]">
-                          {m.email}
-                        </div>
+                        <div className="member-email">{m.email}</div>
                         {/* Authorized application badges */}
                         {m.allowedApps && m.allowedApps.length > 0 && (
-                          <div className="mt-1 flex flex-wrap gap-1">
+                          <div className="member-apps-row">
                             {m.allowedApps.map((app) => (
-                              <span
-                                key={app}
-                                className="bg-secondary text-secondary-foreground border-border rounded border px-1.5 py-0.5 font-mono text-[10px]"
-                              >
+                              <span key={app} className="member-app-badge">
                                 {getAppName(app)}
                               </span>
                             ))}
@@ -186,9 +181,9 @@ export const TeamTable: React.FC<TeamTableProps> = ({
 
                   {/* Role */}
                   <TableCell>
-                    <div className="w-36">
+                    <div className="member-role-select-wrap">
                       <Select value={m.role} disabled={isSelf} onValueChange={() => {}}>
-                        <SelectTrigger className="bg-secondary h-8 font-mono text-xs">
+                        <SelectTrigger className="member-role-select-trigger">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -207,7 +202,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({
 
                   {/* Status toggle */}
                   <TableCell>
-                    <div className="flex items-center gap-2">
+                    <div className="member-status-row">
                       <Checkbox
                         id={`status-${m.id}`}
                         checked={m.isActive}
@@ -217,9 +212,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({
                       />
                       <Label
                         htmlFor={`status-${m.id}`}
-                        className={`cursor-pointer text-xs font-normal ${
-                          m.isActive ? "text-success" : "text-muted-foreground"
-                        }`}
+                        className={`member-status-label ${m.isActive ? "active" : "inactive"}`}
                       >
                         {m.isActive ? UI_COPY.TEAM.TABLE.ACTIVE : UI_COPY.TEAM.TABLE.DISABLED}
                       </Label>
@@ -227,15 +220,15 @@ export const TeamTable: React.FC<TeamTableProps> = ({
                   </TableCell>
 
                   {/* Action */}
-                  <TableCell className="text-right">
+                  <TableCell className="cell-actions">
                     <Button
                       variant="ghost"
                       size="icon"
                       disabled={isSelf}
                       aria-label={UI_COPY.TEAM.APP_ACCESS.REMOVE_MEMBER(m.name)}
-                      className="text-destructive hover:bg-destructive/10"
+                      className="cell-action-destructive"
                     >
-                      <Trash2 className="text-destructive size-3.5" />
+                      <Trash2 className="cell-action-icon-danger" />
                     </Button>
                   </TableCell>
                 </TableRow>

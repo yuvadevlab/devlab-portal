@@ -54,21 +54,26 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
   };
 
   return (
-    <div className="relative">
-      <Button variant="ghost" className="gap-2 px-1" aria-label={userName} onClick={onToggle}>
+    <div className="user-menu-wrap">
+      <Button
+        variant="ghost"
+        className="user-menu-trigger"
+        aria-label={userName}
+        onClick={onToggle}
+      >
         <span className="avatar">{initials}</span>
-        <ChevronDown className="size-3" />
+        <ChevronDown className="user-menu-chevron" />
       </Button>
 
       {isOpen && (
         <div className="pop-menu">
-          <div className="p-3">
-            <strong className="text-foreground text-sm font-semibold">{userName}</strong>
-            {userEmail && <p className="text-muted-foreground mt-0.5 text-xs">{userEmail}</p>}
-            <span className="tag mt-2.5">{userRole}</span>
+          <div className="user-menu-header">
+            <strong className="user-menu-name">{userName}</strong>
+            {userEmail && <p className="user-menu-email">{userEmail}</p>}
+            <span className="tag tag-role">{userRole}</span>
           </div>
 
-          <div className="border-border border-t pt-1">
+          <div className="user-menu-actions">
             <Button
               variant="ghost"
               className="menu-item"
@@ -77,11 +82,15 @@ export const HeaderUserMenu: React.FC<HeaderUserMenuProps> = ({
                 onNavigateSettings();
               }}
             >
-              <Settings2 className="mr-2 size-3.5" />
+              <Settings2 className="menu-item-icon" />
               {UI_COPY.COMMON.HEADER.ACCOUNT_SETTINGS}
             </Button>
-            <Button variant="ghost" className="menu-item text-destructive" onClick={handleSignOut}>
-              <LogOut className="mr-2 size-3.5" />
+            <Button
+              variant="ghost"
+              className="menu-item menu-item-destructive"
+              onClick={handleSignOut}
+            >
+              <LogOut className="menu-item-icon" />
               {UI_COPY.COMMON.HEADER.SIGN_OUT}
             </Button>
           </div>

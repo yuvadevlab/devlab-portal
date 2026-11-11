@@ -29,17 +29,21 @@ export class AuthService {
    * Validates user credentials and returns active user record with tenant context.
    */
   async validateUser(dto: LoginDto) {
+    const masked = dto.email.length > 3 ? `${dto.email.slice(0, 3)}***` : dto.email;
+    this.logger.info(`[validateUser] Validating credentials for ${masked}`);
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase().trim() },
       include: { tenant: true },
     });
 
     if (!user || !user.isActive) {
+      this.logger.warn(`[validateUser] Account not found or deactivated for ${masked}`);
       throw new UnauthorizedException("Invalid credentials or account deactivated");
     }
 
     const isValid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!isValid) {
+      this.logger.warn(`[validateUser] Invalid password attempt for user ${user.id}`);
       throw new UnauthorizedException("Invalid credentials");
     }
 
@@ -50,6 +54,7 @@ export class AuthService {
    * Issues RS256 access token for authenticated portal user with tenant claims.
    */
   async login(dto: LoginDto) {
+    const start = Date.now();
     const user = await this.validateUser(dto);
     const token = await this.keypairService.signJwt(
       {
@@ -64,6 +69,9 @@ export class AuthService {
       },
       { expiresIn: "8h", subject: user.id },
     );
+
+    const duration = Date.now() - start;
+    this.logger.info(`[login] User "${user.id}" logged in successfully (${duration}ms)`);
 
     return {
       accessToken: token,
@@ -86,9 +94,12 @@ export class AuthService {
    * Registers a new user into the active workspace tenant.
    */
   async register(dto: RegisterDto) {
+    const start = Date.now();
     const email = dto.email.toLowerCase().trim();
+    this.logger.info(`[register] Initiating registration for ${email}`);
     const existing = await this.prisma.user.findUnique({ where: { email } });
     if (existing) {
+      this.logger.warn(`[register] Email already registered: ${email}`);
       throw new BadRequestException("An account with this email already exists");
     }
 
@@ -128,6 +139,9 @@ export class AuthService {
       { expiresIn: "8h", subject: user.id },
     );
 
+    const duration = Date.now() - start;
+    this.logger.info(`[register] User "${user.id}" registered successfully (${duration}ms)`);
+
     return {
       accessToken: token,
       tokenType: "Bearer",
@@ -150,6 +164,7 @@ export class AuthService {
    */
   async forgotPassword(dto: ForgotPasswordDto) {
     const email = dto.email.toLowerCase().trim();
+    this.logger.info(`[forgotPassword] Password reset requested for ${email}`);
     const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user || !user.isActive) {
@@ -158,7 +173,7 @@ export class AuthService {
 
     const token = crypto.randomBytes(32).toString("hex");
     await this.redis.getClient().set(`auth:reset:${token}`, user.id, "EX", 900);
-    this.logger.log(`Password reset token issued for user ${user.id}`);
+    this.logger.info(`[forgotPassword] Reset token issued for user ${user.id}`);
 
     const isDev = process.env.NODE_ENV !== "production";
     const resetUrl = buildResetPasswordUrl({ token });
@@ -178,6 +193,7 @@ export class AuthService {
     const key = `auth:reset:${dto.token}`;
     const userId = await this.redis.getClient().get(key);
     if (!userId) {
+      this.logger.warn("[resetPassword] Invalid or expired reset token");
       throw new BadRequestException("Password reset link is invalid or has expired");
     }
 
@@ -187,6 +203,7 @@ export class AuthService {
       where: { id: userId },
       data: { passwordHash },
     });
+    this.logger.info(`[resetPassword] Password updated successfully for user ${userId}`);
 
     return { success: true, message: "Password updated successfully" };
   }
@@ -195,6 +212,7 @@ export class AuthService {
    * Retrieves active user by primary ID with tenant context.
    */
   async getUserById(id: string) {
+    this.logger.info(`[getUserById] Querying user profile for ${id}`);
     return this.prisma.user.findUnique({
       where: { id },
       select: {

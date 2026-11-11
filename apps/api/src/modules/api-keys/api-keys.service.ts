@@ -27,6 +27,10 @@ export class ApiKeysService {
    * Generates a new high-entropy API key, stores SHA-256 hash, and returns raw key once.
    */
   async createApiKey(userId: string, dto: CreateApiKeyDto) {
+    const start = Date.now();
+    this.logger.info(
+      `[createApiKey] Creating API key "${dto.name}" for app="${dto.appId}" by user=${userId}`,
+    );
     const app = await this.prisma.registeredApp.findFirst({
       where: isValidUuid(dto.appId)
         ? { OR: [{ id: dto.appId }, { appId: dto.appId }] }
@@ -34,6 +38,7 @@ export class ApiKeysService {
     });
 
     if (!app) {
+      this.logger.warn(`[createApiKey] Registered app '${dto.appId}' not found`);
       throw new NotFoundException(`Registered app '${dto.appId}' not found`);
     }
 
@@ -55,7 +60,6 @@ export class ApiKeysService {
       },
     });
 
-    // Record audit event
     await this.prisma.auditLog.create({
       data: {
         action: AuditAction.API_KEY_CREATED,
@@ -66,7 +70,10 @@ export class ApiKeysService {
       },
     });
 
-    this.logger.info(`Created API key '${record.name}' for app '${app.name}'`);
+    const duration = Date.now() - start;
+    this.logger.info(
+      `[createApiKey] API key '${record.name}' created for app '${app.name}' (${duration}ms)`,
+    );
 
     return {
       ...record,
@@ -78,6 +85,9 @@ export class ApiKeysService {
    * Retrieves all non-revoked API keys, optionally filtered by application.
    */
   async listApiKeys(appId?: string, user?: { sub: string; role?: string; tenant_id?: string }) {
+    this.logger.info(
+      `[listApiKeys] Listing API keys (appId=${appId || "all"}, actor=${user?.sub})`,
+    );
     const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
     const isAdmin = user?.role === UserRole.ADMIN;
     const tenantId = user?.tenant_id;
@@ -97,21 +107,25 @@ export class ApiKeysService {
       }
     }
 
-    return this.prisma.apiKey.findMany({
+    const keys = await this.prisma.apiKey.findMany({
       where,
       orderBy: { createdAt: "desc" },
     });
+    this.logger.info(`[listApiKeys] Found ${keys.length} API key(s)`);
+    return keys;
   }
 
   /**
    * Revokes an existing API key and evicts any active cache.
    */
   async revokeApiKey(id: string, actorId: string, user?: { role?: string; tenant_id?: string }) {
+    this.logger.info(`[revokeApiKey] Revoking key "${id}" by actor=${actorId}`);
     const key = await this.prisma.apiKey.findUnique({
       where: { id },
       include: { user: true },
     });
     if (!key) {
+      this.logger.warn(`[revokeApiKey] API key '${id}' not found`);
       throw new NotFoundException(`API key '${id}' not found`);
     }
 
@@ -121,6 +135,7 @@ export class ApiKeysService {
     const isSameTenant = key.user?.tenantId === user?.tenant_id;
 
     if (!isSuperAdmin && !isOwner && !(isAdmin && isSameTenant)) {
+      this.logger.warn(`[revokeApiKey] Forbidden revocation of key '${id}' by actor=${actorId}`);
       throw new ForbiddenException("You do not have permission to revoke this API key");
     }
 
@@ -129,10 +144,8 @@ export class ApiKeysService {
       data: { isRevoked: true },
     });
 
-    // Evict from Redis
     await this.redis.getClient().del(`api_key:${key.keyHash}`);
 
-    // Audit log
     await this.prisma.auditLog.create({
       data: {
         action: AuditAction.API_KEY_REVOKED,
@@ -143,7 +156,7 @@ export class ApiKeysService {
       },
     });
 
-    this.logger.info(`Revoked API key '${key.name}' (${id})`);
+    this.logger.info(`[revokeApiKey] Revoked API key '${key.name}' (${id})`);
     return updated;
   }
 
@@ -158,35 +171,37 @@ export class ApiKeysService {
     const keyHash = crypto.createHash("sha256").update(rawKey.trim()).digest("hex");
     const cacheKey = `api_key:${keyHash}`;
 
-    // 1. Check Redis cache
     const cached = await this.redis.getClient().get(cacheKey);
     if (cached) {
+      this.logger.info(`[validateApiKey] Cache hit for key hash ${keyHash.slice(0, 8)}`);
       return JSON.parse(cached);
     }
 
-    // 2. Query Database
     const record = await this.prisma.apiKey.findUnique({
       where: { keyHash },
       include: { app: true },
     });
 
     if (!record) {
+      this.logger.warn("[validateApiKey] API key not found");
       return { valid: false, reason: "API key does not exist" };
     }
 
     if (record.isRevoked) {
+      this.logger.warn(`[validateApiKey] API key "${record.id}" has been revoked`);
       return { valid: false, reason: "API key has been revoked" };
     }
 
     if (record.expiresAt && new Date() > record.expiresAt) {
+      this.logger.warn(`[validateApiKey] API key "${record.id}" expired`);
       return { valid: false, reason: "API key has expired" };
     }
 
     if (!record.app.isActive) {
+      this.logger.warn(`[validateApiKey] App "${record.app.name}" deactivated`);
       return { valid: false, reason: `Target app '${record.app.name}' is currently deactivated` };
     }
 
-    // Update last used asynchronously
     void this.prisma.apiKey.update({
       where: { id: record.id },
       data: { lastUsedAt: new Date() },
@@ -202,8 +217,10 @@ export class ApiKeysService {
       rateLimitRpm: record.rateLimitRpm,
     };
 
-    // Cache valid key for 300 seconds (5 min)
     await this.redis.getClient().set(cacheKey, JSON.stringify(result), "EX", 300);
+    this.logger.info(
+      `[validateApiKey] Validated key "${record.name}" for app "${record.app.name}"`,
+    );
 
     return result;
   }

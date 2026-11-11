@@ -19,6 +19,7 @@ export function useAppsQuery(): UseQueryResult<RegisteredApp[], Error> {
   return useQuery<RegisteredApp[], Error>({
     queryKey: appsQueryKey(),
     queryFn: () => api.getApps(),
+    refetchInterval: 10000,
   });
 }
 

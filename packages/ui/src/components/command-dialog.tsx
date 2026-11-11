@@ -71,46 +71,44 @@ export function NavigationCommandDialog({
         else setQuery("");
       }}
     >
-      <DialogContent className="max-w-md">
+      <DialogContent className="cmd-dialog-content">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Command className="text-primary size-4" />
+          <DialogTitle className="cmd-dialog-title">
+            <Command className="cmd-dialog-title-icon" />
             {copy.title}
           </DialogTitle>
           <DialogDescription>{copy.description}</DialogDescription>
         </DialogHeader>
 
-        <DialogBody className="space-y-4">
+        <DialogBody className="cmd-dialog-body">
           <Input
-            className="border-border bg-secondary text-foreground focus:border-primary w-full rounded-md border p-3 text-sm outline-none"
+            className="cmd-dialog-input"
             placeholder={copy.placeholder}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             autoFocus
           />
 
-          <div className="space-y-1">
+          <div className="cmd-dialog-list">
             {filteredItems.map((item) => {
               const Icon = getNavIcon(item.icon);
               return (
                 <Button
                   key={item.id || item.key}
                   variant="ghost"
-                  className="w-full justify-start text-xs font-medium"
+                  className="cmd-dialog-item"
                   onClick={() => {
                     onSelectItem(item.key);
                     onClose();
                   }}
                 >
-                  <Icon className="text-muted-foreground mr-2.5 size-4" />
-                  {item.label}
-                  <ChevronRight className="text-muted-foreground ml-auto size-3.5" />
+                  <Icon className="cmd-dialog-item-icon" />
+                  <span className="cmd-dialog-item-label">{item.label}</span>
+                  <ChevronRight className="cmd-dialog-item-arrow" />
                 </Button>
               );
             })}
-            {filteredItems.length === 0 && (
-              <p className="text-muted-foreground py-4 text-center text-xs">{copy.emptyResult}</p>
-            )}
+            {filteredItems.length === 0 && <p className="cmd-dialog-empty">{copy.emptyResult}</p>}
           </div>
         </DialogBody>
       </DialogContent>

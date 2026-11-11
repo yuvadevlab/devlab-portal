@@ -1,0 +1,211 @@
+/**
+ * @file packages/ui/src/styles/modals.css
+ * @description Modals, command palette dialog, tenant creator, and kill-switch confirm dialogs.
+ * Governed under @layer dl-components.
+ */
+
+@layer dl-components {
+  /* ── Command Dialog ── */
+  .cmd-dialog-content {
+    max-width: 448px;
+    width: 100%;
+  }
+
+  .cmd-dialog-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .cmd-dialog-title-icon {
+    color: var(--primary);
+    width: 16px;
+    height: 16px;
+  }
+
+  .cmd-dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dialog-gap, 1rem);
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
+  }
+
+  .cmd-dialog-input {
+    border: 1px solid var(--border);
+    background-color: var(--secondary);
+    color: var(--foreground);
+    width: 100%;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .cmd-dialog-input:focus {
+    border-color: var(--primary);
+  }
+
+  .cmd-dialog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  .cmd-dialog-item {
+    width: 100%;
+    justify-content: flex-start;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+
+  .cmd-dialog-item-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--muted-foreground);
+    margin-right: 8px;
+  }
+
+  .cmd-dialog-item-label {
+    flex-grow: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cmd-dialog-item-arrow {
+    width: 12px;
+    height: 12px;
+    color: var(--muted-foreground);
+    margin-left: auto;
+  }
+
+  .cmd-dialog-empty {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted-foreground);
+    padding: 24px 0;
+  }
+
+  /* ── Tenant Modal ── */
+  .tenant-modal-content {
+    max-width: 448px;
+    width: 100%;
+  }
+
+  .tenant-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .tenant-modal-icon {
+    color: var(--primary);
+    width: 16px;
+    height: 16px;
+  }
+
+  .tenant-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dialog-gap, 1rem);
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
+  }
+
+  /* ── Kill Switch Modal ── */
+  .kill-switch-header-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .kill-switch-icon-box {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border-width: 1px;
+    border-style: solid;
+    flex-shrink: 0;
+  }
+
+  .kill-switch-icon-box.danger {
+    background-color: color-mix(in oklch, var(--destructive) 15%, transparent);
+    border-color: color-mix(in oklch, var(--destructive) 30%, transparent);
+    color: var(--destructive);
+  }
+
+  .kill-switch-icon-box.success {
+    background-color: color-mix(in oklch, var(--success) 15%, transparent);
+    border-color: color-mix(in oklch, var(--success) 30%, transparent);
+    color: var(--success);
+  }
+
+  .kill-switch-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dialog-gap, 1rem);
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
+  }
+
+  /* ── Base Dialog Body Normalization ── */
+  .dl-dialog__body {
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
+  }
+
+  .kill-switch-banner {
+    border-radius: 12px;
+    border-width: 1px;
+    border-style: solid;
+    padding: 14px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .kill-switch-banner.danger {
+    background-color: color-mix(in oklch, var(--destructive) 10%, transparent);
+    border-color: color-mix(in oklch, var(--destructive) 30%, transparent);
+    color: var(--destructive);
+  }
+
+  .kill-switch-banner.success {
+    background-color: color-mix(in oklch, var(--success) 10%, transparent);
+    border-color: color-mix(in oklch, var(--success) 30%, transparent);
+    color: var(--success);
+  }
+
+  .kill-switch-textarea {
+    resize: none;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .kill-switch-btn-danger {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+  }
+
+  .kill-switch-btn-danger:hover {
+    opacity: 0.9;
+  }
+
+  .kill-switch-btn-success {
+    background-color: var(--success);
+    color: var(--success-foreground);
+  }
+
+  .kill-switch-btn-success:hover {
+    opacity: 0.9;
+  }
+}

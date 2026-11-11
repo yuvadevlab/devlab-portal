@@ -8,3 +8,17 @@ export { appsQueryKey, useAppsQuery, prefetchApps } from "./get-apps";
 export { useCreateAppMutation, useCreateApp } from "./create-app";
 export { useUpdateAppSettingsMutation, useUpdateAppSettings } from "./update-app-settings";
 export { useToggleKillSwitchMutation, useToggleKillSwitch } from "./toggle-kill-switch";
+export {
+  supervisorQueryKeys,
+  useSupervisorStatusesQuery,
+  useSupervisorStatusQuery,
+  useSupervisorLogsQuery,
+  useSupervisorPortsQuery,
+  useSupervisorDependenciesQuery,
+  useStartProcessMutation,
+  useStopProcessMutation,
+  useRestartProcessMutation,
+  useBuildProcessMutation,
+  useOpenIdeMutation,
+  useValidatePathMutation,
+} from "./supervisor";

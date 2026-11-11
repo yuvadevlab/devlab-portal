@@ -51,47 +51,39 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
       <div className="settings-layout">
         {/* Left Column: Signing Keys & Identity Configuration */}
         <div>
-          <section className="settings-section mt-0! border-t-0! pt-0!">
-            <div className="text-primary mb-2 flex items-center gap-2">
-              <LockKeyhole className="size-5" />
+          <section className="settings-section settings-section-first">
+            <div className="settings-card-header">
+              <LockKeyhole className="settings-header-icon" />
               <span className="tag">{UI_COPY.SETTINGS.KEYS.TAG}</span>
             </div>
             <h2>{UI_COPY.SETTINGS.KEYS.TITLE}</h2>
             <p>{UI_COPY.SETTINGS.KEYS.DESCRIPTION}</p>
 
-            <div className="mt-6">
-              <div className="text-foreground mb-2 text-xs font-medium">
-                {UI_COPY.SETTINGS.KEYS.JWKS_LABEL}
-              </div>
-              <div className="secret-box flex items-center justify-between gap-3">
-                <code className="break-all">{endpoint}</code>
+            <div className="settings-field-group">
+              <div className="settings-field-label">{UI_COPY.SETTINGS.KEYS.JWKS_LABEL}</div>
+              <div className="secret-box secret-box-spread">
+                <code className="secret-box-code">{endpoint}</code>
                 <CopyButton textToCopy={endpoint} />
               </div>
-              <p className="text-muted-foreground mt-2 text-[11px]">
-                {UI_COPY.SETTINGS.KEYS.JWKS_NOTE}
-              </p>
+              <p className="settings-field-note">{UI_COPY.SETTINGS.KEYS.JWKS_NOTE}</p>
             </div>
 
-            <div className="mt-6">
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-foreground text-xs font-medium">
-                  {UI_COPY.SETTINGS.KEYS.PEM_LABEL}
-                </span>
+            <div className="settings-field-group">
+              <div className="settings-card-header-spread">
+                <span className="settings-field-label">{UI_COPY.SETTINGS.KEYS.PEM_LABEL}</span>
                 <CopyButton textToCopy={samplePem} />
               </div>
-              <pre className="secret-box text-muted-foreground overflow-x-auto font-mono text-xs leading-7">
-                {samplePem}
-              </pre>
+              <pre className="secret-box secret-box-pem">{samplePem}</pre>
             </div>
           </section>
 
           <section className="settings-section">
             <h2>{UI_COPY.SETTINGS.IDENTITY.TITLE}</h2>
-            <div className="divide-border border-border mt-3 divide-y border-t">
+            <div className="settings-key-value-list">
               {identityConfig.map(([key, value]) => (
-                <div className="flex justify-between py-3.5 text-xs" key={key}>
-                  <span className="text-muted-foreground">{key}</span>
-                  <span className="text-foreground font-medium">{value}</span>
+                <div className="settings-key-value-row" key={key}>
+                  <span className="settings-key">{key}</span>
+                  <span className="settings-val">{value}</span>
                 </div>
               ))}
             </div>
@@ -100,9 +92,9 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
 
         {/* Right Column: Pub/Sub Propagation Telemetry */}
         <div>
-          <section className="settings-section mt-0! border-t-0! pt-0!">
-            <div className="mb-2 flex items-center justify-between">
-              <Radio className="text-primary size-5" />
+          <section className="settings-section settings-section-first">
+            <div className="settings-card-header-spread">
+              <Radio className="settings-header-icon" />
               <span className="tag">{UI_COPY.SETTINGS.TELEMETRY.TAG}</span>
             </div>
             <h2>{UI_COPY.SETTINGS.TELEMETRY.TITLE}</h2>
@@ -110,12 +102,10 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
 
             <div className="latency-value">
               {UI_COPY.SETTINGS.TELEMETRY.LATENCY_VAL}
-              <span className="text-muted-foreground ml-2 text-lg">
-                {UI_COPY.SETTINGS.TELEMETRY.LATENCY_UNIT}
-              </span>
+              <span className="latency-unit">{UI_COPY.SETTINGS.TELEMETRY.LATENCY_UNIT}</span>
             </div>
-            <span className="text-success flex items-center gap-2 text-xs font-medium">
-              <ShieldCheck className="size-4" />
+            <span className="settings-sla-note">
+              <ShieldCheck className="sla-icon" />
               {UI_COPY.SETTINGS.TELEMETRY.SLA_NOTE}
             </span>
 
@@ -124,42 +114,40 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
                 <i key={i} />
               ))}
             </div>
-            <div className="text-muted-foreground mt-3 flex justify-between text-[10px]">
+            <div className="benchmark-range-row">
               <span>{UI_COPY.SETTINGS.TELEMETRY.RANGE_START}</span>
               <span>{UI_COPY.SETTINGS.TELEMETRY.RANGE_END}</span>
             </div>
 
-            <div className="border-border mt-6 grid grid-cols-3 border-t pt-5 text-center">
+            <div className="settings-metrics-grid">
               {latencyMetrics.map(([val, label]) => (
                 <div key={label}>
-                  <div className="text-foreground text-sm font-semibold">{val}</div>
-                  <div className="text-muted-foreground mt-1 text-[10px]">{label}</div>
+                  <div className="settings-metric-val">{val}</div>
+                  <div className="settings-metric-label">{label}</div>
                 </div>
               ))}
             </div>
           </section>
 
           <section className="settings-section">
-            <h2 className="flex items-center gap-2">
-              <Globe className="text-primary size-4" />
+            <h2 className="settings-subheading">
+              <Globe className="globe-icon" />
               {UI_COPY.SETTINGS.CONNECTION.TITLE}
             </h2>
-            <div className="divide-border border-border mt-3 divide-y border-t">
-              <div className="flex justify-between py-3 text-xs">
-                <span className="text-muted-foreground">{UI_COPY.SETTINGS.CONNECTION.PORT}</span>
-                <code className="text-foreground">{UI_COPY.SETTINGS.CONNECTION.PORT_VAL}</code>
+            <div className="settings-key-value-list">
+              <div className="settings-key-value-row">
+                <span className="settings-key">{UI_COPY.SETTINGS.CONNECTION.PORT}</span>
+                <code className="settings-val">{UI_COPY.SETTINGS.CONNECTION.PORT_VAL}</code>
               </div>
-              <div className="flex justify-between py-3 text-xs">
-                <span className="text-muted-foreground">
-                  {UI_COPY.SETTINGS.CONNECTION.TRANSPORT}
-                </span>
-                <span className="text-foreground font-medium">
-                  {UI_COPY.SETTINGS.CONNECTION.TRANSPORT_VAL}
-                </span>
+              <div className="settings-key-value-row">
+                <span className="settings-key">{UI_COPY.SETTINGS.CONNECTION.TRANSPORT}</span>
+                <span className="settings-val">{UI_COPY.SETTINGS.CONNECTION.TRANSPORT_VAL}</span>
               </div>
             </div>
 
-            <div className="warning-box mt-4">{UI_COPY.SETTINGS.CONNECTION.WARNING}</div>
+            <div className="warning-box settings-warning-box">
+              {UI_COPY.SETTINGS.CONNECTION.WARNING}
+            </div>
           </section>
         </div>
       </div>

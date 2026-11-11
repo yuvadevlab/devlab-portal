@@ -48,9 +48,9 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({
   onSubmit,
 }) => {
   return (
-    <form id="api-key-form" onSubmit={onSubmit} className="space-y-4">
-      <div className="space-y-1.5">
-        <Label htmlFor="api-key-name" className="text-xs font-semibold">
+    <form id="api-key-form" onSubmit={onSubmit} className="settings-form-stack">
+      <div className="form-field-group">
+        <Label htmlFor="api-key-name" className="form-field-label">
           {UI_COPY.IAM.MODAL.NAME_LABEL}
         </Label>
         <Input
@@ -59,16 +59,16 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({
           onChange={(e) => setName(e.target.value)}
           placeholder={UI_COPY.IAM.MODAL.NAME_PLACEHOLDER}
           required
-          className="h-9 text-xs"
+          className="form-field-input"
         />
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="api-key-app" className="text-xs font-semibold">
+      <div className="form-field-group">
+        <Label htmlFor="api-key-app" className="form-field-label">
           {UI_COPY.IAM.MODAL.APP_LABEL}
         </Label>
         <Select value={appId} onValueChange={onAppChange}>
-          <SelectTrigger id="api-key-app" className="h-9 w-full text-xs">
+          <SelectTrigger id="api-key-app" className="form-field-select">
             <SelectValue placeholder={UI_COPY.IAM.MODAL.APP_PLACEHOLDER} />
           </SelectTrigger>
           <SelectContent>
@@ -81,32 +81,28 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({
         </Select>
       </div>
 
-      <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">{UI_COPY.IAM.MODAL.SCOPES_LABEL}</Label>
-        <div className="grid grid-cols-2 gap-2">
+      <div className="form-field-group">
+        <Label className="form-field-label">{UI_COPY.IAM.MODAL.SCOPES_LABEL}</Label>
+        <div className="form-grid-2">
           {scopeOptions.map((s) => (
             <div
               key={s.id}
               onClick={() => onToggleScope(s.id)}
-              className={`flex cursor-pointer items-center gap-2.5 rounded-lg border p-2 transition-colors ${
-                selectedScopes.includes(s.id)
-                  ? "border-primary bg-primary/10 text-foreground"
-                  : "border-border bg-card text-muted-foreground"
-              }`}
+              className={`scope-toggle-card ${selectedScopes.includes(s.id) ? "selected" : ""}`}
             >
               <Checkbox
                 id={`scope-${s.id}`}
                 checked={selectedScopes.includes(s.id)}
                 onCheckedChange={() => onToggleScope(s.id)}
               />
-              <span className="font-mono text-xs">{s.label}</span>
+              <span className="scope-toggle-label">{s.label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="api-key-rate-limit" className="text-xs font-semibold">
+      <div className="form-field-group">
+        <Label htmlFor="api-key-rate-limit" className="form-field-label">
           {UI_COPY.IAM.MODAL.RATE_LIMIT_LABEL}
         </Label>
         <Input
@@ -116,7 +112,7 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({
           onChange={(e) => setRateLimit(Number(e.target.value))}
           min={60}
           max={10000}
-          className="h-9 font-mono text-xs"
+          className="form-field-input-mono"
         />
       </div>
     </form>

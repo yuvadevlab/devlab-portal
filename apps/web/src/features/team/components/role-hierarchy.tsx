@@ -51,21 +51,19 @@ export const RoleHierarchy: React.FC = () => {
   ];
 
   return (
-    <div className="border-border mb-7 border-y py-6">
-      <div className="text-foreground mb-5 flex items-center gap-2 text-sm font-semibold">
-        <ShieldCheck className="text-primary size-4" />
+    <div className="role-hierarchy-section">
+      <div className="role-hierarchy-header">
+        <ShieldCheck className="role-hierarchy-icon" />
         {UI_COPY.TEAM.HIERARCHY.TITLE}
       </div>
-      <div className="grid grid-cols-2 gap-5 md:grid-cols-6">
+      <div className="role-hierarchy-grid">
         {roles.map((item) => (
           <div key={item.role}>
-            <div className="flex items-center gap-2">
-              <span className="text-primary font-mono text-[11px] font-bold">{item.index}</span>
-              <span className="text-foreground text-xs font-semibold">{item.role}</span>
+            <div className="role-item-header">
+              <span className="role-item-index">{item.index}</span>
+              <span className="role-item-name">{item.role}</span>
             </div>
-            <p className="text-muted-foreground mt-2 text-[11px] leading-relaxed">
-              {item.description}
-            </p>
+            <p className="role-item-desc">{item.description}</p>
           </div>
         ))}
       </div>

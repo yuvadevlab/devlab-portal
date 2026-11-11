@@ -20,9 +20,12 @@ import { AppsService } from "./apps.service";
 import { AuthGuard } from "../auth/auth.guard";
 import { CreateAppDto, UpdateAppSettingsDto, UpdateAppStatusDto } from "./dto/app.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Logger } from "@yuva-devlab/logger";
 
 @Controller("api/v1/apps")
 export class AppsController {
+  private readonly logger = new Logger("AppsController");
+
   constructor(private readonly appsService: AppsService) {}
 
   /**
@@ -31,6 +34,9 @@ export class AppsController {
   @Get()
   @UseGuards(AuthGuard)
   async listApps(@CurrentUser() user: { sub: string; role?: string; tenant_id?: string }) {
+    this.logger.info(
+      `[listApps] Listing apps for actor=${user?.sub} (tenant=${user?.tenant_id || "all"})`,
+    );
     return this.appsService.listApps(user);
   }
 
@@ -43,6 +49,7 @@ export class AppsController {
     @Param("id") id: string,
     @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
   ) {
+    this.logger.info(`[getApp] Fetching app "${id}" for actor=${user?.sub}`);
     return this.appsService.getApp(id, user);
   }
 
@@ -59,6 +66,9 @@ export class AppsController {
     if (!user?.sub) {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
+    this.logger.info(
+      `[createApp] Registering app "${dto.appId}" (${dto.name}) by actor=${user.sub}`,
+    );
     return this.appsService.createApp(dto, user);
   }
 
@@ -76,6 +86,7 @@ export class AppsController {
     if (!user?.sub) {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
+    this.logger.info(`[updateAppSettings] Updating settings for app "${id}" by actor=${user.sub}`);
     return this.appsService.updateAppSettings(id, dto, user);
   }
 
@@ -93,6 +104,9 @@ export class AppsController {
     if (!user?.sub) {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
+    this.logger.info(
+      `[updateStatus] Toggling status for app "${id}" (isActive=${dto.isActive}) by actor=${user.sub}`,
+    );
     return this.appsService.updateAppStatus(id, dto, user);
   }
 }

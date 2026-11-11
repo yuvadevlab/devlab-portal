@@ -8,8 +8,8 @@
  */
 
 import React, { useState } from "react";
-import { Search, Plus } from "lucide-react";
-import { Button, Input } from "@devlab-portal/ui";
+import { Plus } from "lucide-react";
+import { Button, SearchInput } from "@devlab-portal/ui";
 import { AppCard } from "./app-card";
 import { RecentActivity } from "./recent-activity";
 import { TabKey } from "@/lib/constants/enums";
@@ -23,6 +23,7 @@ interface AppGridProps {
   onOpenRegisterModal: () => void;
   onOpenSettings: (app: RegisteredApp) => void;
   onToggleKillSwitch: (app: RegisteredApp) => void;
+  onOpenSupervisor?: (app: RegisteredApp) => void;
   onNavigateTab: (tab: TabKey) => void;
 }
 
@@ -32,6 +33,7 @@ export const AppGrid: React.FC<AppGridProps> = ({
   onOpenRegisterModal,
   onOpenSettings,
   onToggleKillSwitch,
+  onOpenSupervisor,
   onNavigateTab,
 }) => {
   const [search, setSearch] = useState("");
@@ -59,32 +61,30 @@ export const AppGrid: React.FC<AppGridProps> = ({
     <>
       {/* Filter and Search Toolbar */}
       <div className="app-toolbar">
-        <div className="flex items-center gap-3">
+        <div className="app-toolbar-search-group">
           <div className="search-field">
-            <Search className="size-3.5" />
-            <Input
+            <SearchInput
               placeholder={UI_COPY.APPS.TOOLBAR.SEARCH_PLACEHOLDER}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onClear={() => setSearch("")}
               aria-label={UI_COPY.APPS.TOOLBAR.SEARCH_PLACEHOLDER}
-              className="bg-card border-border h-9 w-72 pl-9 text-xs"
+              className="app-search-input"
             />
           </div>
-          <span className="text-muted-foreground text-xs whitespace-nowrap">
+          <span className="app-count-tag">
             {filteredApps.length} {UI_COPY.APPS.TOOLBAR.APPS_SUFFIX}
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="app-toolbar-actions-group">
           <div className="segmented">
             {environments.map((env) => (
               <Button
                 key={env.key}
                 variant="ghost"
                 size="sm"
-                className={`segment text-muted-foreground h-7 px-3 text-xs ${
-                  selectedEnv === env.key ? "active" : ""
-                }`}
+                className={`segment ${selectedEnv === env.key ? "active" : ""}`}
                 onClick={() => setSelectedEnv(env.key)}
               >
                 {env.label}
@@ -92,12 +92,8 @@ export const AppGrid: React.FC<AppGridProps> = ({
             ))}
           </div>
 
-          <Button
-            size="sm"
-            onClick={onOpenRegisterModal}
-            className="h-8 gap-1.5 px-3 text-xs font-medium"
-          >
-            <Plus className="size-3.5" />
+          <Button size="sm" onClick={onOpenRegisterModal} className="app-register-btn">
+            <Plus className="btn-icon" />
             {UI_COPY.APPS.CARD.REGISTER_BTN}
           </Button>
         </div>
@@ -111,6 +107,7 @@ export const AppGrid: React.FC<AppGridProps> = ({
             app={app}
             onOpenSettings={onOpenSettings}
             onToggleKillSwitch={onToggleKillSwitch}
+            onOpenSupervisor={onOpenSupervisor}
           />
         ))}
       </div>
@@ -118,7 +115,7 @@ export const AppGrid: React.FC<AppGridProps> = ({
       {filteredApps.length === 0 && <p className="empty-state">{UI_COPY.APPS.CARD.EMPTY_SEARCH}</p>}
 
       {/* Live Recent Activity Feed */}
-      <RecentActivity auditLogs={auditLogs} onNavigateTab={onNavigateTab} />
+      <RecentActivity auditLogs={auditLogs} apps={apps} onNavigateTab={onNavigateTab} />
     </>
   );
 };

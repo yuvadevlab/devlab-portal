@@ -22,6 +22,7 @@ export function useAuditLogsQuery(limit = 100): UseQueryResult<AuditLog[], Error
   return useQuery<AuditLog[], Error>({
     queryKey: auditLogsQueryKey(limit),
     queryFn: () => api.getAuditLogs(limit),
+    refetchInterval: 10000,
   });
 }
 
