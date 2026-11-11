@@ -125,3 +125,30 @@ export function resolveAppProcessConfig(app: RegisteredAppEntity): AppProcessCon
     autoRestartOnCrash: false,
   };
 }
+
+/**
+ * Built-in AppProcessConfig representing the DevLab Portal Platform Core host.
+ */
+export const DEVLAB_PORTAL_CORE_CONFIG: AppProcessConfig = {
+  appId: "devlab-portal",
+  name: "DevLab Portal",
+  workingDir: path.resolve(getEcosystemRoot(), "devlab-portal"),
+  command: "pnpm dev",
+  executionMode: "dev",
+  devCommand: "pnpm dev",
+  startCommand: "pnpm start",
+  buildCommand: "pnpm build",
+  dependsOn: [],
+  env: {},
+  ports: [3000, 4000],
+  healthUrl: "http://localhost:4000/api/v1/health",
+  readinessTimeoutMs: 25000,
+  autoRestartOnCrash: false,
+};
+
+/**
+ * Checks whether an appId corresponds to the DevLab Platform Core host.
+ */
+export function isPortalCoreApp(appId: string): boolean {
+  return appId === "devlab-portal";
+}

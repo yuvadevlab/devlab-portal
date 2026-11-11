@@ -4,18 +4,11 @@
  * @module @devlab/portal-api/supervisor
  */
 
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-  OnModuleInit,
-  OnModuleDestroy,
-} from "@nestjs/common";
+import { Injectable, NotFoundException, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { Logger } from "@yuva-devlab/logger";
 import {
   ProcessSupervisor,
-  PortProber,
   type AppProcessConfig,
   type ProcessStatus,
   type ProcessLogEntry,
@@ -23,7 +16,19 @@ import {
   type ExecutionMode,
   type DependencyStatus,
 } from "@yuva-devlab/supervisor";
-import { resolveAppProcessConfig } from "./supervisor.constants";
+import {
+  resolveAppProcessConfig,
+  DEVLAB_PORTAL_CORE_CONFIG,
+  isPortalCoreApp,
+} from "./supervisor.constants";
+import {
+  buildPortalCoreStatus,
+  normalizePortalDependency,
+  assertNotPortalCore,
+  cascadeStartPrerequisites,
+  probeConfiguredPorts,
+} from "./supervisor-host";
+import { assertTenantAccess, assertAppActive } from "./supervisor-guards";
 import { launchHostIde, type LaunchIdeResult } from "./supervisor-ide-launcher";
 import { RegisterProcessDto } from "./dto/register-process.dto";
 
@@ -44,7 +49,8 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   async onModuleInit(): Promise<void> {
     try {
       await this.supervisor.init();
-      this.logger.info("[onModuleInit] Process Supervisor initialized successfully");
+      this.registerApp(DEVLAB_PORTAL_CORE_CONFIG);
+      this.logger.info("[onModuleInit] Process Supervisor initialized with DevLab Portal Core");
     } catch (err) {
       this.logger.error("[onModuleInit] Failed to initialize process supervisor", err);
     }
@@ -56,6 +62,12 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   }
 
   async ensureAppRegistered(appId: string, tenantId?: string): Promise<AppProcessConfig | null> {
+    if (isPortalCoreApp(appId)) {
+      this.registeredConfigs.set(appId, DEVLAB_PORTAL_CORE_CONFIG);
+      this.supervisor.registerApp(DEVLAB_PORTAL_CORE_CONFIG);
+      return DEVLAB_PORTAL_CORE_CONFIG;
+    }
+
     const existing = this.registeredConfigs.get(appId) ?? this.supervisor.getConfig(appId);
     if (existing) return existing;
 
@@ -63,13 +75,18 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
       const app = await this.prisma.registeredApp.findUnique({ where: { appId } });
       if (!app) return null;
 
-      this.assertTenantAccess(appId, tenantId ?? app.tenantId ?? undefined);
+      assertTenantAccess(
+        this.appTenants,
+        appId,
+        tenantId ?? app.tenantId ?? undefined,
+        this.logger,
+      );
       const config = resolveAppProcessConfig(app);
       this.registerApp(config, app.tenantId ?? tenantId);
       return config;
     } catch (err) {
       this.logger.warn(
-        `[ensureAppRegistered] Could not auto-register "${appId}": ${(err as Error).message}`,
+        `[ensureAppRegistered] Auto-register failed for "${appId}": ${(err as Error).message}`,
       );
       return null;
     }
@@ -90,7 +107,7 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
 
   async unregisterApp(appId: string, tenantId?: string): Promise<void> {
     this.logger.info(`[unregisterApp] Unregistering process: ${appId}`);
-    this.assertTenantAccess(appId, tenantId);
+    assertTenantAccess(this.appTenants, appId, tenantId, this.logger);
     await this.supervisor.stop(appId, true).catch(() => {});
     this.supervisor.unregisterApp(appId);
     this.registeredConfigs.delete(appId);
@@ -108,9 +125,7 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
         }
       }
     } catch (err) {
-      this.logger.warn(
-        `[getAllStatuses] Could not sync tenant apps from DB: ${(err as Error).message}`,
-      );
+      this.logger.warn(`[getAllStatuses] Sync error: ${(err as Error).message}`);
     }
 
     const statuses = await this.supervisor.getAllStatuses();
@@ -120,6 +135,7 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   }
 
   async getStatus(appId: string, tenantId?: string): Promise<ProcessStatus> {
+    if (isPortalCoreApp(appId)) return buildPortalCoreStatus();
     await this.resolveOrThrow(appId, tenantId);
     return this.supervisor.getStatus(appId);
   }
@@ -127,7 +143,8 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   async checkDependencies(appId: string, tenantId?: string): Promise<DependencyStatus[]> {
     this.logger.info(`[checkDependencies] Inspecting prerequisites for ${appId}`);
     await this.resolveOrThrow(appId, tenantId);
-    return this.supervisor.checkDependencies(appId);
+    const deps = await this.supervisor.checkDependencies(appId);
+    return deps.map((dep) => normalizePortalDependency(dep));
   }
 
   async startProcess(
@@ -136,29 +153,27 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     mode?: ExecutionMode,
     cascade = false,
   ): Promise<ProcessStatus> {
+    if (isPortalCoreApp(appId)) return this.getStatus(appId, tenantId);
     const start = Date.now();
-    await this.assertAppActive(appId);
+    await assertAppActive(this.prisma, appId, this.logger);
     const config = await this.resolveOrThrow(appId, tenantId);
 
-    if (cascade && config.dependsOn && config.dependsOn.length > 0) {
-      for (const depId of config.dependsOn) {
-        await this.ensureAppRegistered(depId, tenantId);
-        const depStatus = await this.supervisor.getStatus(depId);
-        if (depStatus.state !== "RUNNING") {
-          this.logger.info(
-            `[startProcess] Cascade-starting prerequisite app: ${depId} for ${appId}`,
-          );
-          await this.supervisor.start(depId, mode);
-        }
-      }
+    if (cascade) {
+      await cascadeStartPrerequisites(
+        this.supervisor,
+        (id) => this.ensureAppRegistered(id, tenantId),
+        config.dependsOn,
+        mode,
+        this.logger,
+      );
     }
 
     this.logger.info(
-      `[startProcess] Starting process: ${appId} (mode=${mode || "dev"}) in ${config.workingDir}`,
+      `[startProcess] Starting: ${appId} (mode=${mode || "dev"}) in ${config.workingDir}`,
     );
     const status = await this.supervisor.start(appId, mode);
     this.logger.info(
-      `[startProcess] Process ${appId} state=${status.state} (took ${Date.now() - start}ms)`,
+      `[startProcess] Process ${appId} state=${status.state} (${Date.now() - start}ms)`,
     );
     return status;
   }
@@ -169,10 +184,10 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   ): Promise<{ success: boolean; exitCode: number }> {
     const start = Date.now();
     const config = await this.resolveOrThrow(appId, tenantId);
-    this.logger.info(`[buildProcess] Building process: ${appId} in ${config.workingDir}`);
+    this.logger.info(`[buildProcess] Building: ${appId} in ${config.workingDir}`);
     const result = await this.supervisor.build(appId);
     this.logger.info(
-      `[buildProcess] Process ${appId} build exitCode=${result.exitCode} (${Date.now() - start}ms)`,
+      `[buildProcess] Process ${appId} exitCode=${result.exitCode} (${Date.now() - start}ms)`,
     );
     return result;
   }
@@ -184,8 +199,9 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   }
 
   async stopProcess(appId: string, tenantId?: string, force = false): Promise<ProcessStatus> {
-    this.logger.info(`[stopProcess] Stopping process: ${appId} (force=${force})`);
-    this.assertTenantAccess(appId, tenantId);
+    assertNotPortalCore(appId, "stop");
+    this.logger.info(`[stopProcess] Stopping: ${appId} (force=${force})`);
+    assertTenantAccess(this.appTenants, appId, tenantId, this.logger);
     await this.ensureAppRegistered(appId, tenantId);
     return this.supervisor.stop(appId, force);
   }
@@ -195,27 +211,26 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     tenantId?: string,
     mode?: ExecutionMode,
   ): Promise<ProcessStatus> {
-    this.logger.info(`[restartProcess] Restarting process: ${appId} (mode=${mode || "dev"})`);
-    await this.assertAppActive(appId);
-    this.assertTenantAccess(appId, tenantId);
+    assertNotPortalCore(appId, "restart");
+    this.logger.info(`[restartProcess] Restarting: ${appId} (mode=${mode || "dev"})`);
+    await assertAppActive(this.prisma, appId, this.logger);
+    assertTenantAccess(this.appTenants, appId, tenantId, this.logger);
     await this.ensureAppRegistered(appId, tenantId);
     return this.supervisor.restart(appId, mode);
   }
 
   getLogs(appId: string, limit = 200, tenantId?: string): ProcessLogEntry[] {
-    this.assertTenantAccess(appId, tenantId);
+    assertTenantAccess(this.appTenants, appId, tenantId, this.logger);
     return this.supervisor.getLogs(appId, limit);
   }
 
   async probePorts(ports?: readonly number[], tenantId?: string): Promise<PortStatus[]> {
-    if (ports && ports.length > 0) return PortProber.checkPorts(ports);
     const configs = tenantId
       ? Array.from(this.registeredConfigs.values()).filter(
           (c) => this.appTenants.get(c.appId) === tenantId,
         )
       : Array.from(this.registeredConfigs.values());
-    const targetPorts = Array.from(new Set(configs.flatMap((c) => c.ports || [])));
-    return targetPorts.length === 0 ? [] : PortProber.checkPorts(targetPorts);
+    return probeConfiguredPorts(configs, ports);
   }
 
   onStateChange(listener: (status: ProcessStatus) => void): void {
@@ -226,25 +241,9 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     this.supervisor.on("log", listener);
   }
 
-  private async assertAppActive(appId: string): Promise<void> {
-    const app = await this.prisma.registeredApp.findUnique({
-      where: { appId },
-      select: { isActive: true, name: true, maintenanceNote: true },
-    });
-    if (app && !app.isActive) {
-      this.logger.warn(
-        `[assertAppActive] Rejected process execution for "${appId}": Deactivated via kill-switch`,
-      );
-      throw new ForbiddenException(
-        `Application "${app.name || appId}" is deactivated via Platform Kill-Switch${
-          app.maintenanceNote ? ` (${app.maintenanceNote})` : ""
-        }. Reactivate in Applications catalog to run.`,
-      );
-    }
-  }
-
   private async resolveOrThrow(appId: string, tenantId?: string): Promise<AppProcessConfig> {
-    this.assertTenantAccess(appId, tenantId);
+    if (isPortalCoreApp(appId)) return DEVLAB_PORTAL_CORE_CONFIG;
+    assertTenantAccess(this.appTenants, appId, tenantId, this.logger);
     const config =
       this.registeredConfigs.get(appId) ??
       this.supervisor.getConfig(appId) ??
@@ -254,16 +253,5 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
       throw new NotFoundException(`Process with ID "${appId}" is not registered`);
     }
     return config;
-  }
-
-  private assertTenantAccess(appId: string, tenantId?: string): void {
-    if (tenantId && this.appTenants.has(appId) && this.appTenants.get(appId) !== tenantId) {
-      this.logger.warn(
-        `[assertTenantAccess] Forbidden tenant access to "${appId}" for tenant "${tenantId}"`,
-      );
-      throw new ForbiddenException(
-        `App process "${appId}" does not belong to tenant "${tenantId}"`,
-      );
-    }
   }
 }
