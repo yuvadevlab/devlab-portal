@@ -16,6 +16,7 @@
 /* ── 2. Baseline Resets & Structural Layout ────────────────────────────────── */
 @import "./styles/reset.css";
 @import "./styles/layout-tokens.css";
+@import "./styles/utilities.css";
 
 /* ── 3. Modular Domain Stylesheets ────────────────────────────────────────── */
 @import "./styles/topbar.css";
