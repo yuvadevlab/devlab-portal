@@ -83,7 +83,7 @@ export async function cascadeStartPrerequisites(
     if (isPortalCoreApp(depId)) continue;
     await ensureRegistered(depId);
     const depStatus = await supervisor.getStatus(depId);
-    if (depStatus.state !== "RUNNING") {
+    if (depStatus.state !== ProcessState.RUNNING) {
       logger?.info(`[cascadeStart] Starting prerequisite app: ${depId}`);
       await supervisor.start(depId, mode);
     }

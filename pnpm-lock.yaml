@@ -297,8 +297,8 @@ importers:
         specifier: ^0.3.0
         version: 0.3.0
       '@yuva-devlab/supervisor':
-        specifier: ^0.3.2
-        version: 0.3.2
+        specifier: ^0.3.4
+        version: 0.3.4
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -3060,8 +3060,8 @@ packages:
   '@yuva-devlab/regex@0.3.0':
     resolution: {integrity: sha512-/vYCn3B9N7g4V8lSCFB7Cu5VqTsElMO+bY7TIXxi34IarmSvLJlMlrbC3SwWPxiZPpW4v/tFhWS42ewPXwMqeA==}
 
-  '@yuva-devlab/supervisor@0.3.2':
-    resolution: {integrity: sha512-9eCUoc69xpX5BrmC9PTqEGYEvlnRtmp3auHJwNmdTYlcYXOWbY35IGW0eTogjgM0VtFOqSzXL76fzuYaoBSm4A==}
+  '@yuva-devlab/supervisor@0.3.4':
+    resolution: {integrity: sha512-7h+efuWNYxmSnu58KtI/F1jJculhcTeOEZ8+lTOZttMTznzJ2nRvumUkh11j54FyQDTLIMhsxfniRIp7jl4LeA==}
 
   '@yuva-devlab/tokens@2.0.0':
     resolution: {integrity: sha512-8qLAZ3V4YZlJL2u55mjr09dsMYi1nABv4HMhTsB/iiZhamkVSNkW4p5vPojBu8UiChdjLmVVe8wFhyKRLLesZg==}
@@ -9334,7 +9334,7 @@ snapshots:
 
   '@yuva-devlab/regex@0.3.0': {}
 
-  '@yuva-devlab/supervisor@0.3.2':
+  '@yuva-devlab/supervisor@0.3.4':
     dependencies:
       '@yuva-devlab/logger': 1.3.1
       '@yuva-devlab/regex': 0.3.0

@@ -33,7 +33,7 @@ import { ProcessTerminal } from "./process-terminal";
 import { ProcessModeToggle } from "./process-mode-toggle";
 import { ProcessIdeLauncher } from "./process-ide-launcher";
 import { ProcessDependenciesCard } from "./process-dependencies-card";
-import type { RegisteredApp, ExecutionMode } from "../types";
+import { ProcessState, type RegisteredApp, type ExecutionMode } from "../types";
 
 interface ProcessSupervisorDrawerProps {
   app: RegisteredApp | null;
@@ -79,8 +79,8 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
     { enabled: isOpen && Boolean(appId) },
   );
 
-  const state = status?.state || "STOPPED";
-  const isRunning = state === "RUNNING" || state === "STARTING";
+  const state = status?.state || ProcessState.STOPPED;
+  const isRunning = state === ProcessState.RUNNING || state === ProcessState.STARTING;
   const isDeactivated = app?.isActive === false;
 
   const { data: logs = [], refetch: refetchLogs } = useSupervisorLogsQuery(appId, 100, tenantId, {
@@ -89,7 +89,7 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
   });
 
   useEffect(() => {
-    if (!isOpen || state !== "STARTING") return;
+    if (!isOpen || state !== ProcessState.STARTING) return;
     const interval = setInterval(() => {
       refetchStatus();
       refetchDeps();
@@ -98,8 +98,8 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
   }, [isOpen, state, refetchStatus, refetchDeps]);
 
   const renderStatusBadge = () => {
-    const isStartingOrRunning = state === "RUNNING" || state === "STARTING";
-    const isCrashed = state === "CRASHED";
+    const isStartingOrRunning = state === ProcessState.RUNNING || state === ProcessState.STARTING;
+    const isCrashed = state === ProcessState.CRASHED;
     return (
       <span className={`supervisor-badge ${state.toLowerCase()}`}>
         {isCrashed ? (
@@ -188,7 +188,7 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
               size="sm"
               variant="default"
               className="supervisor-action-btn"
-              disabled={isPending || state === "RUNNING" || isDeactivated}
+              disabled={isPending || state === ProcessState.RUNNING || isDeactivated}
               title={isDeactivated ? UI_COPY.APPS.SUPERVISOR.CANNOT_START_TOOLTIP : undefined}
               onClick={() =>
                 startMutation.mutate({ appId, tenantId, mode: executionMode, cascade: true })
@@ -212,7 +212,7 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
               size="sm"
               variant="secondary"
               className="supervisor-action-btn"
-              disabled={isPending || state === "STOPPED" || isDeactivated}
+              disabled={isPending || state === ProcessState.STOPPED || isDeactivated}
               title={isDeactivated ? UI_COPY.APPS.SUPERVISOR.CANNOT_RESTART_TOOLTIP : undefined}
               onClick={() => restartMutation.mutate({ appId, tenantId, mode: executionMode })}
             >
@@ -223,7 +223,7 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
               size="sm"
               variant="destructive"
               className="supervisor-action-btn"
-              disabled={isPending || state === "STOPPED"}
+              disabled={isPending || state === ProcessState.STOPPED}
               onClick={() => stopMutation.mutate({ appId, tenantId })}
             >
               <Square className="supervisor-action-icon" /> {UI_COPY.APPS.SUPERVISOR.ACTION_STOP}

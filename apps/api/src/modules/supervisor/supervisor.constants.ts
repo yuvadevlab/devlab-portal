@@ -7,7 +7,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import type { AppProcessConfig } from "@yuva-devlab/supervisor";
+import { ExecutionMode, type AppProcessConfig } from "@yuva-devlab/supervisor";
+import { AppEnvironment } from "../../common/constants/enums";
 
 /**
  * Resolves the parent repository root directory containing ecosystem apps.
@@ -95,7 +96,7 @@ export function resolveAppProcessConfig(app: RegisteredAppEntity): AppProcessCon
     }
   }
 
-  const isProd = app.environment === "production";
+  const isProd = app.environment === AppEnvironment.PRODUCTION;
   const devCmd = app.devCommand || "pnpm dev";
   const startCmd = app.startCommand || "pnpm start";
   const buildCmd = app.buildCommand || "pnpm build";
@@ -113,7 +114,7 @@ export function resolveAppProcessConfig(app: RegisteredAppEntity): AppProcessCon
     name: app.name,
     workingDir,
     command: defaultCommand,
-    executionMode: isProd ? "prod" : "dev",
+    executionMode: isProd ? ExecutionMode.PROD : ExecutionMode.DEV,
     devCommand: devCmd,
     startCommand: startCmd,
     buildCommand: buildCmd,
@@ -134,7 +135,7 @@ export const DEVLAB_PORTAL_CORE_CONFIG: AppProcessConfig = {
   name: "DevLab Portal",
   workingDir: path.resolve(getEcosystemRoot(), "devlab-portal"),
   command: "pnpm dev",
-  executionMode: "dev",
+  executionMode: ExecutionMode.DEV,
   devCommand: "pnpm dev",
   startCommand: "pnpm start",
   buildCommand: "pnpm build",

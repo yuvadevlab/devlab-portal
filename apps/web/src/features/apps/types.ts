@@ -8,15 +8,20 @@ import { AppEnvironment } from "@/lib/constants";
 import type { RegisteredApp, CreateAppPayload, UpdateAppSettingsPayload } from "@/lib/api-client";
 
 export type { RegisteredApp, CreateAppPayload, UpdateAppSettingsPayload };
-export type {
+export {
   ProcessState,
+  ProcessStateEnum,
+  ExecutionMode,
+  ExecutionModeEnum,
+  SupportedIde,
+  SupportedIdeEnum,
+} from "./types/supervisor";
+export type {
   ProcessLogLevel,
   ProcessLogStream,
   ProcessLogEntry,
   PortStatus,
   ProcessStatus,
-  ExecutionMode,
-  SupportedIde,
   DependencyStatus,
   OpenIdePayload,
   OpenIdeResult,

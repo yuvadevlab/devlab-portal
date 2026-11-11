@@ -14,7 +14,7 @@ import { useAppsQuery, useSupervisorStatusesQuery } from "@/features/apps/api";
 import { useAuditLogsQuery } from "@/features/audit/api";
 import { useDashboardModals } from "@/features/dashboard/context";
 import { AppStatus } from "@/lib/constants/enums";
-import type { RegisteredApp } from "@/features/apps/types";
+import { ProcessState, type RegisteredApp } from "@/features/apps/types";
 
 export function AppsView(): React.JSX.Element {
   const { data: apps = [] } = useAppsQuery();
@@ -28,7 +28,7 @@ export function AppsView(): React.JSX.Element {
     const statusMap = new Map(supervisorStatuses.map((s) => [s.appId, s]));
     return apps.map((app) => {
       const sup = statusMap.get(app.appId);
-      if (sup?.state === "RUNNING" && app.healthStatus !== AppStatus.HEALTHY) {
+      if (sup?.state === ProcessState.RUNNING && app.healthStatus !== AppStatus.HEALTHY) {
         return {
           ...app,
           healthStatus: AppStatus.HEALTHY,

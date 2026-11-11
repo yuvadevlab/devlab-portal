@@ -9,11 +9,12 @@ import { PrismaService } from "../../prisma/prisma.service";
 import { Logger } from "@yuva-devlab/logger";
 import {
   ProcessSupervisor,
+  ExecutionMode,
+  SupervisorEvent,
   type AppProcessConfig,
   type ProcessStatus,
   type ProcessLogEntry,
   type PortStatus,
-  type ExecutionMode,
   type DependencyStatus,
 } from "@yuva-devlab/supervisor";
 import {
@@ -40,10 +41,7 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   private readonly appTenants = new Map<string, string>();
 
   constructor(private readonly prisma: PrismaService) {
-    this.supervisor = new ProcessSupervisor({
-      maxLogBufferSize: 3000,
-      healthPollIntervalMs: 500,
-    });
+    this.supervisor = new ProcessSupervisor({ maxLogBufferSize: 3000, healthPollIntervalMs: 500 });
   }
 
   async onModuleInit(): Promise<void> {
@@ -127,11 +125,8 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     } catch (err) {
       this.logger.warn(`[getAllStatuses] Sync error: ${(err as Error).message}`);
     }
-
     const statuses = await this.supervisor.getAllStatuses();
-    return tenantId
-      ? statuses.filter((s: ProcessStatus) => this.appTenants.get(s.appId) === tenantId)
-      : statuses;
+    return tenantId ? statuses.filter((s) => this.appTenants.get(s.appId) === tenantId) : statuses;
   }
 
   async getStatus(appId: string, tenantId?: string): Promise<ProcessStatus> {
@@ -141,7 +136,6 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   }
 
   async checkDependencies(appId: string, tenantId?: string): Promise<DependencyStatus[]> {
-    this.logger.info(`[checkDependencies] Inspecting prerequisites for ${appId}`);
     await this.resolveOrThrow(appId, tenantId);
     const deps = await this.supervisor.checkDependencies(appId);
     return deps.map((dep) => normalizePortalDependency(dep));
@@ -169,7 +163,7 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     }
 
     this.logger.info(
-      `[startProcess] Starting: ${appId} (mode=${mode || "dev"}) in ${config.workingDir}`,
+      `[startProcess] Starting: ${appId} (mode=${mode || ExecutionMode.DEV}) in ${config.workingDir}`,
     );
     const status = await this.supervisor.start(appId, mode);
     this.logger.info(
@@ -212,7 +206,7 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     mode?: ExecutionMode,
   ): Promise<ProcessStatus> {
     assertNotPortalCore(appId, "restart");
-    this.logger.info(`[restartProcess] Restarting: ${appId} (mode=${mode || "dev"})`);
+    this.logger.info(`[restartProcess] Restarting: ${appId} (mode=${mode || ExecutionMode.DEV})`);
     await assertAppActive(this.prisma, appId, this.logger);
     assertTenantAccess(this.appTenants, appId, tenantId, this.logger);
     await this.ensureAppRegistered(appId, tenantId);
@@ -225,20 +219,17 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
   }
 
   async probePorts(ports?: readonly number[], tenantId?: string): Promise<PortStatus[]> {
-    const configs = tenantId
-      ? Array.from(this.registeredConfigs.values()).filter(
-          (c) => this.appTenants.get(c.appId) === tenantId,
-        )
-      : Array.from(this.registeredConfigs.values());
+    const all = Array.from(this.registeredConfigs.values());
+    const configs = tenantId ? all.filter((c) => this.appTenants.get(c.appId) === tenantId) : all;
     return probeConfiguredPorts(configs, ports);
   }
 
   onStateChange(listener: (status: ProcessStatus) => void): void {
-    this.supervisor.on("state", listener);
+    this.supervisor.on(SupervisorEvent.STATE, listener);
   }
 
   onLog(listener: (entry: ProcessLogEntry) => void): void {
-    this.supervisor.on("log", listener);
+    this.supervisor.on(SupervisorEvent.LOG, listener);
   }
 
   private async resolveOrThrow(appId: string, tenantId?: string): Promise<AppProcessConfig> {
@@ -249,7 +240,6 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
       this.supervisor.getConfig(appId) ??
       (await this.ensureAppRegistered(appId, tenantId));
     if (!config) {
-      this.logger.warn(`[resolveOrThrow] Process with ID "${appId}" is not registered`);
       throw new NotFoundException(`Process with ID "${appId}" is not registered`);
     }
     return config;
