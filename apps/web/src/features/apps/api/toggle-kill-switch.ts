@@ -28,8 +28,9 @@ export function useToggleKillSwitchMutation(): UseMutationResult<
     mutationFn: ({ id, nextState, maintenanceNote }: ToggleKillSwitchVariables) =>
       api.updateAppStatus(id, nextState, maintenanceNote),
     onSuccess: () => {
-      // Invalidate apps query cache so UI reflects instant online/offline state
+      // Invalidate apps query cache and audit logs so UI reflects instant online/offline state and logs
       queryClient.invalidateQueries({ queryKey: appsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
     },
   });
 }

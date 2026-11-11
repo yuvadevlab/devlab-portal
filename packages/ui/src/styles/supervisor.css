@@ -1,0 +1,222 @@
+/**
+ * @file packages/ui/src/styles/supervisor.css
+ * @description Pure platform CSS styling for Process Supervisor telemetry cards and TCP ports.
+ * Architecture: W3C Cascade Layers under @layer dl-components.
+ */
+
+@layer dl-components {
+  .supervisor-telemetry-box {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    background-color: var(--card);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .supervisor-telemetry-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .supervisor-telemetry-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .supervisor-refresh-btn {
+    height: 26px;
+    padding: 0 8px;
+    font-size: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .supervisor-telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .supervisor-stat-cell {
+    background-color: var(--muted);
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+  }
+
+  .supervisor-stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-foreground);
+    margin-bottom: 3px;
+  }
+
+  .supervisor-stat-val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  /* ── Bound TCP Ports Section ────────────────────────── */
+  .supervisor-ports-section {
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .supervisor-ports-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .supervisor-ports-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-foreground);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .supervisor-ports-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    border: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  }
+
+  .supervisor-ports-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .supervisor-port-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background-color: var(--muted);
+    color: var(--foreground);
+    transition: all 0.15s ease-in-out;
+  }
+
+  .supervisor-port-pill.active {
+    color: var(--foreground);
+    border-color: color-mix(in oklch, var(--success, #10b981) 35%, transparent);
+    background-color: color-mix(in oklch, var(--success, #10b981) 8%, var(--card));
+  }
+
+  .supervisor-port-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--muted-foreground);
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  .supervisor-port-pill.active .supervisor-port-dot {
+    background-color: var(--success, #10b981);
+    opacity: 1;
+    box-shadow: 0 0 6px color-mix(in oklch, var(--success, #10b981) 60%, transparent);
+  }
+
+  .supervisor-port-num {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .supervisor-port-state {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background-color: color-mix(in oklch, var(--muted-foreground) 15%, transparent);
+    color: var(--muted-foreground);
+  }
+
+  .supervisor-port-pill.active .supervisor-port-state {
+    background-color: color-mix(in oklch, var(--success, #10b981) 18%, transparent);
+    color: var(--success, #10b981);
+  }
+
+  .supervisor-title {
+    font-size: 16px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .supervisor-subtitle {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .supervisor-action-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .action-btn-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .supervisor-close-btn {
+    width: 100%;
+    font-size: 12px;
+  }
+
+  .telemetry-title-icon,
+  .ports-title-icon,
+  .terminal-title-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--primary);
+  }
+
+  .refresh-btn-icon {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+  }
+}

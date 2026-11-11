@@ -10,9 +10,12 @@ import { AuditService } from "./audit.service";
 import { AuthGuard } from "../auth/auth.guard";
 import { AuditLogType } from "./dto/audit.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Logger } from "@yuva-devlab/logger";
 
 @Resolver(() => AuditLogType)
 export class AuditResolver {
+  private readonly logger = new Logger("AuditResolver");
+
   constructor(private readonly auditService: AuditService) {}
 
   @Query(() => [AuditLogType], { name: "auditLogs" })
@@ -22,6 +25,7 @@ export class AuditResolver {
     @Args("limit", { type: () => Int, defaultValue: 50 }) limit: number,
     @Args("offset", { type: () => Int, defaultValue: 0 }) offset: number,
   ) {
+    this.logger.info(`[getAuditLogs] GraphQL query for audit logs by actor=${user?.sub}`);
     return this.auditService.listLogs(limit, offset, user);
   }
 }

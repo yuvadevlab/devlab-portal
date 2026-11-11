@@ -16,17 +16,21 @@ import {
   AppStatusChangedPayload,
 } from "./dto/app.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Logger } from "@yuva-devlab/logger";
 
 export const appsPubSub = new PubSub();
 const APP_STATUS_CHANGED_TOPIC = "appStatusChanged";
 
 @Resolver(() => RegisteredAppType)
 export class AppsResolver {
+  private readonly logger = new Logger("AppsResolver");
+
   constructor(private readonly appsService: AppsService) {}
 
   @Query(() => [RegisteredAppType], { name: "apps" })
   @UseGuards(AuthGuard)
   async getApps(@CurrentUser() user: { sub: string; role?: string; tenant_id?: string }) {
+    this.logger.info(`[getApps] GraphQL query for apps by actor=${user?.sub}`);
     return this.appsService.listApps(user);
   }
 
@@ -36,6 +40,7 @@ export class AppsResolver {
     @Args("id") id: string,
     @CurrentUser() user: { sub: string; role?: string; tenant_id?: string },
   ) {
+    this.logger.info(`[getApp] GraphQL query for app="${id}" by actor=${user?.sub}`);
     return this.appsService.getApp(id, user);
   }
 
@@ -50,6 +55,9 @@ export class AppsResolver {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
 
+    this.logger.info(
+      `[updateAppStatus] GraphQL mutation for app="${id}" (isActive=${input.isActive})`,
+    );
     const updated = await this.appsService.updateAppStatus(id, input, user);
 
     await appsPubSub.publish(APP_STATUS_CHANGED_TOPIC, {
@@ -83,6 +91,7 @@ export class AppsResolver {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
 
+    this.logger.info(`[updateAppSettings] GraphQL mutation for app="${id}"`);
     return this.appsService.updateAppSettings(id, input, user);
   }
 

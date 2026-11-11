@@ -86,10 +86,10 @@ export const InviteMemberForm: React.FC<InviteMemberFormProps> = ({
   };
 
   return (
-    <form id="invite-member-form" onSubmit={onSubmit} className="space-y-4">
+    <form id="invite-member-form" onSubmit={onSubmit} className="settings-form-stack">
       {/* Invitee Full Name */}
-      <div className="space-y-1.5">
-        <Label htmlFor="invite-name" className="text-xs font-semibold">
+      <div className="form-field-group">
+        <Label htmlFor="invite-name" className="form-field-label">
           {UI_COPY.TEAM.MODAL.NAME_LABEL}
         </Label>
         <Input
@@ -98,13 +98,13 @@ export const InviteMemberForm: React.FC<InviteMemberFormProps> = ({
           onChange={(e) => setName(e.target.value)}
           placeholder={UI_COPY.TEAM.MODAL.NAME_PLACEHOLDER}
           required
-          className="h-9 text-xs"
+          className="form-field-input"
         />
       </div>
 
       {/* Invitee Corporate Email */}
-      <div className="space-y-1.5">
-        <Label htmlFor="invite-email" className="text-xs font-semibold">
+      <div className="form-field-group">
+        <Label htmlFor="invite-email" className="form-field-label">
           {UI_COPY.TEAM.MODAL.EMAIL_LABEL}
         </Label>
         <Input
@@ -114,17 +114,17 @@ export const InviteMemberForm: React.FC<InviteMemberFormProps> = ({
           onChange={(e) => setEmail(e.target.value)}
           placeholder={UI_COPY.TEAM.MODAL.EMAIL_PLACEHOLDER}
           required
-          className="h-9 font-mono text-xs"
+          className="form-field-input-mono"
         />
       </div>
 
       {/* RBAC Role Selector */}
-      <div className="space-y-1.5">
-        <Label htmlFor="invite-role" className="text-xs font-semibold">
+      <div className="form-field-group">
+        <Label htmlFor="invite-role" className="form-field-label">
           {UI_COPY.TEAM.MODAL.ROLE_LABEL}
         </Label>
         <Select value={role} onValueChange={setRole}>
-          <SelectTrigger id="invite-role" className="h-9 w-full text-xs">
+          <SelectTrigger id="invite-role" className="form-field-select">
             <SelectValue placeholder={UI_COPY.TEAM.MODAL.ROLE_PLACEHOLDER} />
           </SelectTrigger>
           <SelectContent>
@@ -138,27 +138,20 @@ export const InviteMemberForm: React.FC<InviteMemberFormProps> = ({
       </div>
 
       {/* Scoped App Access Checklist */}
-      <div className="space-y-1.5 pt-1">
-        <Label className="text-xs font-semibold">{UI_COPY.TEAM.MODAL.APPLICATIONS_LABEL}</Label>
-        <p className="text-muted-foreground text-[11px]">
-          {UI_COPY.TEAM.MODAL.APPLICATIONS_DESCRIPTION}
-        </p>
-        <div className="bg-secondary/40 border-border grid grid-cols-2 gap-2.5 rounded-lg border p-2.5">
+      <div className="form-field-group">
+        <Label className="form-field-label">{UI_COPY.TEAM.MODAL.APPLICATIONS_LABEL}</Label>
+        <p className="form-field-hint">{UI_COPY.TEAM.MODAL.APPLICATIONS_DESCRIPTION}</p>
+        <div className="invite-apps-grid">
           {apps.length === 0 ? (
-            <p className="text-muted-foreground col-span-2 text-xs italic">
-              {UI_COPY.TEAM.MODAL.NO_APPLICATIONS}
-            </p>
+            <p className="invite-apps-empty">{UI_COPY.TEAM.MODAL.NO_APPLICATIONS}</p>
           ) : (
             apps.map((app) => (
-              <label
-                key={app.id || app.appId}
-                className="flex cursor-pointer items-center gap-2 text-xs font-medium"
-              >
+              <label key={app.id || app.appId} className="invite-app-item">
                 <Checkbox
                   checked={allowedApps.includes(app.appId)}
                   onCheckedChange={(checked) => toggleApp(app.appId, !!checked)}
                 />
-                <span className="truncate">{app.name}</span>
+                <span className="invite-app-name">{app.name}</span>
               </label>
             ))
           )}

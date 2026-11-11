@@ -1,0 +1,134 @@
+/**
+ * @file packages/ui/src/styles/tables.css
+ * @description Data tables, toolbars, search controls, status badges, and table cell formatting.
+ * Governed under @layer dl-components.
+ */
+
+@layer dl-components {
+  /* ── Table Cells & Rows ── */
+  .table-cell-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+
+  .cell-icon {
+    color: var(--muted-foreground);
+    width: 14px;
+    height: 14px;
+  }
+
+  .cell-actions {
+    text-align: right;
+  }
+
+  .cell-action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+
+  .cell-mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .cell-mono-muted {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .cell-code-muted {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .cell-unit {
+    color: var(--muted-foreground);
+    font-family: var(--font-sans);
+    font-size: 10px;
+  }
+
+  .cell-date {
+    color: var(--muted-foreground);
+    font-size: 12px;
+  }
+
+  .cell-timestamp {
+    color: var(--muted-foreground);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .cell-actor {
+    color: var(--foreground);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .cell-target {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .cell-ip {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .cell-action-destructive {
+    color: var(--destructive);
+  }
+
+  .cell-action-destructive:hover {
+    background-color: color-mix(in oklch, var(--destructive) 10%, transparent);
+  }
+
+  .cell-action-icon-danger {
+    color: var(--destructive);
+    width: 14px;
+    height: 14px;
+  }
+
+  .table-footer-info {
+    color: var(--muted-foreground);
+    margin-top: 16px;
+    font-size: 12px;
+  }
+
+  .export-ledger-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .inspect-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+  }
+
+  .inspect-btn-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .tag-destructive {
+    color: var(--destructive);
+  }
+
+  .tag-primary {
+    color: var(--primary);
+  }
+
+  .tag-icon {
+    width: 12px;
+    height: 12px;
+  }
+}

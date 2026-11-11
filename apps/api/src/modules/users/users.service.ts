@@ -30,6 +30,9 @@ export class UsersService {
   async listUsers(user?: { sub: string; role?: string; tenant_id?: string }) {
     const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
     const tenantId = user?.tenant_id;
+    this.logger.info(
+      `[listUsers] Querying users for actor=${user?.sub} (tenant=${tenantId || "all"})`,
+    );
 
     const where: Prisma.UserWhereInput = {};
     if (!isSuperAdmin) {
@@ -42,7 +45,7 @@ export class UsersService {
       }
     }
 
-    return this.prisma.user.findMany({
+    const users = await this.prisma.user.findMany({
       where,
       select: {
         id: true,
@@ -56,15 +59,22 @@ export class UsersService {
       },
       orderBy: { createdAt: "asc" },
     });
+    this.logger.info(`[listUsers] Found ${users.length} user(s)`);
+    return users;
   }
 
   /**
    * Creates or invites a new team member.
    */
   async createUser(dto: CreateUserDto, actor: { sub: string; role?: string; tenant_id?: string }) {
+    const start = Date.now();
+    this.logger.info(
+      `[createUser] Inviting user "${dto.email}" (role=${dto.role}) by actor=${actor.sub}`,
+    );
     const isSuperAdmin = actor.role === UserRole.SUPER_ADMIN;
     const isAdmin = actor.role === UserRole.ADMIN;
     if (!isSuperAdmin && !isAdmin) {
+      this.logger.warn(`[createUser] Forbidden invite attempt by non-admin actor=${actor.sub}`);
       throw new ForbiddenException("Only organization administrators can invite new members");
     }
 
@@ -72,6 +82,7 @@ export class UsersService {
       where: { email: dto.email.toLowerCase().trim() },
     });
     if (existing) {
+      this.logger.warn(`[createUser] User with email "${dto.email}" already exists`);
       throw new ConflictException(`User with email "${dto.email}" already exists`);
     }
 
@@ -111,14 +122,14 @@ export class UsersService {
       },
     });
 
-    this.logger.info(
-      `User "${user.email}" created with role "${user.role}" by actor "${actor.sub}" in tenant "${actor.tenant_id ?? "none"}"`,
-    );
-
-    // In dev / local environment, issue one-time onboarding link for UI display
     const inviteToken = crypto.randomBytes(32).toString("hex");
     await this.redis.getClient().set(`auth:reset:${inviteToken}`, user.id, "EX", 86400 * 7);
     const inviteUrl = buildResetPasswordUrl({ token: inviteToken, welcome: true });
+
+    const duration = Date.now() - start;
+    this.logger.info(
+      `[createUser] User "${user.email}" created (${user.role}) in tenant "${actor.tenant_id ?? "none"}" (${duration}ms)`,
+    );
 
     return {
       ...user,

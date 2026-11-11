@@ -1,0 +1,151 @@
+/**
+ * @file packages/ui/src/styles/supervisor-controls.css
+ * @description Segmented execution mode toggle, IDE launchers, and dependency readiness cards.
+ * Architecture: W3C Cascade Layers under @layer dl-components.
+ */
+
+@layer dl-components {
+  /* ── Supervisor Top Configuration Strip ── */
+  .supervisor-config-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ── Mode Toggle Segmented Control ── */
+  .process-mode-toggle-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: color-mix(in oklch, var(--card) 60%, var(--background));
+    border: 1px solid var(--border);
+  }
+
+  .process-mode-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .process-mode-segmented {
+    display: inline-flex;
+    background-color: var(--card);
+    padding: 3px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    gap: 2px;
+  }
+
+  .process-mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .process-mode-btn:hover:not(:disabled):not(.active) {
+    color: var(--foreground);
+    background-color: var(--accent);
+  }
+
+  .process-mode-btn.active {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+  }
+
+  .process-mode-btn.active:hover:not(:disabled) {
+    background-color: color-mix(in oklch, var(--primary) 88%, black);
+    color: var(--primary-foreground);
+  }
+
+  .process-mode-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .mode-btn-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* ── Host IDE Launcher Bar ── */
+  .process-ide-launcher-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: color-mix(in oklch, var(--card) 60%, var(--background));
+    border: 1px solid var(--border);
+  }
+
+  .process-ide-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .process-ide-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--primary);
+  }
+
+  .process-ide-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .process-ide-btn-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .process-ide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    height: 28px;
+    padding: 0 8px;
+  }
+
+  .process-ide-btn.antigravity-btn {
+    border-color: color-mix(in oklch, var(--primary) 35%, transparent);
+    color: var(--primary);
+  }
+
+  .ide-link-icon {
+    width: 11px;
+    height: 11px;
+    opacity: 0.7;
+  }
+
+  .ide-link-icon.spin {
+    animation: dl-ide-spin 1s linear infinite;
+  }
+
+  @keyframes dl-ide-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

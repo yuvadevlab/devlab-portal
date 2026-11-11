@@ -72,6 +72,12 @@ model RegisteredApp {
   maintenanceNote  String?        @map("maintenance_note")
   clientSecretHash String         @map("client_secret_hash")
   tenantId         String?        @map("tenant_id") @db.Uuid
+  workingDir       String?        @map("working_dir")
+  devCommand       String?        @default("pnpm dev") @map("dev_command")
+  buildCommand     String?        @default("pnpm build") @map("build_command")
+  startCommand     String?        @default("pnpm start") @map("start_command")
+  envVars          Json?          @map("env_vars")
+  dependsOn        String[]       @default([]) @map("depends_on")
   tenant           Tenant?        @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   apiKeys          ApiKey[]
   createdAt        DateTime       @default(now()) @map("created_at")

@@ -25,27 +25,31 @@ export class PlatformService {
    * Retrieves all enabled platform navigation items ordered by priority index.
    */
   async getNavigationItems() {
-    this.logger.info("Fetching enabled platform navigation items from database");
-    return this.prisma.navigationItem.findMany({
+    this.logger.info("[getNavigationItems] Querying enabled navigation items");
+    const items = await this.prisma.navigationItem.findMany({
       where: { isEnabled: true },
       orderBy: { order: "asc" },
     });
+    this.logger.info(`[getNavigationItems] Found ${items.length} navigation item(s)`);
+    return items;
   }
 
   /**
    * Retrieves all active platform tenants from the database.
    */
   async getTenants(user?: { sub?: string; role?: string; tenant_id?: string }) {
-    this.logger.info("Fetching active platform tenants from database");
     const isSuperAdmin = user?.role === UserRole.SUPER_ADMIN;
     const tenantId = user?.tenant_id;
+    this.logger.info(
+      `[getTenants] Querying tenants for actor=${user?.sub} (tenant=${tenantId || "all"})`,
+    );
 
     const where: Prisma.TenantWhereInput = { isActive: true };
     if (!isSuperAdmin && tenantId) {
       where.id = tenantId;
     }
 
-    return this.prisma.tenant.findMany({
+    const tenants = await this.prisma.tenant.findMany({
       where,
       select: {
         id: true,
@@ -58,6 +62,8 @@ export class PlatformService {
       },
       orderBy: { createdAt: "asc" },
     });
+    this.logger.info(`[getTenants] Found ${tenants.length} active tenant(s)`);
+    return tenants;
   }
 
   /**
@@ -73,13 +79,14 @@ export class PlatformService {
         .replace(/^-|-$/g, "");
     const slug = rawSlug || `tenant-${Date.now()}`;
 
+    this.logger.info(`[createTenant] Attempting to provision tenant: ${dto.name} (${slug})`);
     const existing = await this.prisma.tenant.findUnique({ where: { slug } });
     if (existing) {
+      this.logger.warn(`[createTenant] Tenant with slug "${slug}" already exists`);
       throw new BadRequestException(`Tenant with slug "${slug}" already exists`);
     }
 
-    this.logger.info(`Provisioning new tenant: ${dto.name} (${slug})`);
-    return this.prisma.tenant.create({
+    const tenant = await this.prisma.tenant.create({
       data: {
         name: dto.name.trim(),
         slug,
@@ -87,12 +94,19 @@ export class PlatformService {
         isActive: true,
       },
     });
+    this.logger.info(
+      `[createTenant] Tenant "${tenant.name}" (${tenant.id}) provisioned successfully`,
+    );
+    return tenant;
   }
 
   /**
    * Evaluates dynamic real-time platform telemetry and cluster component health.
    */
   async getSystemTelemetry(user?: { sub?: string; role?: string; tenant_id?: string }) {
+    this.logger.info(
+      `[getSystemTelemetry] Evaluating platform cluster telemetry for actor=${user?.sub}`,
+    );
     let dbConnected = false;
     let dbLatencyMs = 0;
     try {
@@ -101,7 +115,7 @@ export class PlatformService {
       dbLatencyMs = Date.now() - dbStart;
       dbConnected = true;
     } catch (err) {
-      this.logger.warn("Database health check ping failed:", err);
+      this.logger.warn(`[getSystemTelemetry] Database ping failed: ${(err as Error).message}`);
       dbConnected = false;
     }
 
@@ -113,7 +127,7 @@ export class PlatformService {
       redisLatencyMs = Date.now() - redisStart;
       redisConnected = pong === "PONG";
     } catch (err) {
-      this.logger.warn("Redis health check ping failed:", err);
+      this.logger.warn(`[getSystemTelemetry] Redis ping failed: ${(err as Error).message}`);
       redisConnected = false;
     }
 
@@ -157,6 +171,10 @@ export class PlatformService {
     const version = process.env.npm_package_version
       ? `DevLab Portal v${process.env.npm_package_version}`
       : "DevLab Portal v2.0.0";
+
+    this.logger.info(
+      `[getSystemTelemetry] Cluster status="${status}" dbLatency=${dbLatencyMs}ms redisLatency=${redisLatencyMs}ms`,
+    );
 
     return {
       status,

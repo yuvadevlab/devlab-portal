@@ -4,6 +4,9 @@
  * @module @devlab/portal-web/ui-copy/apps
  */
 
+import { APPS_WIZARD_COPY, APPS_DRAWER_COPY } from "./apps-wizard";
+import { APPS_SUPERVISOR_COPY, APPS_DEPENDENCY_SELECTOR_COPY } from "./apps-supervisor";
+
 export const APPS_COPY = {
   HEADER: {
     TITLE: "Ecosystem Apps & Services",
@@ -61,7 +64,13 @@ export const APPS_COPY = {
     SETTINGS_TOOLTIP: "Configure redirect URLs & origins",
     LAUNCH_TOOLTIP: "Open application in new tab",
     DEACTIVATE_BTN: "Deactivate",
-    ACTIVATE_BTN: "Re-enable Traffic",
+    ACTIVATE_BTN: "Activate",
+    DEACTIVATE_APP_TOOLTIP: "Deactivate application (suspend traffic)",
+    ACTIVATE_APP_TOOLTIP: "Activate application (resume traffic)",
+    ROUTING_SUSPENDED: "Routing Suspended",
+    LAUNCH_DISABLED_TOOLTIP: "Application traffic routing is currently suspended",
+    LAUNCH_OFFLINE_TOOLTIP:
+      "Application is currently offline. Start process in supervisor to launch console",
   },
   RECENT_ACTIVITY: {
     TITLE: "Recent activity",
@@ -69,6 +78,7 @@ export const APPS_COPY = {
     VIEW_LEDGER: "View audit ledger",
     EMPTY: "No recent operational events recorded yet.",
     MINUTES_AGO: "minutes ago",
+    INSPECT_TOOLTIP: "Inspect audit event receipt & payload",
     ACTIONS: {
       KEY_CREATED: "created an API key for",
       KEY_REVOKED: "revoked an API key for",
@@ -80,74 +90,19 @@ export const APPS_COPY = {
       USER_INVITED: "invited team member",
     },
   },
-  DRAWER: {
-    TITLE: "Application settings",
-    SUBTITLE: "Operational endpoints, OAuth2 callbacks, and origin whitelist.",
-    NAME_LABEL: "Application name",
-    DESC_LABEL: "Description",
-    ORIGIN_LABEL: "Web Client URL (Frontend)",
-    API_LABEL: "Backend API URL",
-    API_PLACEHOLDER: "e.g. http://localhost:4000",
-    HEALTH_LABEL: "Health check URL",
-    CALLBACKS_LABEL: "Callback URLs",
-    ADD_CALLBACK_BTN: "Add callback URL",
-    REMOVE_CALLBACK_ARIA: "Remove callback URL",
-    NOTE_LABEL: "Maintenance Note",
-    SAVE_BTN: "Save changes",
-    SUCCESS_ALERT: "Application settings saved",
-  },
+  DRAWER: APPS_DRAWER_COPY,
+  DEPENDENCY_SELECTOR: APPS_DEPENDENCY_SELECTOR_COPY,
+  SUPERVISOR: APPS_SUPERVISOR_COPY,
   KILL_SWITCH: {
-    TITLE_TRIGGER: "Emergency kill-switch",
-    TITLE_RESTORE: "Restore application",
+    TITLE_TRIGGER: "Deactivate Application",
+    TITLE_RESTORE: "Activate Application",
     WARNING_TRIGGER:
-      "In a connected cluster, Redis Pub/Sub evicts sessions and blocks traffic. This demo only updates local application status; no live infrastructure is affected.",
-    WARNING_RESTORE: "Restore access and resume incoming traffic.",
-    REASON_LABEL: "Reason for this action",
-    REASON_PLACEHOLDER: "Describe the incident or reason…",
-    CONFIRM_TRIGGER: "Suspend application",
-    CONFIRM_RESTORE: "Restore application",
+      "In a connected cluster, Redis Pub/Sub evicts active sessions and suspends gateway routing. This demo updates local application status.",
+    WARNING_RESTORE: "Restores gateway routing and resumes incoming traffic for this application.",
+    REASON_LABEL: "Incident / Maintenance Note (Optional)",
+    REASON_PLACEHOLDER: "Describe the incident reason or change ticket…",
+    CONFIRM_TRIGGER: "Deactivate Application",
+    CONFIRM_RESTORE: "Activate Application",
   },
-  WIZARD: {
-    STEP_1_TITLE: "Application identity",
-    STEP_2_TITLE: "Network & endpoints",
-    STEP_3_TITLE: "Credentials",
-    MODAL_TITLE: "Register new application",
-    MODAL_DESC: "Connect a service to your DevLab ecosystem.",
-    STEPS: ["Application identity", "Network & endpoints", "Credentials"] as const,
-    FIELDS: {
-      CALLBACK_HELP:
-        "Authorized OIDC redirect targets for OAuth2 authorization code flows. One per line.",
-      SCOPES_TITLE: "Ecosystem Permission Scopes",
-      NAME: "Application name",
-      NAME_PLACEHOLDER: "IncidentAI SRE War Room",
-      APP_ID: "App identifier",
-      APP_ID_PLACEHOLDER: "incidentai",
-      URL_SLUG: "URL slug",
-      DESCRIPTION: "Description",
-      DESCRIPTION_PLACEHOLDER: "What does your application do?",
-      ENVIRONMENT: "Target environment",
-      ORIGIN_URL: "Web Client URL (Frontend)",
-      ORIGIN_PLACEHOLDER: "http://localhost:3001",
-      API_URL: "Backend API URL",
-      API_PLACEHOLDER: "http://localhost:4001",
-      HEALTH_URL: "Health check URL",
-      HEALTH_PLACEHOLDER: "http://localhost:4001/api/v1/health",
-      CALLBACK_URLS: "Authorized callback URLs",
-      CALLBACK_PLACEHOLDER: "http://localhost:3001/api/auth/callback",
-    },
-    SCOPES: {
-      READ_DESC: "Read-only access to ecosystem resources and telemetry",
-      WRITE_DESC: "Write and update access across application domain",
-      EXECUTE_DESC: "Trigger execution workflows and runtime routines",
-      EVENTS_DESC: "Direct telemetry and audit log ingestion",
-    },
-    CREDENTIALS: {
-      SUCCESS_TITLE: "Application Registered Successfully",
-      SUCCESS_SUBTITLE: "Client credentials have been generated and cryptographic hashes recorded.",
-      CLIENT_ID: "Client ID",
-      CLIENT_SECRET: "Client Secret",
-      WARNING_COPY:
-        "Copy this Client Secret now. Only its SHA-256 hash is kept in this demo session; the secret cannot be shown again.",
-    },
-  },
+  WIZARD: APPS_WIZARD_COPY,
 } as const;

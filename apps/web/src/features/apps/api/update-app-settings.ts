@@ -26,8 +26,9 @@ export function useUpdateAppSettingsMutation(): UseMutationResult<
   return useMutation({
     mutationFn: ({ id, payload }: UpdateAppSettingsVariables) => api.updateAppSettings(id, payload),
     onSuccess: () => {
-      // Invalidate apps query cache so UI reflects updated routes
+      // Invalidate apps query cache and audit logs so UI reflects updated routes and logs immediately
       queryClient.invalidateQueries({ queryKey: appsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
     },
   });
 }

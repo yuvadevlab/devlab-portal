@@ -29,9 +29,12 @@ import {
   TokenDto,
 } from "./dto/auth.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Logger } from "@yuva-devlab/logger";
 
 @Controller()
 export class AuthController {
+  private readonly logger = new Logger("AuthController");
+
   constructor(
     private readonly authService: AuthService,
     private readonly oauthService: OAuthService,
@@ -43,6 +46,7 @@ export class AuthController {
   @Post("auth/login")
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto) {
+    this.logger.info("[login] Incoming login request");
     return this.authService.login(dto);
   }
 
@@ -52,6 +56,7 @@ export class AuthController {
   @Post("auth/register")
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto) {
+    this.logger.info("[register] Incoming registration request");
     return this.authService.register(dto);
   }
 
@@ -61,6 +66,7 @@ export class AuthController {
   @Post("auth/forgot-password")
   @HttpCode(HttpStatus.OK)
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    this.logger.info("[forgotPassword] Password recovery requested");
     return this.authService.forgotPassword(dto);
   }
 
@@ -70,6 +76,7 @@ export class AuthController {
   @Post("auth/reset-password")
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDto) {
+    this.logger.info("[resetPassword] Reset password confirmation submitted");
     return this.authService.resetPassword(dto);
   }
 
@@ -79,6 +86,7 @@ export class AuthController {
   @Get("auth/me")
   @UseGuards(AuthGuard)
   async getMe(@CurrentUser() user: { sub: string }) {
+    this.logger.info(`[getMe] Fetching current profile for actor=${user?.sub}`);
     return this.authService.getUserById(user.sub);
   }
 
@@ -91,7 +99,9 @@ export class AuthController {
     @Query("user_id") userId: string,
     @Res() res: Response,
   ) {
+    this.logger.info(`[authorize] OIDC authorization initiated for client_id=${dto.client_id}`);
     if (!userId) {
+      this.logger.warn("[authorize] Missing user_id parameter");
       throw new BadRequestException(
         "user_id query parameter is required to initiate authorization",
       );
@@ -106,6 +116,7 @@ export class AuthController {
   @Post("oauth/token")
   @HttpCode(HttpStatus.OK)
   async token(@Body() dto: TokenDto) {
+    this.logger.info(`[token] Token exchange request (grant_type=${dto.grant_type})`);
     return this.oauthService.exchangeToken(dto);
   }
 }

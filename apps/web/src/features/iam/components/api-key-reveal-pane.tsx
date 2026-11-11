@@ -16,7 +16,7 @@ interface ApiKeyRevealPaneProps {
 
 export const ApiKeyRevealPane: React.FC<ApiKeyRevealPaneProps> = ({ generatedKey }) => {
   return (
-    <div className="space-y-4">
+    <div className="settings-form-stack">
       <SecretRevealCard
         secret={generatedKey}
         warningMessage={UI_COPY.IAM.MODAL.SECRET_WARNING}

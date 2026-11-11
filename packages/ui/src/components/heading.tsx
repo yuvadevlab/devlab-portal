@@ -20,10 +20,10 @@ export const Heading: React.FC<HeadingProps> = ({ title, description, eyebrowLab
   return (
     <>
       <div className="eyebrow">
-        <Box className="size-3" />
+        <Box className="eyebrow-icon" />
         <span>{eyebrowLabel}</span>
         <span>/</span>
-        <span className="text-foreground font-medium">{title}</span>
+        <span className="eyebrow-current">{title}</span>
       </div>
 
       <div className="page-heading">
@@ -31,7 +31,7 @@ export const Heading: React.FC<HeadingProps> = ({ title, description, eyebrowLab
           <h1>{title}</h1>
           <p>{description}</p>
         </div>
-        {children && <div className="flex items-center gap-3">{children}</div>}
+        {children && <div className="page-heading-actions">{children}</div>}
       </div>
     </>
   );

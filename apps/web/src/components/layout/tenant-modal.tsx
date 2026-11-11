@@ -43,21 +43,24 @@ export const TenantModal: React.FC<TenantModalProps> = ({ isOpen, onClose, onCre
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="tenant-modal-content">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Plus className="text-primary size-4" />
+            <DialogTitle className="tenant-modal-title">
+              <Plus className="tenant-modal-icon" />
               {UI_COPY.COMMON.TENANT_MODAL.TITLE}
             </DialogTitle>
             <DialogDescription>{UI_COPY.COMMON.TENANT_MODAL.DESCRIPTION}</DialogDescription>
           </DialogHeader>
 
-          <DialogBody className="space-y-4 py-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="tenant-name-input">{UI_COPY.COMMON.TENANT_MODAL.NAME_LABEL}</Label>
+          <DialogBody className="tenant-modal-body">
+            <div className="form-field-group">
+              <Label htmlFor="tenant-name-input" className="form-field-label">
+                {UI_COPY.COMMON.TENANT_MODAL.NAME_LABEL}
+              </Label>
               <Input
                 id="tenant-name-input"
+                className="form-field-input"
                 placeholder={UI_COPY.COMMON.TENANT_MODAL.NAME_PLACEHOLDER}
                 value={tenantName}
                 onChange={(e) => setTenantName(e.target.value)}
@@ -68,11 +71,15 @@ export const TenantModal: React.FC<TenantModalProps> = ({ isOpen, onClose, onCre
           </DialogBody>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="modal-footer-btn">
               {UI_COPY.COMMON.ACTIONS.CANCEL}
             </Button>
-            <Button type="submit" disabled={!tenantName.trim()}>
-              <Plus className="mr-1.5 size-4" />
+            <Button
+              type="submit"
+              disabled={!tenantName.trim()}
+              className="modal-footer-btn modal-footer-btn-primary"
+            >
+              <Plus className="button-icon-prefix" />
               {UI_COPY.COMMON.TENANT_MODAL.SUBMIT_BTN}
             </Button>
           </DialogFooter>

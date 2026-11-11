@@ -12,12 +12,15 @@ dotenv.config({ path: path.resolve(__dirname, "../.env"), override: false });
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./app.module";
-import { Logger } from "@yuva-devlab/logger";
+import { Logger, correlationMiddleware, requestLogger } from "@yuva-devlab/logger";
 
 const logger = new Logger("PortalApiBootstrap");
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
+
+  app.use(correlationMiddleware({ serviceName: "devlab-portal-api" }));
+  app.use(requestLogger(new Logger("HTTP")));
 
   const configuredOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim())
@@ -54,7 +57,16 @@ async function bootstrap(): Promise<void> {
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "x-correlation-id",
+      "x-request-id",
+      "x-tenant-id",
+      "traceparent",
+    ],
+    exposedHeaders: ["x-correlation-id", "x-request-id"],
   });
 
   app.useGlobalPipes(
@@ -73,7 +85,8 @@ async function bootstrap(): Promise<void> {
   logger.info(`📊 GraphQL Playground: http://localhost:${port}/graphql`);
 }
 
-bootstrap().catch((err) => {
-  new Logger("Bootstrap").error("FATAL BOOTSTRAP ERROR:", err);
+bootstrap().catch((err: unknown) => {
+  const details = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
+  new Logger("Bootstrap").error(`FATAL BOOTSTRAP ERROR: ${details}`);
   process.exit(1);
 });

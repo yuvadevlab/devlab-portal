@@ -44,11 +44,11 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="header-actions-row">
       <span className="health-pill top-health">
         <span className="status-dot pulse" />
         {UI_COPY.COMMON.HEADER.CLUSTER_ONLINE}
-        <ChevronDown className="size-2.5" />
+        <ChevronDown className="health-chevron" />
       </span>
 
       <Button
@@ -58,11 +58,11 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         aria-label={UI_COPY.COMMON.HEADER.SEARCH_LABEL}
         onClick={onOpenCommand}
       >
-        <Search className="size-4" />
+        <Search className="action-icon" />
       </Button>
 
       {/* Ecosystem Launcher (Dynamic from API) */}
-      <div className="header-apps relative">
+      <div className="header-apps relative-anchor">
         <Button
           variant="ghost"
           size="icon"
@@ -70,17 +70,13 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
           aria-label={UI_COPY.COMMON.HEADER.ECOSYSTEM_LAUNCHER}
           onClick={() => toggle("apps")}
         >
-          <Grid2X2 className="size-4" />
+          <Grid2X2 className="action-icon" />
         </Button>
         {activeMenu === "apps" && (
           <div className="pop-menu ecosystem-popmenu">
-            <div className="flex items-center justify-between p-1">
-              <p className="text-muted-foreground text-[10px] font-semibold tracking-wider uppercase">
-                {UI_COPY.COMMON.HEADER.ECOSYSTEM_HEADER}
-              </p>
-              <span className="text-muted-foreground text-[10px] font-medium">
-                {registeredApps.length}
-              </span>
+            <div className="ecosystem-popmenu-header">
+              <p className="ecosystem-header-title">{UI_COPY.COMMON.HEADER.ECOSYSTEM_HEADER}</p>
+              <span className="ecosystem-count-badge">{registeredApps.length}</span>
             </div>
             <div className="ecosystem-grid">
               {registeredApps.map((app) => {
@@ -97,7 +93,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
                     title={`${app.name} (${app.originUrl})`}
                   >
                     <div className="ecosystem-icon-wrapper">
-                      <IconComponent className="size-4" />
+                      <IconComponent className="ecosystem-app-icon" />
                     </div>
                     <span className="ecosystem-app-title">{app.name}</span>
                     <span className="ecosystem-app-sub">{app.appId}</span>
@@ -105,9 +101,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
                 );
               })}
               {registeredApps.length === 0 && (
-                <div className="text-muted-foreground col-span-2 py-6 text-center text-xs">
-                  {UI_COPY.COMMON.HEADER.NO_APPS}
-                </div>
+                <div className="ecosystem-empty-msg">{UI_COPY.COMMON.HEADER.NO_APPS}</div>
               )}
             </div>
           </div>
@@ -115,7 +109,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
       </div>
 
       {/* Notification Bell */}
-      <div className="relative">
+      <div className="notifications-wrap">
         <Button
           variant="ghost"
           size="icon"
@@ -123,18 +117,18 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
           aria-label={UI_COPY.COMMON.HEADER.NOTIFICATIONS}
           onClick={() => toggle("notifications")}
         >
-          <Bell className="size-4" />
+          <Bell className="action-icon" />
         </Button>
         {activeMenu === "notifications" && (
           <div className="pop-menu">
-            <h3 className="flex items-center justify-between px-2 py-1.5 text-xs font-medium">
+            <h3 className="notifications-header">
               {UI_COPY.COMMON.HEADER.NOTIFICATIONS} <span className="tag">{auditLogs.length}</span>
             </h3>
-            <div className="divide-border mt-1 divide-y">
+            <div className="notifications-list">
               {auditLogs.slice(0, 3).map((item) => (
-                <div key={item.id} className="p-2 text-left">
-                  <p className="text-foreground text-xs font-medium">{item.targetId}</p>
-                  <p className="text-muted-foreground mt-0.5 text-[10px]">{item.action}</p>
+                <div key={item.id} className="notification-item">
+                  <p className="notification-title">{item.targetId}</p>
+                  <p className="notification-subtitle">{item.action}</p>
                 </div>
               ))}
             </div>
@@ -150,10 +144,10 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         aria-label={UI_COPY.COMMON.ACTIONS.FILTER}
         onClick={onToggleTheme}
       >
-        {isLight ? <Moon className="size-4" /> : <Sun className="size-4" />}
+        {isLight ? <Moon className="action-icon" /> : <Sun className="action-icon" />}
       </Button>
 
-      <span className="topbar-divider mx-1!" />
+      <span className="topbar-divider topbar-divider-tight" />
 
       {/* User Profile Dropdown */}
       <HeaderUserMenu

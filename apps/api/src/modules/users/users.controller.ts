@@ -18,9 +18,12 @@ import { UsersService } from "./users.service";
 import { AuthGuard } from "../auth/auth.guard";
 import { CreateUserDto } from "./dto/user.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Logger } from "@yuva-devlab/logger";
 
 @Controller("api/v1/users")
 export class UsersController {
+  private readonly logger = new Logger("UsersController");
+
   constructor(private readonly usersService: UsersService) {}
 
   /**
@@ -29,6 +32,7 @@ export class UsersController {
   @Get()
   @UseGuards(AuthGuard)
   async listUsers(@CurrentUser() user: { sub: string; role?: string; tenant_id?: string }) {
+    this.logger.info(`[listUsers] Fetching user list for actor=${user?.sub}`);
     return this.usersService.listUsers(user);
   }
 
@@ -45,6 +49,7 @@ export class UsersController {
     if (!user?.sub) {
       throw new UnauthorizedException("Authenticated user identifier is required");
     }
+    this.logger.info(`[createUser] Inviting user "${dto.email}" by actor=${user.sub}`);
     return this.usersService.createUser(dto, user);
   }
 }

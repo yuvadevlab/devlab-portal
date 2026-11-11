@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
       <head>
         <script dangerouslySetInnerHTML={{ __html: appearanceScript }} />
       </head>
-      <body className="bg-background text-foreground selection:bg-primary selection:text-primary-foreground min-h-screen antialiased">
+      <body className="portal-root">
         <ConfigProvider brand="portal" defaultTheme="dark" storageKey="portal-theme">
           <QueryProvider>
             {children}
