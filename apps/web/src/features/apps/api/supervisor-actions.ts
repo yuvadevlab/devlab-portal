@@ -6,6 +6,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supervisorFetch, supervisorQueryKeys } from "./supervisor-client";
+import { appsQueryKey } from "./get-apps";
 import type {
   ProcessStatus,
   RegisterProcessPayload,
@@ -81,6 +82,7 @@ export function useStartProcessMutation() {
       });
     },
     onSuccess: (_, { appId, tenantId }) => {
+      queryClient.invalidateQueries({ queryKey: appsQueryKey() });
       queryClient.invalidateQueries({ queryKey: supervisorQueryKeys.allStatuses(tenantId) });
       queryClient.invalidateQueries({ queryKey: supervisorQueryKeys.status(appId, tenantId) });
       queryClient.invalidateQueries({
@@ -104,6 +106,7 @@ export function useStopProcessMutation() {
       });
     },
     onSuccess: (_, { appId, tenantId }) => {
+      queryClient.invalidateQueries({ queryKey: appsQueryKey() });
       queryClient.invalidateQueries({ queryKey: supervisorQueryKeys.allStatuses(tenantId) });
       queryClient.invalidateQueries({ queryKey: supervisorQueryKeys.status(appId, tenantId) });
       queryClient.invalidateQueries({
@@ -138,6 +141,7 @@ export function useRestartProcessMutation() {
       });
     },
     onSuccess: (_, { appId, tenantId }) => {
+      queryClient.invalidateQueries({ queryKey: appsQueryKey() });
       queryClient.invalidateQueries({ queryKey: supervisorQueryKeys.allStatuses(tenantId) });
       queryClient.invalidateQueries({ queryKey: supervisorQueryKeys.status(appId, tenantId) });
       queryClient.invalidateQueries({

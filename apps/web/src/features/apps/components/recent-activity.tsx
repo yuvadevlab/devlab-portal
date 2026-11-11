@@ -6,12 +6,13 @@
  * @module @devlab/portal-web/features/apps/components/recent-activity
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Activity, ArrowUpRight, KeyRound, ShieldAlert, Plus, ChevronRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@devlab-portal/ui";
 import { TabKey, AuditAction } from "@/lib/constants/enums";
 import { UI_COPY } from "@/lib/ui-copy";
+import { AuditInspectorDrawer } from "@/features/audit/components/audit-inspector-drawer";
 import type { AuditLog } from "@/features/audit/types";
 import type { RegisteredApp } from "@/features/apps/types";
 
@@ -26,6 +27,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   apps = [],
   onNavigateTab,
 }) => {
+  const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
+
   const getEventIcon = (action: string) => {
     switch (action.toUpperCase().replace(/[\s.-]+/g, "_")) {
       case AuditAction.API_KEY_CREATED:
@@ -129,7 +132,20 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
 
       <div className="activity-list">
         {latestLogs.map((event) => (
-          <div className="activity-row" key={event.id}>
+          <div
+            className="activity-row"
+            key={event.id}
+            role="button"
+            tabIndex={0}
+            title={UI_COPY.APPS.RECENT_ACTIVITY.INSPECT_TOOLTIP}
+            onClick={() => setSelectedLog(event)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setSelectedLog(event);
+              }
+            }}
+          >
             <span className="activity-icon-wrap">{getEventIcon(event.action)}</span>
             <span>
               <span className="activity-actor">
@@ -153,6 +169,12 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
           <div className="activity-empty">{UI_COPY.APPS.RECENT_ACTIVITY.EMPTY}</div>
         )}
       </div>
+
+      <AuditInspectorDrawer
+        log={selectedLog}
+        isOpen={Boolean(selectedLog)}
+        onClose={() => setSelectedLog(null)}
+      />
     </section>
   );
 };

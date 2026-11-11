@@ -59,7 +59,7 @@ export const AppCard: React.FC<AppCardProps> = ({
           cssClass: "status",
           probeCode: UI_COPY.APPS.CARD.CODE_200,
           probeCodeClass: "probe-code-success",
-          canLaunch: true,
+          canLaunch: Boolean(app.originUrl),
         };
       case AppStatus.DEGRADED:
         return {
@@ -67,7 +67,7 @@ export const AppCard: React.FC<AppCardProps> = ({
           cssClass: "status degraded",
           probeCode: UI_COPY.APPS.CARD.CODE_DEGRADED,
           probeCodeClass: "probe-code-warn",
-          canLaunch: true,
+          canLaunch: Boolean(app.originUrl),
         };
       case AppStatus.STARTING:
         return {
@@ -111,7 +111,11 @@ export const AppCard: React.FC<AppCardProps> = ({
           <IconComponent className="app-icon-svg" />
         </div>
         <span className={statusMeta.cssClass}>
-          <span className={`status-dot ${isRoutingActive ? "pulse" : ""}`} />
+          <span
+            className={`status-dot ${
+              isRoutingActive && app.healthStatus === AppStatus.HEALTHY ? "pulse" : ""
+            }`}
+          />
           {statusMeta.label}
         </span>
       </div>
@@ -159,9 +163,11 @@ export const AppCard: React.FC<AppCardProps> = ({
           onClick={() => window.open(app.originUrl, "_blank", "noopener,noreferrer")}
           disabled={!statusMeta.canLaunch}
           title={
-            !statusMeta.canLaunch
+            !isRoutingActive
               ? `${UI_COPY.APPS.CARD.LAUNCH_DISABLED_TOOLTIP} (${app.name})`
-              : `${UI_COPY.APPS.CARD.LAUNCH_TOOLTIP}: ${app.name}`
+              : !statusMeta.canLaunch
+                ? `${UI_COPY.APPS.CARD.LAUNCH_OFFLINE_TOOLTIP} (${app.name})`
+                : `${UI_COPY.APPS.CARD.LAUNCH_TOOLTIP}: ${app.name}`
           }
         >
           {isRoutingActive ? UI_COPY.APPS.CARD.OPEN_CONSOLE : UI_COPY.APPS.CARD.ROUTING_SUSPENDED}

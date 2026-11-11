@@ -6,26 +6,43 @@
  * @module @devlab/portal-web/features/apps/components
  */
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { AppMetrics } from "./app-metrics";
 import { AppGrid } from "./app-grid";
 import { ProcessSupervisorDrawer } from "./process-supervisor-drawer";
-import { useAppsQuery } from "@/features/apps/api";
+import { useAppsQuery, useSupervisorStatusesQuery } from "@/features/apps/api";
 import { useAuditLogsQuery } from "@/features/audit/api";
 import { useDashboardModals } from "@/features/dashboard/context";
+import { AppStatus } from "@/lib/constants/enums";
 import type { RegisteredApp } from "@/features/apps/types";
 
 export function AppsView(): React.JSX.Element {
   const { data: apps = [] } = useAppsQuery();
+  const { data: supervisorStatuses = [] } = useSupervisorStatusesQuery();
   const { data: auditLogs = [] } = useAuditLogsQuery();
   const { openRegisterModal, openSettings, openKillSwitch, onNavigateTab } = useDashboardModals();
   const [selectedSupervisorApp, setSelectedSupervisorApp] = useState<RegisteredApp | null>(null);
 
+  const enrichedApps = useMemo(() => {
+    if (!supervisorStatuses.length) return apps;
+    const statusMap = new Map(supervisorStatuses.map((s) => [s.appId, s]));
+    return apps.map((app) => {
+      const sup = statusMap.get(app.appId);
+      if (sup?.state === "RUNNING" && app.healthStatus !== AppStatus.HEALTHY) {
+        return {
+          ...app,
+          healthStatus: AppStatus.HEALTHY,
+        };
+      }
+      return app;
+    });
+  }, [apps, supervisorStatuses]);
+
   return (
     <>
-      <AppMetrics apps={apps} />
+      <AppMetrics apps={enrichedApps} />
       <AppGrid
-        apps={apps}
+        apps={enrichedApps}
         auditLogs={auditLogs}
         onOpenRegisterModal={openRegisterModal}
         onOpenSettings={openSettings}

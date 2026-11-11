@@ -69,6 +69,23 @@
   gap: 13px;
   border-bottom: 1px solid var(--border);
   font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease;
+}
+
+.activity-row:hover {
+  background: var(--muted);
+}
+
+.activity-row:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.activity-row:hover .activity-arrow {
+  color: var(--foreground);
+  transform: translateX(2px);
 }
 
 .activity-row:last-child {
@@ -139,6 +156,9 @@
   color: var(--muted-foreground);
   width: 12px;
   height: 12px;
+  transition:
+    transform 150ms ease,
+    color 150ms ease;
 }
 
 .activity-event-icon {
