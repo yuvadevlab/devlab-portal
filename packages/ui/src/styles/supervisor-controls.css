@@ -32,7 +32,7 @@
 
   .process-mode-segmented {
     display: inline-flex;
-    background-color: var(--background);
+    background-color: var(--card);
     padding: 3px;
     border-radius: 6px;
     border: 1px solid var(--border);
@@ -54,14 +54,20 @@
     transition: all 0.15s ease;
   }
 
-  .process-mode-btn:hover:not(:disabled) {
+  .process-mode-btn:hover:not(:disabled):not(.active) {
     color: var(--foreground);
+    background-color: var(--accent);
   }
 
   .process-mode-btn.active {
     background-color: var(--primary);
     color: var(--primary-foreground);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+  }
+
+  .process-mode-btn.active:hover:not(:disabled) {
+    background-color: color-mix(in oklch, var(--primary) 88%, black);
+    color: var(--primary-foreground);
   }
 
   .process-mode-btn:disabled {
@@ -141,111 +147,5 @@
     to {
       transform: rotate(360deg);
     }
-  }
-
-  /* ── Prerequisite Dependencies Card ── */
-  .process-deps-card {
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    padding: 12px;
-    background-color: color-mix(in oklch, var(--card) 70%, var(--background));
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .process-deps-card.warning {
-    border-color: color-mix(in oklch, var(--warning, #f59e0b) 35%, transparent);
-    background-color: color-mix(in oklch, var(--warning, #f59e0b) 6%, var(--background));
-  }
-
-  .process-deps-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .process-deps-title-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .process-deps-icon {
-    width: 15px;
-    height: 15px;
-  }
-
-  .process-deps-icon.healthy {
-    color: var(--success, #10b981);
-  }
-
-  .process-deps-icon.warning {
-    color: var(--warning, #f59e0b);
-  }
-
-  .process-deps-title {
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .process-deps-start-btn {
-    height: 26px;
-    font-size: 11px;
-    padding: 0 8px;
-    gap: 4px;
-  }
-
-  .process-deps-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 4px;
-  }
-
-  .process-dep-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    background-color: var(--background);
-    border: 1px solid var(--border);
-  }
-
-  .process-dep-name {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-  }
-
-  .process-dep-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    font-weight: 500;
-  }
-
-  .process-dep-badge.running {
-    color: var(--success, #10b981);
-  }
-
-  .process-dep-badge.stopped {
-    color: var(--muted-foreground);
-  }
-
-  .dep-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: currentColor;
-  }
-
-  .dep-icon {
-    width: 12px;
-    height: 12px;
   }
 }

@@ -10,13 +10,25 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-top: 6px;
   }
 
   .runtime-preset-btn {
     height: 28px;
     font-size: 11px;
     padding: 0 10px;
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .runtime-preset-btn.selected,
+  .runtime-preset-btn[data-selected="true"] {
+    background-color: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+    border-color: var(--primary) !important;
+    font-weight: 600;
   }
 
   .runtime-label-with-status {
@@ -60,11 +72,6 @@
 
   .runtime-dep-btn {
     height: 30px;
-    font-size: 12px;
-  }
-
-  .settings-field-input-mono {
-    font-family: var(--font-mono);
     font-size: 12px;
   }
 }

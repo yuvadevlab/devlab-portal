@@ -8,7 +8,7 @@
  */
 
 import React from "react";
-import { CheckCircle2, AlertTriangle } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { SecretRevealCard, CopyButton, Label } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 
@@ -49,12 +49,6 @@ export const WizardStepCredentials: React.FC<WizardStepCredentialsProps> = ({
           warningMessage={UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}
           copyLabel={UI_COPY.COMMON.ACTIONS.COPY}
         />
-      </div>
-
-      {/* Security notice */}
-      <div className="credentials-warning-banner">
-        <AlertTriangle className="banner-icon-warning" />
-        <p className="banner-text">{UI_COPY.APPS.WIZARD.CREDENTIALS.WARNING_COPY}</p>
       </div>
     </div>
   );

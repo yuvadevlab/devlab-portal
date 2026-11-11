@@ -115,6 +115,11 @@ export class CreateAppDto {
   @IsArray()
   @IsOptional()
   dependsOn?: string[];
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  maintenanceNote?: string;
 }
 
 @InputType()

@@ -40,6 +40,13 @@
     --card-gap: 16px;
     --card-radius: 8px;
 
+    /* ── Modal & Dialog Metrics ── */
+    --dialog-padding-x: var(--space-6, 1.5rem);
+    --dialog-padding-y: var(--space-5, 1.25rem);
+    --dialog-padding: var(--dialog-padding-y) var(--dialog-padding-x);
+    --dialog-gap: var(--space-4, 1rem);
+    --dialog-radius: var(--radius-lg, 0.75rem);
+
     /* ── Interactive Controls & Heights ── */
     --control-height-sm: 2rem;
     --control-height-md: 2.25rem;
@@ -77,6 +84,9 @@
       --footer-padding-x: 16px;
       --page-padding-x: 16px;
       --page-padding-y: 16px;
+      --dialog-padding-x: var(--space-4, 1rem);
+      --dialog-padding-y: var(--space-4, 1rem);
+      --dialog-gap: var(--space-3, 0.75rem);
     }
   }
 }

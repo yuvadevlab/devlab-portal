@@ -108,7 +108,7 @@ sequenceDiagram
 | **`orchestrai`**    |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Validates client API keys and user tokens for AI agent execution sessions.                          |
 | **`devlab-logs`**   | Outbound  | HTTP POST            | `POST http://localhost:4013/logs`                                    | Streams administrative audit records, access history, and key management actions.                   |
 | **`vitalai`**       |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Authenticates athlete sessions and verifies trainer role permissions.                               |
-| **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8085/api/v1/incidents/webhook`                | Dispatches alerts if Redis pub/sub connection drops or database replication delays occur.           |
+| **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8001/api/v1/incidents/webhook`                | Dispatches alerts if Redis pub/sub connection drops or database replication delays occur.           |
 | **`devlab-guard`**  |  Inbound  | CLI Git Pre-commit   | `uv run devlab-guard scan --path .`                                  | Scans codebase to enforce 250-line rule, type safety, and zero magic strings.                       |
 | **`devlab-shared`** |  Static   | npm Package Imports  | `@yuva-devlab/ui`, `@yuva-devlab/tokens`, `@yuva-devlab/auth-client` | Standardized UI components, CSS design tokens, and shared auth client.                              |
 

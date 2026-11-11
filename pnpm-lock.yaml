@@ -291,14 +291,14 @@ importers:
         specifier: 7.10.0
         version: 7.10.0
       '@yuva-devlab/logger':
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.3.1
+        version: 1.3.1
       '@yuva-devlab/regex':
         specifier: ^0.3.0
         version: 0.3.0
       '@yuva-devlab/supervisor':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.2
+        version: 0.3.2
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -400,8 +400,8 @@ importers:
         specifier: ^5.67.2
         version: 5.104.1(react@19.3.0)
       '@yuva-devlab/auth-client':
-        specifier: ^1.1.2
-        version: 1.1.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^1.1.4
+        version: 1.1.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       date-fns:
         specifier: ^4.1.0
         version: 4.4.0
@@ -3045,8 +3045,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  '@yuva-devlab/auth-client@1.1.2':
-    resolution: {integrity: sha512-iiSM5mT0wZgZEd4t7iZOU1OwyBy40E9f3ZeaFBesW00jf3esNQHvcuzwH+CKfKNE+hcqVRjmGo/cuLCj0mIj2A==}
+  '@yuva-devlab/auth-client@1.1.4':
+    resolution: {integrity: sha512-Fo6Q3JyeWD3+jE69qTNb4LoHKY7QW8+tVRagHWo4lb/CsvMVwyLAQ+6Akg7ldog/c4R0hfArbK3skllgtsrYuQ==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -3054,14 +3054,14 @@ packages:
   '@yuva-devlab/errors@0.2.0':
     resolution: {integrity: sha512-eGunJ1eDbkGfEida3MJx9gaWRTeWjx/UPFUHUs+r7m++hkbShw4VKekaH5MMb7gIIc5sUmb4mESgir0TYnE30w==}
 
-  '@yuva-devlab/logger@1.3.0':
-    resolution: {integrity: sha512-BSTdWKRRhITe3tKFnfDdFjHYw3zMW0sLHr4Ln4mfudQpo6oCt5/ayaeLud6VhP/xy2ueInQEu290GtI3zePQaw==}
+  '@yuva-devlab/logger@1.3.1':
+    resolution: {integrity: sha512-cppWT5HUoIi6cZG6zhJC0HhEFjbdZyz5014cT24WP9hbDcNF0Be4VcI9A7Z4QbJFMlhSHkQxQzXt6k2ZRlR2OQ==}
 
   '@yuva-devlab/regex@0.3.0':
     resolution: {integrity: sha512-/vYCn3B9N7g4V8lSCFB7Cu5VqTsElMO+bY7TIXxi34IarmSvLJlMlrbC3SwWPxiZPpW4v/tFhWS42ewPXwMqeA==}
 
-  '@yuva-devlab/supervisor@0.3.0':
-    resolution: {integrity: sha512-ZT+akyS65yyeDhXFSGJwRyQSUU+TkIwEYstL3FHv7vKoZb1O5fUxJHuFcgyRsWHSofWZCUkzFQrjWVrkrZpg5A==}
+  '@yuva-devlab/supervisor@0.3.2':
+    resolution: {integrity: sha512-9eCUoc69xpX5BrmC9PTqEGYEvlnRtmp3auHJwNmdTYlcYXOWbY35IGW0eTogjgM0VtFOqSzXL76fzuYaoBSm4A==}
 
   '@yuva-devlab/tokens@2.0.0':
     resolution: {integrity: sha512-8qLAZ3V4YZlJL2u55mjr09dsMYi1nABv4HMhTsB/iiZhamkVSNkW4p5vPojBu8UiChdjLmVVe8wFhyKRLLesZg==}
@@ -9320,23 +9320,23 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@yuva-devlab/auth-client@1.1.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@yuva-devlab/auth-client@1.1.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@yuva-devlab/errors': 0.2.0
-      '@yuva-devlab/logger': 1.3.0
+      '@yuva-devlab/logger': 1.3.1
       lucide-react: 0.575.0(react@19.3.0)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
   '@yuva-devlab/errors@0.2.0': {}
 
-  '@yuva-devlab/logger@1.3.0': {}
+  '@yuva-devlab/logger@1.3.1': {}
 
   '@yuva-devlab/regex@0.3.0': {}
 
-  '@yuva-devlab/supervisor@0.3.0':
+  '@yuva-devlab/supervisor@0.3.2':
     dependencies:
-      '@yuva-devlab/logger': 1.3.0
+      '@yuva-devlab/logger': 1.3.1
       '@yuva-devlab/regex': 0.3.0
 
   '@yuva-devlab/tokens@2.0.0': {}

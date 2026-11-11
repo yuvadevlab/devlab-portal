@@ -28,7 +28,7 @@ export const SettingsAdvancedSection: React.FC<SettingsAdvancedSectionProps> = (
   onChangeMaintenanceNote,
 }) => {
   return (
-    <div className="settings-form-stack pt-tight">
+    <div className="settings-form-stack">
       <div className="form-grid-2">
         <div className="form-field-group">
           <Label htmlFor="drawer-app-color" className="form-field-label">

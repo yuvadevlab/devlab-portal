@@ -81,6 +81,7 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
 
   const state = status?.state || "STOPPED";
   const isRunning = state === "RUNNING" || state === "STARTING";
+  const isDeactivated = app?.isActive === false;
 
   const { data: logs = [], refetch: refetchLogs } = useSupervisorLogsQuery(appId, 100, tenantId, {
     enabled: isOpen && Boolean(appId),
@@ -172,12 +173,23 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
             </div>
           )}
 
+          {isDeactivated && (
+            <div className="supervisor-action-error" role="alert">
+              <AlertCircle className="supervisor-action-icon" />
+              <span>
+                <strong>{UI_COPY.APPS.SUPERVISOR.DEACTIVATED_TITLE}</strong>{" "}
+                {UI_COPY.APPS.SUPERVISOR.DEACTIVATED_BANNER}
+              </span>
+            </div>
+          )}
+
           <div className="supervisor-actions-row">
             <Button
               size="sm"
               variant="default"
               className="supervisor-action-btn"
-              disabled={isPending || state === "RUNNING"}
+              disabled={isPending || state === "RUNNING" || isDeactivated}
+              title={isDeactivated ? UI_COPY.APPS.SUPERVISOR.CANNOT_START_TOOLTIP : undefined}
               onClick={() =>
                 startMutation.mutate({ appId, tenantId, mode: executionMode, cascade: true })
               }
@@ -200,7 +212,8 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
               size="sm"
               variant="secondary"
               className="supervisor-action-btn"
-              disabled={isPending || state === "STOPPED"}
+              disabled={isPending || state === "STOPPED" || isDeactivated}
+              title={isDeactivated ? UI_COPY.APPS.SUPERVISOR.CANNOT_RESTART_TOOLTIP : undefined}
               onClick={() => restartMutation.mutate({ appId, tenantId, mode: executionMode })}
             >
               <RotateCw className="supervisor-action-icon" />{" "}

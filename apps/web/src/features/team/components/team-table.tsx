@@ -8,10 +8,10 @@
  */
 
 import React, { useState } from "react";
-import { UserPlus, Trash2, Search } from "lucide-react";
+import { UserPlus, Trash2 } from "lucide-react";
 import {
   Button,
-  Input,
+  SearchInput,
   Select,
   SelectTrigger,
   SelectValue,
@@ -123,11 +123,11 @@ export const TeamTable: React.FC<TeamTableProps> = ({
       {/* Toolbar */}
       <div className="app-toolbar">
         <div className="search-field">
-          <Search className="search-field-icon" />
-          <Input
+          <SearchInput
             placeholder={UI_COPY.TEAM.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onClear={() => setSearch("")}
             aria-label={UI_COPY.TEAM.TOOLBAR.SEARCH_PLACEHOLDER}
             className="app-search-input"
           />

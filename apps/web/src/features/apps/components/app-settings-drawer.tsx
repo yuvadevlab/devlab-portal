@@ -171,6 +171,7 @@ export const AppSettingsDrawer: React.FC<AppSettingsDrawerProps> = ({
               buildCommand={buildCommand}
               startCommand={startCommand}
               dependsOn={dependsOn}
+              currentAppId={app.appId}
               onChangeWorkingDir={setWorkingDir}
               onChangeDevCommand={setDevCommand}
               onChangeBuildCommand={setBuildCommand}

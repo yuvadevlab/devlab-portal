@@ -34,7 +34,7 @@ export class PlatformController {
   /**
    * Retrieves operational kill-switch and lifecycle status for a registered application.
    */
-  @Get("apps/:appId/status")
+  @Get(["apps/:appId/status", "status/:appId"])
   @HttpCode(HttpStatus.OK)
   async getAppStatus(@Param("appId") appId: string) {
     this.logger.info(`[getAppStatus] Querying status for app="${appId}"`);

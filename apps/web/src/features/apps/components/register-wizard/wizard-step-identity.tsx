@@ -52,12 +52,13 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
           <Input
             id="app-id"
             value={form.appId}
-            onChange={(e) =>
+            onChange={(e) => {
+              const val = e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "-");
               onChange({
-                appId: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "-"),
-                slug: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "-"),
-              })
-            }
+                appId: val,
+                slug: form.slug === form.appId || !form.slug ? val : form.slug,
+              });
+            }}
             placeholder={UI_COPY.APPS.WIZARD.FIELDS.APP_ID_PLACEHOLDER}
             required
             className="form-field-input-mono"
@@ -65,29 +66,46 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
         </div>
 
         <div className="form-field-group">
-          <Label htmlFor="app-env" className="form-field-label">
-            {UI_COPY.APPS.WIZARD.FIELDS.ENVIRONMENT}
+          <Label htmlFor="app-slug" className="form-field-label">
+            {UI_COPY.APPS.WIZARD.FIELDS.URL_SLUG}
           </Label>
-          <Select
-            value={form.environment}
-            onValueChange={(val) => onChange({ environment: val as AppEnvironment })}
-          >
-            <SelectTrigger id="app-env" className="form-field-select">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={AppEnvironment.LOCAL_DEV}>
-                {UI_COPY.COMMON.ENVIRONMENTS.LOCAL_DEV}
-              </SelectItem>
-              <SelectItem value={AppEnvironment.STAGING}>
-                {UI_COPY.COMMON.ENVIRONMENTS.STAGING}
-              </SelectItem>
-              <SelectItem value={AppEnvironment.PRODUCTION}>
-                {UI_COPY.COMMON.ENVIRONMENTS.PRODUCTION}
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <Input
+            id="app-slug"
+            value={form.slug}
+            onChange={(e) =>
+              onChange({
+                slug: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "-"),
+              })
+            }
+            placeholder={UI_COPY.APPS.WIZARD.FIELDS.APP_ID_PLACEHOLDER}
+            className="form-field-input-mono"
+          />
         </div>
+      </div>
+
+      <div className="form-field-group">
+        <Label htmlFor="app-env" className="form-field-label">
+          {UI_COPY.APPS.WIZARD.FIELDS.ENVIRONMENT}
+        </Label>
+        <Select
+          value={form.environment}
+          onValueChange={(val) => onChange({ environment: val as AppEnvironment })}
+        >
+          <SelectTrigger id="app-env" className="form-field-select">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={AppEnvironment.LOCAL_DEV}>
+              {UI_COPY.COMMON.ENVIRONMENTS.LOCAL_DEV}
+            </SelectItem>
+            <SelectItem value={AppEnvironment.STAGING}>
+              {UI_COPY.COMMON.ENVIRONMENTS.STAGING}
+            </SelectItem>
+            <SelectItem value={AppEnvironment.PRODUCTION}>
+              {UI_COPY.COMMON.ENVIRONMENTS.PRODUCTION}
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="form-field-group">
@@ -96,41 +114,12 @@ export const WizardStepIdentity: React.FC<WizardStepIdentityProps> = ({ form, on
         </Label>
         <Textarea
           id="app-desc"
-          rows={2}
+          rows={3}
           value={form.description}
           onChange={(e) => onChange({ description: e.target.value })}
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.DESCRIPTION_PLACEHOLDER}
           className="form-field-textarea"
         />
-      </div>
-
-      <div className="form-grid-2">
-        <div className="form-field-group">
-          <Label htmlFor="app-origin" className="form-field-label">
-            {UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_URL}
-          </Label>
-          <Input
-            id="app-origin"
-            value={form.originUrl}
-            onChange={(e) => onChange({ originUrl: e.target.value })}
-            placeholder={UI_COPY.APPS.WIZARD.FIELDS.ORIGIN_PLACEHOLDER}
-            required
-            className="form-field-input-mono"
-          />
-        </div>
-
-        <div className="form-field-group">
-          <Label htmlFor="app-health" className="form-field-label">
-            {UI_COPY.APPS.WIZARD.FIELDS.HEALTH_URL}
-          </Label>
-          <Input
-            id="app-health"
-            value={form.healthUrl}
-            onChange={(e) => onChange({ healthUrl: e.target.value })}
-            placeholder={UI_COPY.APPS.WIZARD.FIELDS.HEALTH_PLACEHOLDER}
-            className="form-field-input-mono"
-          />
-        </div>
       </div>
     </div>
   );

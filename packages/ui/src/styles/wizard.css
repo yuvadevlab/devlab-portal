@@ -74,13 +74,13 @@
   }
 
   .wizard-dialog-body {
-    padding: 16px 0;
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
   }
 
   .wizard-step-container {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--dialog-gap, 1rem);
   }
 
   .wizard-dialog-footer {

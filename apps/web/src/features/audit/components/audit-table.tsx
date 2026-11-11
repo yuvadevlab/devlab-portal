@@ -8,10 +8,11 @@
  */
 
 import React, { useState } from "react";
-import { Download, ShieldCheck, ArrowUpRight, Search } from "lucide-react";
+import { Download, ShieldCheck, ArrowUpRight } from "lucide-react";
 import {
   Button,
   Input,
+  SearchInput,
   Select,
   SelectTrigger,
   SelectValue,
@@ -101,11 +102,11 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
       {/* Toolbar */}
       <div className="app-toolbar">
         <div className="search-field">
-          <Search className="search-field-icon" />
-          <Input
+          <SearchInput
             placeholder={UI_COPY.AUDIT.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onClear={() => setSearch("")}
             aria-label={UI_COPY.AUDIT.TOOLBAR.SEARCH_PLACEHOLDER}
             className="app-search-input"
           />

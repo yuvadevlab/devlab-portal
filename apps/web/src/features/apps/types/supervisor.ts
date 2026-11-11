@@ -7,17 +7,35 @@
 /**
  * Operational lifecycle states for a managed application process.
  */
-export type ProcessState = "STOPPED" | "STARTING" | "RUNNING" | "STOPPING" | "CRASHED";
+export enum ProcessStateEnum {
+  STOPPED = "STOPPED",
+  STARTING = "STARTING",
+  RUNNING = "RUNNING",
+  STOPPING = "STOPPING",
+  CRASHED = "CRASHED",
+}
+export type ProcessState = `${ProcessStateEnum}`;
+export const ProcessState = ProcessStateEnum;
 
 /**
  * Execution environment mode (development with live reload vs compiled production).
  */
-export type ExecutionMode = "dev" | "prod";
+export enum ExecutionModeEnum {
+  DEV = "dev",
+  PROD = "prod",
+}
+export type ExecutionMode = `${ExecutionModeEnum}`;
+export const ExecutionMode = ExecutionModeEnum;
 
 /**
  * Supported desktop IDE targets for one-click repository opening.
  */
-export type SupportedIde = "antigravity" | "vscode" | "cursor";
+export enum SupportedIdeEnum {
+  ANTIGRAVITY = "antigravity",
+  VSCODE = "vscode",
+}
+export type SupportedIde = `${SupportedIdeEnum}`;
+export const SupportedIde = SupportedIdeEnum;
 
 /**
  * Dependency health and readiness snapshot for prerequisite services.
@@ -34,12 +52,25 @@ export interface DependencyStatus {
 /**
  * Log severity levels extracted from stream output.
  */
-export type ProcessLogLevel = "info" | "warn" | "error" | "debug";
+export enum ProcessLogLevelEnum {
+  INFO = "info",
+  WARN = "warn",
+  ERROR = "error",
+  DEBUG = "debug",
+}
+export type ProcessLogLevel = `${ProcessLogLevelEnum}`;
+export const ProcessLogLevel = ProcessLogLevelEnum;
 
 /**
  * Stream origin for process output.
  */
-export type ProcessLogStream = "stdout" | "stderr" | "system";
+export enum ProcessLogStreamEnum {
+  STDOUT = "stdout",
+  STDERR = "stderr",
+  SYSTEM = "system",
+}
+export type ProcessLogStream = `${ProcessLogStreamEnum}`;
+export const ProcessLogStream = ProcessLogStreamEnum;
 
 /**
  * Structured log record captured from a managed process.

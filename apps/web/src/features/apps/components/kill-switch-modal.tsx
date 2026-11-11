@@ -8,7 +8,7 @@
  */
 
 import React, { useState } from "react";
-import { AlertTriangle, Power, CheckCircle } from "lucide-react";
+import { AlertTriangle, Power, Zap } from "lucide-react";
 import {
   Button,
   Label,
@@ -70,7 +70,7 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
               {app.isActive ? (
                 <AlertTriangle className="modal-header-icon" />
               ) : (
-                <CheckCircle className="modal-header-icon" />
+                <Zap className="modal-header-icon" />
               )}
             </div>
             <div>
@@ -133,7 +133,7 @@ export const KillSwitchModal: React.FC<KillSwitchModalProps> = ({
               </>
             ) : (
               <>
-                <CheckCircle className="button-icon-prefix" />
+                <Zap className="button-icon-prefix" />
                 {UI_COPY.APPS.KILL_SWITCH.CONFIRM_RESTORE}
               </>
             )}

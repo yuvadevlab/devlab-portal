@@ -24,8 +24,10 @@ import { UI_COPY } from "@/lib/ui-copy";
 import { AppEnvironment } from "@/lib/constants";
 import { WizardStepIdentity } from "./wizard-step-identity";
 import { WizardStepRuntime } from "./wizard-step-runtime";
-import { WizardStepSecurity } from "./wizard-step-security";
+import { WizardStepNetwork } from "./wizard-step-network";
+import { WizardStepBranding } from "./wizard-step-branding";
 import { WizardStepCredentials } from "./wizard-step-credentials";
+import { buildCreateAppPayload } from "./wizard-payload.helper";
 import type { RegisterWizardFormState, CreateAppPayload } from "@/features/apps/types";
 
 interface RegisterAppModalProps {
@@ -42,13 +44,17 @@ const INITIAL_FORM: RegisterWizardFormState = {
   description: "",
   environment: AppEnvironment.LOCAL_DEV,
   originUrl: "",
+  apiUrl: "",
   healthUrl: "",
   callbackUrls: "",
+  themeColor: "",
+  iconUrl: "",
+  maintenanceNote: "",
   workingDir: "",
   devCommand: "",
   buildCommand: "",
   startCommand: "",
-  dependsOn: [],
+  dependsOn: ["devlab-portal"],
 };
 
 export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
@@ -57,7 +63,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
   onSubmit,
   onSuccess,
 }) => {
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generatedSecret, setGeneratedSecret] = useState<string>("");
   const [form, setForm] = useState<RegisterWizardFormState>(INITIAL_FORM);
@@ -68,42 +74,27 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
 
   const handleNext = async () => {
     if (currentStep === 1) {
-      if (!form.name || !form.appId || !form.originUrl) return;
+      if (!form.name.trim() || !form.appId.trim()) return;
       setCurrentStep(2);
       return;
     }
-
     if (currentStep === 2) {
       setCurrentStep(3);
       return;
     }
-
     if (currentStep === 3) {
+      if (!form.originUrl.trim()) return;
+      setCurrentStep(4);
+      return;
+    }
+
+    if (currentStep === 4) {
       setIsSubmitting(true);
       try {
-        const callbacks = form.callbackUrls
-          .split(/\r?\n|,/)
-          .map((u) => u.trim())
-          .filter(Boolean);
-
-        const result = await onSubmit({
-          name: form.name,
-          appId: form.appId,
-          slug: form.slug || form.appId,
-          description: form.description || undefined,
-          originUrl: form.originUrl,
-          healthUrl: form.healthUrl || undefined,
-          callbackUrls: callbacks.length > 0 ? callbacks : [form.originUrl],
-          environment: form.environment,
-          workingDir: form.workingDir || undefined,
-          devCommand: form.devCommand || undefined,
-          buildCommand: form.buildCommand || undefined,
-          startCommand: form.startCommand || undefined,
-          dependsOn: form.dependsOn && form.dependsOn.length > 0 ? form.dependsOn : undefined,
-        });
-
+        const payload = buildCreateAppPayload(form);
+        const result = await onSubmit(payload);
         setGeneratedSecret(result.clientSecret);
-        setCurrentStep(4);
+        setCurrentStep(5);
         onSuccess();
       } catch (err) {
         logger.error("Failed to register app:", err);
@@ -119,6 +110,11 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
     setForm(INITIAL_FORM);
     onClose();
   };
+
+  const isNextDisabled =
+    isSubmitting ||
+    (currentStep === 1 && (!form.name.trim() || !form.appId.trim())) ||
+    (currentStep === 3 && !form.originUrl.trim());
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
@@ -137,13 +133,14 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
                 {currentStep === 2 && UI_COPY.APPS.WIZARD.STEP_2_TITLE}
                 {currentStep === 3 && UI_COPY.APPS.WIZARD.STEP_3_TITLE}
                 {currentStep === 4 && UI_COPY.APPS.WIZARD.STEP_4_TITLE}
+                {currentStep === 5 && UI_COPY.APPS.WIZARD.STEP_5_TITLE}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
         <div className="wizard-dots-row">
-          {[1, 2, 3, 4].map((step) => (
+          {[1, 2, 3, 4, 5].map((step) => (
             <div
               key={step}
               className={`wizard-dot ${
@@ -156,19 +153,20 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
         <DialogBody className="wizard-dialog-body">
           {currentStep === 1 && <WizardStepIdentity form={form} onChange={handleFieldChange} />}
           {currentStep === 2 && <WizardStepRuntime form={form} onChange={handleFieldChange} />}
-          {currentStep === 3 && <WizardStepSecurity form={form} onChange={handleFieldChange} />}
-          {currentStep === 4 && (
+          {currentStep === 3 && <WizardStepNetwork form={form} onChange={handleFieldChange} />}
+          {currentStep === 4 && <WizardStepBranding form={form} onChange={handleFieldChange} />}
+          {currentStep === 5 && (
             <WizardStepCredentials appId={form.appId} clientSecret={generatedSecret} />
           )}
         </DialogBody>
 
         <DialogFooter className="wizard-dialog-footer">
-          {currentStep > 1 && currentStep < 4 ? (
+          {currentStep > 1 && currentStep < 5 ? (
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => setCurrentStep((s) => (s - 1) as 1 | 2 | 3)}
+              onClick={() => setCurrentStep((s) => (s - 1) as 1 | 2 | 3 | 4)}
               className="wizard-nav-btn"
             >
               <ArrowLeft className="button-icon-prefix" />
@@ -179,7 +177,7 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
           )}
 
           <div className="wizard-footer-actions">
-            {currentStep < 4 ? (
+            {currentStep < 5 ? (
               <>
                 <Button
                   type="button"
@@ -194,15 +192,12 @@ export const RegisterAppModal: React.FC<RegisterAppModalProps> = ({
                   type="button"
                   size="sm"
                   onClick={handleNext}
-                  disabled={
-                    isSubmitting ||
-                    (currentStep === 1 && (!form.name || !form.appId || !form.originUrl))
-                  }
+                  disabled={isNextDisabled}
                   className="wizard-nav-btn wizard-nav-primary"
                 >
                   {isSubmitting ? (
                     UI_COPY.COMMON.ACTIONS.REGISTERING
-                  ) : currentStep === 3 ? (
+                  ) : currentStep === 4 ? (
                     <>
                       {UI_COPY.COMMON.ACTIONS.REGISTER}
                       <Check className="button-icon-suffix" />

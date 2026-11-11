@@ -8,10 +8,10 @@
  */
 
 import React, { useState } from "react";
-import { Plus, KeyRound, RefreshCw, Ban, Search } from "lucide-react";
+import { Plus, KeyRound, RefreshCw, Ban } from "lucide-react";
 import {
   Button,
-  Input,
+  SearchInput,
   Select,
   SelectTrigger,
   SelectValue,
@@ -89,11 +89,11 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
       {/* Toolbar */}
       <div className="app-toolbar">
         <div className="search-field">
-          <Search className="search-field-icon" />
-          <Input
+          <SearchInput
             placeholder={UI_COPY.IAM.TOOLBAR.SEARCH_PLACEHOLDER}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onClear={() => setSearch("")}
             aria-label={UI_COPY.IAM.TOOLBAR.SEARCH_PLACEHOLDER}
             className="app-search-input"
           />

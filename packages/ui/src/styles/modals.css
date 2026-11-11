@@ -28,7 +28,8 @@
   .cmd-dialog-body {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--dialog-gap, 1rem);
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
   }
 
   .cmd-dialog-input {
@@ -116,8 +117,8 @@
   .tenant-modal-body {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 16px 0;
+    gap: var(--dialog-gap, 1rem);
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
   }
 
   /* ── Kill Switch Modal ── */
@@ -154,8 +155,13 @@
   .kill-switch-body {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 12px 0;
+    gap: var(--dialog-gap, 1rem);
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
+  }
+
+  /* ── Base Dialog Body Normalization ── */
+  .dl-dialog__body {
+    padding: var(--dialog-padding, 1.25rem 1.5rem);
   }
 
   .kill-switch-banner {

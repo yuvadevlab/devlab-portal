@@ -6,12 +6,13 @@
  * @module @devlab/portal-web/features/apps/components/settings-drawer/runtime
  */
 
-import React, { useEffect } from "react";
-import { Input, Label, Button } from "@devlab-portal/ui";
+import React, { useEffect, useState, useMemo } from "react";
+import { Input, Label, Button, cn } from "@devlab-portal/ui";
 import { FolderCheck, FolderX } from "lucide-react";
 import { UI_COPY } from "@/lib/ui-copy";
 import { STACK_PRESETS, type StackPreset } from "../../constants/stack-presets";
 import { useValidatePathMutation } from "../../api/supervisor";
+import { AppDependencySelector } from "../app-dependency-selector";
 
 interface SettingsRuntimeSectionProps {
   workingDir: string;
@@ -19,6 +20,7 @@ interface SettingsRuntimeSectionProps {
   buildCommand: string;
   startCommand: string;
   dependsOn: string[];
+  currentAppId?: string;
   onChangeWorkingDir: (val: string) => void;
   onChangeDevCommand: (val: string) => void;
   onChangeBuildCommand: (val: string) => void;
@@ -32,13 +34,26 @@ export const SettingsRuntimeSection: React.FC<SettingsRuntimeSectionProps> = ({
   buildCommand,
   startCommand,
   dependsOn,
+  currentAppId,
   onChangeWorkingDir,
   onChangeDevCommand,
   onChangeBuildCommand,
   onChangeStartCommand,
   onChangeDependsOn,
 }) => {
+  const [clickedPresetId, setClickedPresetId] = useState<string | null>(null);
   const validateMutation = useValidatePathMutation();
+
+  const activePresetId = useMemo(() => {
+    const match = STACK_PRESETS.find(
+      (p) =>
+        p.devCommand.trim() === (devCommand || "").trim() &&
+        p.buildCommand.trim() === (buildCommand || "").trim() &&
+        p.startCommand.trim() === (startCommand || "").trim(),
+    );
+    if (match) return match.id;
+    return clickedPresetId;
+  }, [devCommand, buildCommand, startCommand, clickedPresetId]);
 
   const handleBlurWorkingDir = () => {
     if (workingDir?.trim()) {
@@ -53,44 +68,41 @@ export const SettingsRuntimeSection: React.FC<SettingsRuntimeSectionProps> = ({
   }, [workingDir]);
 
   const handleApplyPreset = (preset: StackPreset) => {
+    setClickedPresetId(preset.id);
     onChangeDevCommand(preset.devCommand);
     onChangeBuildCommand(preset.buildCommand);
     onChangeStartCommand(preset.startCommand);
   };
 
-  const handleDependsOnChange = (raw: string) => {
-    const list = raw
-      .split(/[,;\s]+/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-    onChangeDependsOn(list);
-  };
-
   return (
-    <div className="settings-field-stack">
+    <div className="settings-form-stack">
       {/* Preset quick fill */}
       <div className="form-field-group">
-        <Label className="settings-field-label">Quick Presets</Label>
+        <Label className="form-field-label">{UI_COPY.APPS.DRAWER.PRESETS_LABEL}</Label>
         <div className="runtime-preset-row">
-          {STACK_PRESETS.map((preset) => (
-            <Button
-              key={preset.id}
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => handleApplyPreset(preset)}
-              className="runtime-preset-btn"
-            >
-              {preset.label}
-            </Button>
-          ))}
+          {STACK_PRESETS.map((preset) => {
+            const isSelected = activePresetId === preset.id;
+            return (
+              <Button
+                key={preset.id}
+                type="button"
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleApplyPreset(preset)}
+                className={cn("runtime-preset-btn", isSelected && "selected")}
+                data-selected={isSelected}
+              >
+                {preset.label}
+              </Button>
+            );
+          })}
         </div>
       </div>
 
       {/* Working Directory */}
       <div className="form-field-group">
         <div className="runtime-label-with-status">
-          <Label htmlFor="settings-working-dir" className="settings-field-label">
+          <Label htmlFor="settings-working-dir" className="form-field-label">
             {UI_COPY.APPS.DRAWER.WORKING_DIR_LABEL}
           </Label>
           {validateMutation.data && (
@@ -103,11 +115,11 @@ export const SettingsRuntimeSection: React.FC<SettingsRuntimeSectionProps> = ({
             >
               {validateMutation.data.exists && validateMutation.data.isDirectory ? (
                 <>
-                  <FolderCheck className="badge-icon" /> Valid directory
+                  <FolderCheck className="badge-icon" /> {UI_COPY.APPS.DRAWER.PATH_VALID}
                 </>
               ) : (
                 <>
-                  <FolderX className="badge-icon" /> Path not found
+                  <FolderX className="badge-icon" /> {UI_COPY.APPS.DRAWER.PATH_INVALID}
                 </>
               )}
             </span>
@@ -119,66 +131,68 @@ export const SettingsRuntimeSection: React.FC<SettingsRuntimeSectionProps> = ({
           onChange={(e) => onChangeWorkingDir(e.target.value)}
           onBlur={handleBlurWorkingDir}
           placeholder={UI_COPY.APPS.DRAWER.WORKING_DIR_PLACEHOLDER}
-          className="settings-field-input-mono"
+          className="form-field-input-mono"
         />
+        <p className="form-field-hint">{UI_COPY.APPS.DRAWER.WORKING_DIR_HINT}</p>
       </div>
 
       {/* Dev & Start commands */}
-      <div className="settings-field-grid">
+      <div className="form-grid-2">
         <div className="form-field-group">
-          <Label htmlFor="settings-dev-cmd" className="settings-field-label">
+          <Label htmlFor="settings-dev-cmd" className="form-field-label">
             {UI_COPY.APPS.DRAWER.DEV_CMD_LABEL}
           </Label>
           <Input
             id="settings-dev-cmd"
             value={devCommand}
-            onChange={(e) => onChangeDevCommand(e.target.value)}
+            onChange={(e) => {
+              setClickedPresetId(null);
+              onChangeDevCommand(e.target.value);
+            }}
             placeholder={UI_COPY.APPS.DRAWER.DEV_CMD_PLACEHOLDER}
-            className="settings-field-input-mono"
+            className="form-field-input-mono"
           />
         </div>
         <div className="form-field-group">
-          <Label htmlFor="settings-start-cmd" className="settings-field-label">
+          <Label htmlFor="settings-start-cmd" className="form-field-label">
             {UI_COPY.APPS.DRAWER.START_CMD_LABEL}
           </Label>
           <Input
             id="settings-start-cmd"
             value={startCommand}
-            onChange={(e) => onChangeStartCommand(e.target.value)}
+            onChange={(e) => {
+              setClickedPresetId(null);
+              onChangeStartCommand(e.target.value);
+            }}
             placeholder={UI_COPY.APPS.DRAWER.START_CMD_PLACEHOLDER}
-            className="settings-field-input-mono"
+            className="form-field-input-mono"
           />
         </div>
       </div>
 
       {/* Build Command */}
       <div className="form-field-group">
-        <Label htmlFor="settings-build-cmd" className="settings-field-label">
+        <Label htmlFor="settings-build-cmd" className="form-field-label">
           {UI_COPY.APPS.DRAWER.BUILD_CMD_LABEL}
         </Label>
         <Input
           id="settings-build-cmd"
           value={buildCommand}
-          onChange={(e) => onChangeBuildCommand(e.target.value)}
+          onChange={(e) => {
+            setClickedPresetId(null);
+            onChangeBuildCommand(e.target.value);
+          }}
           placeholder={UI_COPY.APPS.DRAWER.BUILD_CMD_PLACEHOLDER}
-          className="settings-field-input-mono"
+          className="form-field-input-mono"
         />
       </div>
 
       {/* Depends on */}
-      <div className="form-field-group">
-        <Label htmlFor="settings-depends-on" className="settings-field-label">
-          {UI_COPY.APPS.DRAWER.DEPENDS_ON_LABEL}
-        </Label>
-        <Input
-          id="settings-depends-on"
-          value={dependsOn.join(", ")}
-          onChange={(e) => handleDependsOnChange(e.target.value)}
-          placeholder={UI_COPY.APPS.DRAWER.DEPENDS_ON_PLACEHOLDER}
-          className="settings-field-input-mono"
-        />
-        <p className="settings-field-hint">Comma-separated app IDs that must run first.</p>
-      </div>
+      <AppDependencySelector
+        value={dependsOn}
+        onChange={onChangeDependsOn}
+        currentAppId={currentAppId}
+      />
     </div>
   );
 };

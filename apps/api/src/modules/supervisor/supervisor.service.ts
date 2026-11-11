@@ -137,6 +137,7 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     cascade = false,
   ): Promise<ProcessStatus> {
     const start = Date.now();
+    await this.assertAppActive(appId);
     const config = await this.resolveOrThrow(appId, tenantId);
 
     if (cascade && config.dependsOn && config.dependsOn.length > 0) {
@@ -195,6 +196,7 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
     mode?: ExecutionMode,
   ): Promise<ProcessStatus> {
     this.logger.info(`[restartProcess] Restarting process: ${appId} (mode=${mode || "dev"})`);
+    await this.assertAppActive(appId);
     this.assertTenantAccess(appId, tenantId);
     await this.ensureAppRegistered(appId, tenantId);
     return this.supervisor.restart(appId, mode);
@@ -222,6 +224,23 @@ export class SupervisorService implements OnModuleInit, OnModuleDestroy {
 
   onLog(listener: (entry: ProcessLogEntry) => void): void {
     this.supervisor.on("log", listener);
+  }
+
+  private async assertAppActive(appId: string): Promise<void> {
+    const app = await this.prisma.registeredApp.findUnique({
+      where: { appId },
+      select: { isActive: true, name: true, maintenanceNote: true },
+    });
+    if (app && !app.isActive) {
+      this.logger.warn(
+        `[assertAppActive] Rejected process execution for "${appId}": Deactivated via kill-switch`,
+      );
+      throw new ForbiddenException(
+        `Application "${app.name || appId}" is deactivated via Platform Kill-Switch${
+          app.maintenanceNote ? ` (${app.maintenanceNote})` : ""
+        }. Reactivate in Applications catalog to run.`,
+      );
+    }
   }
 
   private async resolveOrThrow(appId: string, tenantId?: string): Promise<AppProcessConfig> {

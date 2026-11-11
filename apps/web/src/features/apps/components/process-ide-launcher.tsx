@@ -23,8 +23,7 @@ export const ProcessIdeLauncher: React.FC<ProcessIdeLauncherProps> = ({ appId, t
 
   const handleLaunch = async (ide: SupportedIde) => {
     setActiveIde(ide);
-    const ideDisplayName =
-      ide === "antigravity" ? "Antigravity IDE" : ide === "vscode" ? "VS Code" : "Cursor";
+    const ideDisplayName = ide === "antigravity" ? "Antigravity IDE" : "VS Code";
 
     const promise = openIdeMutation.mutateAsync({ appId, ide, tenantId });
 
@@ -89,22 +88,6 @@ export const ProcessIdeLauncher: React.FC<ProcessIdeLauncherProps> = ({ appId, t
         >
           <span>VS Code</span>
           {activeIde === "vscode" ? (
-            <Loader2 className="ide-link-icon spin" />
-          ) : (
-            <ExternalLink className="ide-link-icon" />
-          )}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={openIdeMutation.isPending}
-          onClick={() => handleLaunch("cursor")}
-          className="process-ide-btn"
-          title="Open in Cursor"
-        >
-          <span>Cursor</span>
-          {activeIde === "cursor" ? (
             <Loader2 className="ide-link-icon spin" />
           ) : (
             <ExternalLink className="ide-link-icon" />

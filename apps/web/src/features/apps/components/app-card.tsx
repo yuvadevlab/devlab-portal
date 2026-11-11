@@ -14,14 +14,13 @@ import {
   ArrowUpRight,
   Settings2,
   Power,
+  Zap,
   Server,
   Terminal,
-  Code2,
 } from "lucide-react";
 import { Button, getNavIcon } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import { AppStatus } from "@/lib/constants/enums";
-import { useOpenIdeMutation } from "../api/supervisor";
 import type { RegisteredApp } from "@/features/apps/types";
 
 interface AppCardProps {
@@ -38,7 +37,6 @@ export const AppCard: React.FC<AppCardProps> = ({
   onOpenSupervisor,
 }) => {
   const isRoutingActive = app.isActive;
-  const openIdeMutation = useOpenIdeMutation();
 
   /**
    * Resolves visual indicators and status copy based on operational health probes and kill-switch status.
@@ -104,7 +102,7 @@ export const AppCard: React.FC<AppCardProps> = ({
 
   return (
     <article
-      className="app-card"
+      className={`app-card ${!isRoutingActive ? "is-suspended" : ""}`}
       style={appColor ? ({ "--app-color": appColor } as React.CSSProperties) : undefined}
     >
       {/* Top Header: Thematic Icon & Status Pulse */}
@@ -113,7 +111,7 @@ export const AppCard: React.FC<AppCardProps> = ({
           <IconComponent className="app-icon-svg" />
         </div>
         <span className={statusMeta.cssClass}>
-          <span className="status-dot" />
+          <span className={`status-dot ${isRoutingActive ? "pulse" : ""}`} />
           {statusMeta.label}
         </span>
       </div>
@@ -160,23 +158,17 @@ export const AppCard: React.FC<AppCardProps> = ({
           className="app-card-launch-btn"
           onClick={() => window.open(app.originUrl, "_blank", "noopener,noreferrer")}
           disabled={!statusMeta.canLaunch}
+          title={
+            !statusMeta.canLaunch
+              ? `${UI_COPY.APPS.CARD.LAUNCH_DISABLED_TOOLTIP} (${app.name})`
+              : `${UI_COPY.APPS.CARD.LAUNCH_TOOLTIP}: ${app.name}`
+          }
         >
-          {UI_COPY.APPS.CARD.OPEN_CONSOLE}
+          {isRoutingActive ? UI_COPY.APPS.CARD.OPEN_CONSOLE : UI_COPY.APPS.CARD.ROUTING_SUSPENDED}
           <ArrowUpRight className="app-card-launch-icon" />
         </Button>
 
         <div className="app-card-actions">
-          <Button
-            size="icon"
-            variant="ghost"
-            title={`Open ${app.name} in IDE`}
-            aria-label={`Open ${app.name} in IDE`}
-            disabled={openIdeMutation.isPending}
-            onClick={() => openIdeMutation.mutate({ appId: app.appId, ide: "antigravity" })}
-          >
-            <Code2 className="app-action-icon" />
-          </Button>
-
           {onOpenSupervisor && (
             <Button
               size="icon"
@@ -202,12 +194,24 @@ export const AppCard: React.FC<AppCardProps> = ({
           <Button
             size="icon"
             variant="ghost"
-            className="app-card-kill-btn"
-            title={`${isRoutingActive ? UI_COPY.APPS.CARD.DEACTIVATE_BTN : UI_COPY.APPS.CARD.ACTIVATE_BTN}: ${app.name}`}
-            aria-label={`${isRoutingActive ? UI_COPY.APPS.CARD.DEACTIVATE_BTN : UI_COPY.APPS.CARD.ACTIVATE_BTN}: ${app.name}`}
+            className={isRoutingActive ? "app-card-deactivate-btn" : "app-card-activate-btn"}
+            title={
+              isRoutingActive
+                ? `${UI_COPY.APPS.CARD.DEACTIVATE_APP_TOOLTIP} — ${app.name}`
+                : `${UI_COPY.APPS.CARD.ACTIVATE_APP_TOOLTIP} — ${app.name}`
+            }
+            aria-label={
+              isRoutingActive
+                ? `${UI_COPY.APPS.CARD.DEACTIVATE_APP_TOOLTIP} — ${app.name}`
+                : `${UI_COPY.APPS.CARD.ACTIVATE_APP_TOOLTIP} — ${app.name}`
+            }
             onClick={() => onToggleKillSwitch(app)}
           >
-            <Power className="app-action-icon app-action-danger" />
+            {isRoutingActive ? (
+              <Power className="app-action-icon app-action-deactivate" />
+            ) : (
+              <Zap className="app-action-icon app-action-activate" />
+            )}
           </Button>
         </div>
       </div>

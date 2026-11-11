@@ -54,6 +54,8 @@ export interface CreateAppPayload {
   slug?: string;
   description?: string;
   themeColor?: string;
+  iconUrl?: string;
+  maintenanceNote?: string;
   originUrl: string;
   apiUrl?: string;
   callbackUrls?: string[];

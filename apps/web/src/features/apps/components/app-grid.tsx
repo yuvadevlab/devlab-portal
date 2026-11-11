@@ -8,8 +8,8 @@
  */
 
 import React, { useState } from "react";
-import { Search, Plus } from "lucide-react";
-import { Button, Input } from "@devlab-portal/ui";
+import { Plus } from "lucide-react";
+import { Button, SearchInput } from "@devlab-portal/ui";
 import { AppCard } from "./app-card";
 import { RecentActivity } from "./recent-activity";
 import { TabKey } from "@/lib/constants/enums";
@@ -63,11 +63,11 @@ export const AppGrid: React.FC<AppGridProps> = ({
       <div className="app-toolbar">
         <div className="app-toolbar-search-group">
           <div className="search-field">
-            <Search className="search-field-icon" />
-            <Input
+            <SearchInput
               placeholder={UI_COPY.APPS.TOOLBAR.SEARCH_PLACEHOLDER}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onClear={() => setSearch("")}
               aria-label={UI_COPY.APPS.TOOLBAR.SEARCH_PLACEHOLDER}
               className="app-search-input"
             />
@@ -115,7 +115,7 @@ export const AppGrid: React.FC<AppGridProps> = ({
       {filteredApps.length === 0 && <p className="empty-state">{UI_COPY.APPS.CARD.EMPTY_SEARCH}</p>}
 
       {/* Live Recent Activity Feed */}
-      <RecentActivity auditLogs={auditLogs} onNavigateTab={onNavigateTab} />
+      <RecentActivity auditLogs={auditLogs} apps={apps} onNavigateTab={onNavigateTab} />
     </>
   );
 };

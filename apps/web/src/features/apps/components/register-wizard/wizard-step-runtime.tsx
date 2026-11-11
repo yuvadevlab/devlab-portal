@@ -6,12 +6,13 @@
  * @module @devlab/portal-web/features/apps/components/register-wizard/step2-runtime
  */
 
-import React, { useState, useEffect } from "react";
-import { Input, Label, Button } from "@devlab-portal/ui";
-import { CheckCircle2, AlertCircle, FolderCheck, FolderX } from "lucide-react";
+import React, { useState, useEffect, useMemo } from "react";
+import { Input, Label, Button, cn } from "@devlab-portal/ui";
+import { FolderCheck, FolderX } from "lucide-react";
 import { UI_COPY } from "@/lib/ui-copy";
 import { STACK_PRESETS, type StackPreset } from "../../constants/stack-presets";
 import { useValidatePathMutation } from "../../api/supervisor";
+import { AppDependencySelector } from "../app-dependency-selector";
 import type { RegisterWizardFormState } from "@/features/apps/types";
 
 interface WizardStepRuntimeProps {
@@ -20,11 +21,22 @@ interface WizardStepRuntimeProps {
 }
 
 export const WizardStepRuntime: React.FC<WizardStepRuntimeProps> = ({ form, onChange }) => {
-  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [clickedPresetId, setClickedPresetId] = useState<string | null>(null);
   const validateMutation = useValidatePathMutation();
 
+  const activePresetId = useMemo(() => {
+    const match = STACK_PRESETS.find(
+      (p) =>
+        p.devCommand.trim() === (form.devCommand || "").trim() &&
+        p.buildCommand.trim() === (form.buildCommand || "").trim() &&
+        p.startCommand.trim() === (form.startCommand || "").trim(),
+    );
+    if (match) return match.id;
+    return clickedPresetId;
+  }, [form.devCommand, form.buildCommand, form.startCommand, clickedPresetId]);
+
   const handleApplyPreset = (preset: StackPreset) => {
-    setSelectedPreset(preset.id);
+    setClickedPresetId(preset.id);
     onChange({
       devCommand: preset.devCommand,
       buildCommand: preset.buildCommand,
@@ -44,33 +56,28 @@ export const WizardStepRuntime: React.FC<WizardStepRuntimeProps> = ({ form, onCh
     }
   }, []);
 
-  const handleDependsOnToggle = (depAppId: string) => {
-    const current = form.dependsOn || [];
-    if (current.includes(depAppId)) {
-      onChange({ dependsOn: current.filter((id) => id !== depAppId) });
-    } else {
-      onChange({ dependsOn: [...current, depAppId] });
-    }
-  };
-
   return (
     <div className="wizard-step-container">
       {/* Stack Preset Selection */}
       <div className="form-field-group">
         <Label className="form-field-label">{UI_COPY.APPS.WIZARD.FIELDS.STACK_PRESET}</Label>
         <div className="runtime-preset-row">
-          {STACK_PRESETS.map((preset) => (
-            <Button
-              key={preset.id}
-              type="button"
-              variant={selectedPreset === preset.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleApplyPreset(preset)}
-              className="runtime-preset-btn"
-            >
-              {preset.label}
-            </Button>
-          ))}
+          {STACK_PRESETS.map((preset) => {
+            const isSelected = activePresetId === preset.id;
+            return (
+              <Button
+                key={preset.id}
+                type="button"
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleApplyPreset(preset)}
+                className={cn("runtime-preset-btn", isSelected && "selected")}
+                data-selected={isSelected}
+              >
+                {preset.label}
+              </Button>
+            );
+          })}
         </div>
       </div>
 
@@ -90,11 +97,11 @@ export const WizardStepRuntime: React.FC<WizardStepRuntimeProps> = ({ form, onCh
             >
               {validateMutation.data.exists && validateMutation.data.isDirectory ? (
                 <>
-                  <FolderCheck className="badge-icon" /> Valid directory
+                  <FolderCheck className="badge-icon" /> {UI_COPY.APPS.DRAWER.PATH_VALID}
                 </>
               ) : (
                 <>
-                  <FolderX className="badge-icon" /> Path not found
+                  <FolderX className="badge-icon" /> {UI_COPY.APPS.DRAWER.PATH_INVALID}
                 </>
               )}
             </span>
@@ -157,28 +164,11 @@ export const WizardStepRuntime: React.FC<WizardStepRuntimeProps> = ({ form, onCh
       </div>
 
       {/* Prerequisite Dependencies */}
-      <div className="form-field-group">
-        <Label className="form-field-label">{UI_COPY.APPS.WIZARD.FIELDS.DEPENDS_ON}</Label>
-        <div className="runtime-dep-pills">
-          <Button
-            type="button"
-            variant={(form.dependsOn || []).includes("devlab-portal") ? "secondary" : "outline"}
-            size="sm"
-            onClick={() => handleDependsOnToggle("devlab-portal")}
-            className="runtime-dep-btn"
-          >
-            {(form.dependsOn || []).includes("devlab-portal") ? (
-              <CheckCircle2 className="button-icon-prefix text-success" />
-            ) : (
-              <AlertCircle className="button-icon-prefix text-muted" />
-            )}
-            devlab-portal (Core Auth & Gateway)
-          </Button>
-        </div>
-        <p className="form-field-hint">
-          Ecosystem services that should be verified running before booting this app.
-        </p>
-      </div>
+      <AppDependencySelector
+        value={form.dependsOn || []}
+        onChange={(val) => onChange({ dependsOn: val })}
+        currentAppId={form.appId}
+      />
     </div>
   );
 };

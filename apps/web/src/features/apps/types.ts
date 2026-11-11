@@ -36,8 +36,12 @@ export interface RegisterWizardFormState {
   description: string;
   environment: AppEnvironment;
   originUrl: string;
+  apiUrl: string;
   healthUrl: string;
   callbackUrls: string;
+  themeColor: string;
+  iconUrl: string;
+  maintenanceNote: string;
   generatedSecret?: string;
   workingDir?: string;
   devCommand?: string;

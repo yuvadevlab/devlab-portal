@@ -28,7 +28,7 @@ export const SettingsEndpointsSection: React.FC<SettingsEndpointsSectionProps> =
   onChangeHealthUrl,
 }) => {
   return (
-    <div className="settings-form-stack pt-tight">
+    <div className="settings-form-stack">
       <div className="form-field-group">
         <Label htmlFor="drawer-app-origin" className="form-field-label">
           {UI_COPY.APPS.DRAWER.ORIGIN_LABEL}

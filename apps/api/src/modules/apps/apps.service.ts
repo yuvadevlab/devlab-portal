@@ -11,8 +11,6 @@ import {
   ForbiddenException,
 } from "@nestjs/common";
 import type { AppEnvironment, Prisma } from "@prisma/client";
-import crypto from "node:crypto";
-import bcrypt from "bcryptjs";
 import { PrismaService } from "../../prisma/prisma.service";
 import { RedisService } from "../redis/redis.service";
 import { EventsGateway } from "../websocket/events.gateway";
@@ -22,6 +20,8 @@ import { isValidUuid } from "@yuva-devlab/regex";
 import { Logger } from "@yuva-devlab/logger";
 import { probeAppHealth } from "./apps-health-checker";
 import { buildAppUpdateData } from "./apps-update.helper";
+import { provisionClientSecret } from "./apps-crypto.helper";
+import { SupervisorService } from "../supervisor/supervisor.service";
 
 @Injectable()
 export class AppsService {
@@ -31,6 +31,7 @@ export class AppsService {
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
     private readonly eventsGateway: EventsGateway,
+    private readonly supervisorService: SupervisorService,
   ) {}
 
   /**
@@ -98,8 +99,7 @@ export class AppsService {
       throw new ConflictException(`App with ID "${dto.appId}" or slug already exists`);
     }
 
-    const rawSecret = dto.clientSecret || `dl_sec_${crypto.randomBytes(24).toString("hex")}`;
-    const secretHash = await bcrypt.hash(rawSecret, 10);
+    const { rawSecret, secretHash } = await provisionClientSecret(dto.clientSecret);
     const slug = dto.slug || dto.appId.toLowerCase().replace(/[^a-z0-9_-]/g, "-");
 
     const app = await this.prisma.registeredApp.create({
@@ -115,11 +115,13 @@ export class AppsService {
         callbackUrls:
           dto.callbackUrls && dto.callbackUrls.length > 0 ? dto.callbackUrls : [dto.originUrl],
         healthUrl:
-          dto.healthUrl || (dto.apiUrl ? `${dto.apiUrl}/health` : `${dto.originUrl}/api/health`),
+          dto.healthUrl ||
+          (dto.apiUrl ? `${dto.apiUrl}/api/v1/health` : `${dto.originUrl}/api/v1/health`),
         environment: (dto.environment as AppEnvironment) || "local_dev",
         isActive: true,
         clientSecretHash: secretHash,
         tenantId: actor.tenant_id ?? null,
+        maintenanceNote: dto.maintenanceNote ?? null,
         workingDir: dto.workingDir ?? null,
         devCommand: dto.devCommand ?? "pnpm dev",
         buildCommand: dto.buildCommand ?? "pnpm build",
@@ -134,7 +136,7 @@ export class AppsService {
         action: AuditAction.APP_REGISTERED,
         actorId: actor.sub,
         targetType: AuditTargetType.APP,
-        targetId: app.id,
+        targetId: app.appId,
         metadata: { appId: app.appId, name: app.name, environment: app.environment },
       },
     });
@@ -186,8 +188,10 @@ export class AppsService {
         action: AuditAction.APP_UPDATED,
         actorId: actor.sub,
         targetType: AuditTargetType.APP,
-        targetId: app.id,
-        metadata: JSON.parse(JSON.stringify({ appId: updated.appId, changes: dto })),
+        targetId: updated.appId,
+        metadata: JSON.parse(
+          JSON.stringify({ appId: updated.appId, name: updated.name, changes: dto }),
+        ),
       },
     });
 
@@ -225,9 +229,10 @@ export class AppsService {
         action: dto.isActive ? AuditAction.APP_ACTIVATED : AuditAction.APP_DEACTIVATED,
         actorId: actor.sub,
         targetType: AuditTargetType.APP,
-        targetId: app.id,
+        targetId: app.appId,
         metadata: {
           appId: app.appId,
+          name: app.name,
           previousState: app.isActive,
           newState: dto.isActive,
           maintenanceNote: dto.maintenanceNote,
@@ -242,6 +247,20 @@ export class AppsService {
       maintenanceNote: updated.maintenanceNote,
       updatedAt: updated.updatedAt,
     };
+
+    // When Kill Switch is engaged (isActive = false), immediately terminate the running process
+    if (!dto.isActive) {
+      this.logger.warn(
+        `[updateAppStatus] Kill switch engaged for "${app.name}" (${app.appId}): terminating supervisor process`,
+      );
+      try {
+        await this.supervisorService.stopProcess(app.appId, app.tenantId ?? actor.tenant_id, true);
+      } catch (err) {
+        this.logger.warn(
+          `[updateAppStatus] Failed terminating supervisor process for "${app.appId}": ${(err as Error).message}`,
+        );
+      }
+    }
 
     await this.redis.publish("app.state.changed", JSON.stringify(payload));
     this.eventsGateway.broadcastAppStateChanged(payload);
