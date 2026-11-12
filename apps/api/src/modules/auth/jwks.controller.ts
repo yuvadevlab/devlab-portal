@@ -28,7 +28,7 @@ export class JwksController {
   @Get("openid-configuration")
   @Header("Content-Type", "application/json")
   getOpenIdConfiguration() {
-    const issuer = process.env.OIDC_ISSUER || "http://localhost:3015";
+    const issuer = process.env.OIDC_ISSUER || "http://localhost:4000";
     return {
       issuer,
       authorization_endpoint: `${issuer}/oauth/authorize`,

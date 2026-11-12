@@ -4,7 +4,7 @@
  * @module @devlab/portal-web/lib/server-fetch
  */
 
-const SERVER_API_BASE = process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL || "http://localhost:3015";
+const SERVER_API_BASE = process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL || "http://localhost:4000";
 
 /**
  * Server-side fetch helper for prefetching queries in Next.js Server Components.

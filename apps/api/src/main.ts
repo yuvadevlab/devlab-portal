@@ -27,9 +27,10 @@ async function bootstrap(): Promise<void> {
     : [
         "http://localhost:3000",
         "http://localhost:3001",
-        "http://localhost:3005",
-        "http://localhost:3020",
-        "http://localhost:3025",
+        "http://localhost:3002",
+        "http://localhost:3003",
+        "http://localhost:3004",
+        "http://localhost:3030",
       ];
 
   app.enableCors({
@@ -77,7 +78,7 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  const port = process.env.PORT || 3015;
+  const port = process.env.PORT || 4000;
   await app.listen(port);
 
   logger.info(`🚀 DevLab Portal API Control Plane listening on http://localhost:${port}`);
