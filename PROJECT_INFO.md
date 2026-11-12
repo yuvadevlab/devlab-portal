@@ -102,15 +102,15 @@ sequenceDiagram
 
 ### 3.1 Inter-Repository Integration Matrix
 
-| Ecosystem Member    | Direction | Protocol & Transport | Exact Payload Contract & Endpoint                                    | Purpose & Operational Behavior                                                                      |
-| :------------------ | :-------: | :------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- |
-| **`finai`**         |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Verifies user session tokens; redirects unauthenticated web users to `http://localhost:3010/login`. |
-| **`orchestrai`**    |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Validates client API keys and user tokens for AI agent execution sessions.                          |
-| **`devlab-logs`**   | Outbound  | HTTP POST            | `POST http://localhost:4013/logs`                                    | Streams administrative audit records, access history, and key management actions.                   |
-| **`knowledg-ai`**   |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Authenticates knowledge synthesis sessions and verifies tenant retrieval permissions (Planned).     |
-| **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8001/api/v1/incidents/webhook`                | Dispatches alerts if Redis pub/sub connection drops or database replication delays occur.           |
-| **`devlab-guard`**  |  Inbound  | CLI Git Pre-commit   | `uv run devlab-guard scan --path .`                                  | Scans codebase to enforce 250-line rule, type safety, and zero magic strings.                       |
-| **`devlab-shared`** |  Static   | npm Package Imports  | `@yuva-devlab/ui`, `@yuva-devlab/tokens`, `@yuva-devlab/auth-client` | Standardized UI components, CSS design tokens, and shared auth client.                              |
+| Ecosystem Member    | Direction | Protocol & Transport | Exact Payload Contract & Endpoint                                     | Purpose & Operational Behavior                                                                      |
+| :------------------ | :-------: | :------------------- | :-------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- |
+| **`finai`**         |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4000/.well-known/jwks.json` (Prod: `:4010`)     | Verifies user session tokens; redirects unauthenticated web users to `:3000/login` (Prod: `:3010`). |
+| **`orchestrai`**    |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4000/.well-known/jwks.json` (Prod: `:4010`)     | Validates client API keys and user tokens for AI agent execution sessions.                          |
+| **`devlab-logs`**   | Outbound  | HTTP POST            | `POST http://localhost:4003/logs` (Prod: `:4013`)                     | Streams administrative audit records, access history, and key management actions.                   |
+| **`knowledg-ai`**   |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4000/.well-known/jwks.json` (Prod: `:4010`)     | Authenticates knowledge synthesis sessions and verifies tenant retrieval permissions (Planned).     |
+| **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8001/api/v1/incidents/webhook` (Prod: `:8011`) | Dispatches alerts if Redis pub/sub connection drops or database replication delays occur.           |
+| **`devlab-guard`**  |  Inbound  | CLI Git Pre-commit   | `uv run devlab-guard scan --path .`                                   | Scans codebase to enforce 250-line rule, type safety, and zero magic strings.                       |
+| **`devlab-shared`** |  Static   | npm Package Imports  | `@yuva-devlab/ui`, `@yuva-devlab/tokens`, `@yuva-devlab/auth-client`  | Standardized UI components, CSS design tokens, and shared auth client.                              |
 
 ---
 
