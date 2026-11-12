@@ -15,7 +15,7 @@ export const SETTINGS_COPY = {
     TITLE: "Public signing keys",
     DESCRIPTION: "Public keys used by ecosystem services to verify access tokens.",
     JWKS_LABEL: "JWKS endpoint",
-    JWKS_NOTE: "Cluster endpoint · Live identity provider active on port 3015",
+    JWKS_NOTE: "Cluster endpoint · Live identity provider active on port 4000",
     PEM_LABEL: "Public key PEM",
   },
   IDENTITY: {
@@ -48,7 +48,7 @@ export const SETTINGS_COPY = {
   CONNECTION: {
     TITLE: "Cluster connection",
     PORT: "Portal API port",
-    PORT_VAL: ":3015",
+    PORT_VAL: ":4000",
     TRANSPORT: "Transport",
     TRANSPORT_VAL: "Redis Pub/Sub",
     WARNING: "Protected by DevLab RBAC and cryptographic key verification.",

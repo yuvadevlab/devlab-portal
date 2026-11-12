@@ -163,7 +163,7 @@ export class PlatformService {
       }
     }
 
-    const port = Number(process.env.PORT) || 3015;
+    const port = Number(process.env.PORT) || 4000;
     const isProd = process.env.NODE_ENV === "production";
     const isStaging = process.env.NODE_ENV === "staging";
     const environmentLabel = isProd ? "Production" : isStaging ? "Staging" : "Local Dev";
