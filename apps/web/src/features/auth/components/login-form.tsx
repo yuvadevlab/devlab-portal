@@ -13,6 +13,7 @@ import { toast } from "@devlab-portal/ui";
 import { API_BASE_URL, getAuthToken, purgeClientSession, api } from "@/lib/api-client";
 import { isJwtExpired, parseJwtClaims } from "@/lib/jwt";
 import { APP_ROUTES } from "@/lib/constants/routes";
+import { UI_COPY } from "@/lib/ui-copy";
 import { AUTH_COPY } from "@/lib/ui-copy/auth";
 import { AuthToastType, AuthQueryParamKey, AuthBrandTheme } from "../types";
 import {
@@ -245,6 +246,11 @@ export function LoginForm(): React.JSX.Element {
       forgotPasswordUrl={forgotPasswordUrl}
       logo={logo}
       fullPage
+      legalConfig={{
+        appName: UI_COPY.COMMON.BRAND.APP_NAME,
+        version: UI_COPY.COMMON.BRAND.VERSION,
+        showLinks: true,
+      }}
     />
   );
 }

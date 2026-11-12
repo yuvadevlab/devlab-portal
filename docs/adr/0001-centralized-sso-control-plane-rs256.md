@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-The DevLab ecosystem consists of multiple distinct web applications (`FinAI`, `OrchestrAI`, `VitalAI`, `DevLab Logs`). Managing discrete credentials per application creates credential fatigue and operational risk.
+The DevLab ecosystem consists of multiple distinct web applications (`FinAI`, `OrchestrAI`, `DevLab Logs`, and future `KnowledgeAI`). Managing discrete credentials per application creates credential fatigue and operational risk.
 
 ## Decision
 

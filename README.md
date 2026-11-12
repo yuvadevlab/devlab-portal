@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/redis-cache-DC382D" alt="Redis" />
 </p>
 
-**DevLab Portal** is the centralized control plane, tenant management, and API key governance platform for the DevLab ecosystem. It coordinates authorization, usage quotas, emergency kill-switches, and audit logging for AI agent gateways (OrchestrAI, FinAI, VitalAI).
+**DevLab Portal** is the centralized control plane, tenant management, and API key governance platform for the DevLab ecosystem. It coordinates authorization, usage quotas, emergency kill-switches, and audit logging for AI agent gateways (OrchestrAI, FinAI, and future KnowledgeAI).
 
 ---
 

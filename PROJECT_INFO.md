@@ -6,7 +6,7 @@
 
 ### 1.1 Executive Product Summary
 
-**DevLab Portal** is the centralized developer management platform, API key lifecycle authority, OIDC/JWKS identity provider, and governance control plane for the entire DevLab multi-repo ecosystem (`orchestrai`, `finai`, `devlab-logs`, `vitalai`, `incidentai`).
+**DevLab Portal** is the centralized developer management platform, API key lifecycle authority, OIDC/JWKS identity provider, and governance control plane for the entire DevLab multi-repo ecosystem (`orchestrai`, `finai`, `devlab-logs`, `incidentai`, and future `knowledg-ai`).
 
 In a distributed AI and financial services infrastructure, distributed security cannot rely on fragmented, decentralized key validation or slow database queries. DevLab Portal provides:
 
@@ -107,7 +107,7 @@ sequenceDiagram
 | **`finai`**         |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Verifies user session tokens; redirects unauthenticated web users to `http://localhost:3010/login`. |
 | **`orchestrai`**    |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Validates client API keys and user tokens for AI agent execution sessions.                          |
 | **`devlab-logs`**   | Outbound  | HTTP POST            | `POST http://localhost:4013/logs`                                    | Streams administrative audit records, access history, and key management actions.                   |
-| **`vitalai`**       |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Authenticates athlete sessions and verifies trainer role permissions.                               |
+| **`knowledg-ai`**   |  Inbound  | HTTP & OIDC JWKS     | `GET http://localhost:4010/.well-known/jwks.json`                    | Authenticates knowledge synthesis sessions and verifies tenant retrieval permissions (Planned).     |
 | **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8001/api/v1/incidents/webhook`                | Dispatches alerts if Redis pub/sub connection drops or database replication delays occur.           |
 | **`devlab-guard`**  |  Inbound  | CLI Git Pre-commit   | `uv run devlab-guard scan --path .`                                  | Scans codebase to enforce 250-line rule, type safety, and zero magic strings.                       |
 | **`devlab-shared`** |  Static   | npm Package Imports  | `@yuva-devlab/ui`, `@yuva-devlab/tokens`, `@yuva-devlab/auth-client` | Standardized UI components, CSS design tokens, and shared auth client.                              |

@@ -47,6 +47,12 @@ export class EventsGateway
    * Subscribes to Redis Pub/Sub topic to relay distributed state updates to connected browsers.
    */
   async onModuleInit(): Promise<void> {
+    if (!this.redis.isAvailable()) {
+      this.logger.warn(
+        "Redis unavailable at bootstrap — skipping 'app.state.changed' pub/sub subscription. Gateway running in local mode.",
+      );
+      return;
+    }
     const subscriber = this.redis.getSubscriber();
     await subscriber.subscribe("app.state.changed", (err) => {
       if (err) {

@@ -97,6 +97,19 @@ export class PlatformService {
     this.logger.info(
       `[createTenant] Tenant "${tenant.name}" (${tenant.id}) provisioned successfully`,
     );
+
+    await this.redis.publish(
+      "tenant.events",
+      JSON.stringify({
+        event: "tenant.created",
+        tenantId: tenant.id,
+        slug: tenant.slug,
+        name: tenant.name,
+        plan: tenant.plan,
+        timestamp: new Date().toISOString(),
+      }),
+    );
+
     return tenant;
   }
 
