@@ -6,6 +6,7 @@
 
 import { Module } from "@nestjs/common";
 import { AppsService } from "./apps.service";
+import { AppsHealthService } from "./apps-health.service";
 import { AppsController } from "./apps.controller";
 import { AppsResolver } from "./apps.resolver";
 import { AuthModule } from "../auth/auth.module";
@@ -15,7 +16,7 @@ import { SupervisorModule } from "../supervisor/supervisor.module";
 @Module({
   imports: [AuthModule, WebsocketModule, SupervisorModule],
   controllers: [AppsController],
-  providers: [AppsService, AppsResolver],
-  exports: [AppsService],
+  providers: [AppsService, AppsHealthService, AppsResolver],
+  exports: [AppsService, AppsHealthService],
 })
 export class AppsModule {}

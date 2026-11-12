@@ -5,12 +5,15 @@
  * @module @devlab/portal-web/ui-copy/common
  */
 
+import { APP_VERSION } from "../constants/version";
+
 export const COMMON_COPY = {
   BRAND: {
     NAME: "DevLab",
+    APP_NAME: "DevLab Portal",
     TITLE: "Portal Control Plane",
     SUBTITLE: "Micro-Frontend Identity & Governance Hub",
-    VERSION: "v2.0.0-enterprise",
+    VERSION: APP_VERSION,
   },
   METADATA: {
     TITLE: "DevLab Portal — Ecosystem Control Plane",

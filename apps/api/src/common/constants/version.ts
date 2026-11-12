@@ -1,0 +1,19 @@
+/**
+ * @file apps/api/src/common/constants/version.ts
+ * @description Dynamic application version and build metadata for DevLab Portal API.
+ * @module @devlab/portal-api/common/constants/version
+ */
+
+import pkg from "../../../package.json";
+
+const gitSha = process.env.GIT_SHA || process.env.NEXT_PUBLIC_GIT_SHA || "";
+const baseVersion = `v${pkg.version}`;
+
+export const API_VERSION: string =
+  process.env.APP_VERSION || (gitSha ? `${baseVersion}+${gitSha.slice(0, 7)}` : baseVersion);
+
+export const BUILD_METADATA = {
+  version: baseVersion,
+  gitCommit: gitSha ? gitSha.slice(0, 7) : "dev-local",
+  environment: process.env.NODE_ENV || "development",
+} as const;

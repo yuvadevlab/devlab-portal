@@ -16,6 +16,7 @@ import {
   HttpStatus,
   BadRequestException,
 } from "@nestjs/common";
+import { Throttle, ThrottlerGuard } from "@nestjs/throttler";
 import type { Response } from "express";
 import { AuthService } from "./auth.service";
 import { OAuthService } from "./oauth.service";
@@ -41,9 +42,11 @@ export class AuthController {
   ) {}
 
   /**
-   * Direct login for Web Shell operator credentials.
+   * Direct login for Web Shell operator credentials. Rate-limited to 5 req/min.
    */
   @Post("auth/login")
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ auth: { limit: 5, ttl: 60_000 } })
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto) {
     this.logger.info("[login] Incoming login request");
@@ -51,9 +54,11 @@ export class AuthController {
   }
 
   /**
-   * User self-registration into the active tenant workspace.
+   * User self-registration into the active tenant workspace. Rate-limited to 5 req/min.
    */
   @Post("auth/register")
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ auth: { limit: 5, ttl: 60_000 } })
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto) {
     this.logger.info("[register] Incoming registration request");
@@ -61,9 +66,11 @@ export class AuthController {
   }
 
   /**
-   * Initiates password reset recovery flow.
+   * Initiates password reset recovery flow. Rate-limited to 5 req/min.
    */
   @Post("auth/forgot-password")
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ auth: { limit: 5, ttl: 60_000 } })
   @HttpCode(HttpStatus.OK)
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     this.logger.info("[forgotPassword] Password recovery requested");
@@ -71,9 +78,11 @@ export class AuthController {
   }
 
   /**
-   * Resets password using verification token.
+   * Resets password using verification token. Rate-limited to 5 req/min.
    */
   @Post("auth/reset-password")
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ auth: { limit: 5, ttl: 60_000 } })
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDto) {
     this.logger.info("[resetPassword] Reset password confirmation submitted");

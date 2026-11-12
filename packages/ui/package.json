@@ -28,8 +28,8 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
-    "@yuva-devlab/tokens": "^2.0.0",
-    "@yuva-devlab/ui": "^2.2.1",
+    "@yuva-devlab/tokens": "^2.1.0",
+    "@yuva-devlab/ui": "^3.0.0",
     "lucide-react": "^0.475.0"
   },
   "devDependencies": {
