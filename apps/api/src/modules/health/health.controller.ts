@@ -6,6 +6,7 @@
 
 import { Controller, Get, HttpCode, HttpStatus } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
+import { API_VERSION, BUILD_METADATA } from "../../common/constants/version";
 import { Logger } from "@yuva-devlab/logger";
 
 @Controller()
@@ -31,7 +32,8 @@ export class HealthController {
     return {
       status: dbStatus === "connected" ? "ok" : "degraded",
       service: "devlab-portal-api",
-      version: "1.0.0",
+      version: API_VERSION,
+      build: BUILD_METADATA,
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       checks: {

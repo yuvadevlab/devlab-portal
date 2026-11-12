@@ -18,7 +18,7 @@ import { CreateAppDto, UpdateAppSettingsDto, UpdateAppStatusDto } from "./dto/ap
 import { AuditAction, AuditTargetType, UserRole } from "../../common/constants/enums";
 import { isValidUuid } from "@yuva-devlab/regex";
 import { Logger } from "@yuva-devlab/logger";
-import { probeAppHealth } from "./apps-health-checker";
+import { AppsHealthService } from "./apps-health.service";
 import { buildAppUpdateData } from "./apps-update.helper";
 import { provisionClientSecret } from "./apps-crypto.helper";
 import { SupervisorService } from "../supervisor/supervisor.service";
@@ -32,6 +32,7 @@ export class AppsService {
     private readonly redis: RedisService,
     private readonly eventsGateway: EventsGateway,
     private readonly supervisorService: SupervisorService,
+    private readonly healthService: AppsHealthService,
   ) {}
 
   /**
@@ -51,7 +52,7 @@ export class AppsService {
 
     const results = await Promise.all(
       apps.map(async (app) => {
-        const { latencyMs, healthStatus } = await probeAppHealth(app);
+        const { latencyMs, healthStatus } = await this.healthService.getHealth(app);
         return { ...app, latencyMs, healthStatus };
       }),
     );

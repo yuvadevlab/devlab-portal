@@ -21,6 +21,7 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/platform-express": "^11.0.11",
     "@nestjs/platform-socket.io": "^11.0.11",
+    "@nestjs/throttler": "^6.5.0",
     "@nestjs/websockets": "^11.0.11",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "link:../../prisma/generated",
