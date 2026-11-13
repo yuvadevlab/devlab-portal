@@ -18,6 +18,7 @@ export class KeypairService implements OnModuleInit {
   private privateKey!: jose.CryptoKey | Uint8Array;
   private publicKey!: jose.CryptoKey | Uint8Array;
   private publicJwk!: jose.JWK;
+  private publicPem = "";
 
   /**
    * Loads existing RSA keypair from storage/env or generates a new 2048-bit keypair on startup.
@@ -33,6 +34,7 @@ export class KeypairService implements OnModuleInit {
       const publicKeyPath = path.join(keysDir, "public.key");
       const pubPem = fs.readFileSync(publicKeyPath, "utf-8");
       this.publicKey = await jose.importSPKI(pubPem, "RS256");
+      this.publicPem = pubPem;
     } else {
       this.logger.info("Generating new RSA 2048-bit keypair for RS256 tokens...");
       const pair = await jose.generateKeyPair("RS256", { modulusLength: 2048 });
@@ -43,11 +45,13 @@ export class KeypairService implements OnModuleInit {
         fs.mkdirSync(keysDir, { recursive: true });
         const pemPrivate = await jose.exportPKCS8(pair.privateKey);
         const pemPublic = await jose.exportSPKI(pair.publicKey);
+        this.publicPem = pemPublic;
         fs.writeFileSync(privateKeyPath, pemPrivate, "utf-8");
         fs.writeFileSync(path.join(keysDir, "public.key"), pemPublic, "utf-8");
         this.logger.info("Persisted generated RSA keypair to .keys directory.");
       } catch (err) {
         this.logger.warn("Could not persist keypair to disk, using in-memory keys:", err);
+        this.publicPem = await jose.exportSPKI(this.publicKey);
       }
     }
 
@@ -59,6 +63,13 @@ export class KeypairService implements OnModuleInit {
       alg: "RS256",
     };
     this.logger.info(`RS256 JWKS initialized with key ID: ${DEVLAB_KEY_ID}`);
+  }
+
+  /**
+   * Returns active public key formatted as SPKI PEM string.
+   */
+  getPublicPem(): string {
+    return this.publicPem;
   }
 
   /**

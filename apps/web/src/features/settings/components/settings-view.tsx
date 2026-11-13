@@ -9,10 +9,12 @@
 import React from "react";
 import { JwksViewer } from "./jwks-viewer";
 import { useJwksQuery, useOidcConfigQuery } from "@/features/settings/api";
+import { useTelemetryQuery } from "@/features/dashboard/api";
 
 export function SettingsView(): React.JSX.Element {
   const { data: jwks = null } = useJwksQuery();
   const { data: oidc = null } = useOidcConfigQuery();
+  const { data: telemetry = null } = useTelemetryQuery();
 
-  return <JwksViewer jwks={jwks} oidc={oidc} />;
+  return <JwksViewer jwks={jwks} oidc={oidc} telemetry={telemetry} />;
 }

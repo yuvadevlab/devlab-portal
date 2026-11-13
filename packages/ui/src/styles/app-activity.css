@@ -168,7 +168,48 @@
 
 .activity-empty {
   color: var(--muted-foreground);
-  padding: 16px;
+  padding: 28px 16px;
   text-align: center;
   font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.activity-empty-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--primary);
+  opacity: 0.85;
+}
+
+.activity-empty-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.activity-empty-title {
+  font-weight: 550;
+  color: var(--foreground);
+  font-size: 13px;
+}
+
+.activity-empty-desc {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.activity-live-tag {
+  background-color: color-mix(in oklch, var(--success) 12%, transparent);
+  color: var(--success);
+  border-color: color-mix(in oklch, var(--success) 28%, transparent);
+}
+
+.activity-nominal-tag {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border-color: var(--border);
 }

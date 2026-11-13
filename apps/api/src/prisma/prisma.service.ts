@@ -9,6 +9,9 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { Logger } from "@yuva-devlab/logger";
 import { PrismaClient } from "@prisma/client";
+import dotenv from "dotenv";
+import fs from "node:fs";
+import path from "node:path";
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
@@ -16,7 +19,26 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   private readonly pool: pg.Pool;
 
   constructor() {
-    const databaseUrl = process.env.DATABASE_URL;
+    let databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+      const candidatePaths = [
+        path.resolve(process.cwd(), ".env"),
+        path.resolve(process.cwd(), "apps/api/.env"),
+        path.resolve(__dirname, "../.env"),
+        path.resolve(__dirname, "../../.env"),
+        path.resolve(__dirname, "../../../apps/api/.env"),
+      ];
+      for (const envPath of candidatePaths) {
+        if (fs.existsSync(envPath)) {
+          dotenv.config({ path: envPath, override: false });
+          if (process.env.DATABASE_URL) {
+            databaseUrl = process.env.DATABASE_URL;
+            break;
+          }
+        }
+      }
+    }
+
     if (!databaseUrl) {
       throw new Error("DATABASE_URL environment variable is required for PrismaService");
     }
