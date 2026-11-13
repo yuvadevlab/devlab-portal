@@ -147,6 +147,7 @@ export interface JwksData {
     use: string;
     alg: string;
   }>;
+  pem?: string;
 }
 
 /** OpenID Connect discovery configuration */

@@ -75,8 +75,12 @@ export const APPS_COPY = {
   RECENT_ACTIVITY: {
     TITLE: "Recent activity",
     LIVE_BADGE: "Live",
+    STATUS_NOMINAL: "All systems nominal",
     VIEW_LEDGER: "View audit ledger",
     EMPTY: "No recent operational events recorded yet.",
+    EMPTY_TITLE: "All systems nominal",
+    EMPTY_DESCRIPTION:
+      "No operational incidents or configuration mutations recorded in the audit ledger.",
     MINUTES_AGO: "minutes ago",
     INSPECT_TOOLTIP: "Inspect audit event receipt & payload",
     ACTIONS: {

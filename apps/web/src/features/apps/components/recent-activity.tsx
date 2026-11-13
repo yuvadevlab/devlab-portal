@@ -7,7 +7,15 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { Activity, ArrowUpRight, KeyRound, ShieldAlert, Plus, ChevronRight } from "lucide-react";
+import {
+  Activity,
+  ArrowUpRight,
+  KeyRound,
+  ShieldAlert,
+  ShieldCheck,
+  Plus,
+  ChevronRight,
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@devlab-portal/ui";
 import { TabKey, AuditAction } from "@/lib/constants/enums";
@@ -108,8 +116,16 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   const latestLogs = useMemo(() => {
     return [...auditLogs]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 3);
+      .slice(0, 5);
   }, [auditLogs]);
+
+  const isLiveWithin24h = useMemo(() => {
+    if (latestLogs.length === 0) return false;
+    const firstEventTime = new Date(latestLogs[0].createdAt).getTime();
+    if (Number.isNaN(firstEventTime)) return false;
+    const diffMs = Date.now() - firstEventTime;
+    return diffMs >= 0 && diffMs <= 24 * 60 * 60 * 1000;
+  }, [latestLogs]);
 
   return (
     <section className="activity-section">
@@ -117,7 +133,13 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         <h2>
           <Activity className="section-heading-icon" />
           {UI_COPY.APPS.RECENT_ACTIVITY.TITLE}
-          <span className="tag tag-compact">{UI_COPY.APPS.RECENT_ACTIVITY.LIVE_BADGE}</span>
+          <span
+            className={`tag tag-compact ${isLiveWithin24h ? "activity-live-tag" : "activity-nominal-tag"}`}
+          >
+            {isLiveWithin24h
+              ? UI_COPY.APPS.RECENT_ACTIVITY.LIVE_BADGE
+              : UI_COPY.APPS.RECENT_ACTIVITY.STATUS_NOMINAL}
+          </span>
         </h2>
         <Button
           variant="ghost"
@@ -158,7 +180,11 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
               <span className="activity-target">{resolveTargetLabel(event)}</span>
             </span>
             <span className="tag tag-responsive">{event.action}</span>
-            <time dateTime={event.createdAt} suppressHydrationWarning>
+            <time
+              dateTime={event.createdAt}
+              title={new Date(event.createdAt).toLocaleString()}
+              suppressHydrationWarning
+            >
               {getRelativeTime(event.createdAt)}
             </time>
             <ChevronRight className="activity-arrow" />
@@ -166,7 +192,17 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         ))}
 
         {latestLogs.length === 0 && (
-          <div className="activity-empty">{UI_COPY.APPS.RECENT_ACTIVITY.EMPTY}</div>
+          <div className="activity-empty">
+            <ShieldCheck className="activity-empty-icon" />
+            <div className="activity-empty-content">
+              <span className="activity-empty-title">
+                {UI_COPY.APPS.RECENT_ACTIVITY.EMPTY_TITLE}
+              </span>
+              <span className="activity-empty-desc">
+                {UI_COPY.APPS.RECENT_ACTIVITY.EMPTY_DESCRIPTION}
+              </span>
+            </div>
+          </div>
         )}
       </div>
 
