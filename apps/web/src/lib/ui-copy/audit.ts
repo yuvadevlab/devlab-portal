@@ -39,7 +39,7 @@ export const AUDIT_COPY = {
   DRAWER: {
     TITLE: "Event inspection",
     PAYLOAD: "Event payload",
-    RECORDED_NOTE: "Event recorded in sample audit ledger",
+    RECORDED_NOTE: "Event recorded in immutable audit ledger",
     SUBTITLE: "Cryptographic event receipt and full metadata payload.",
     EVENT_ID: "Log ID",
     ACTION: "Action",

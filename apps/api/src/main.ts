@@ -5,13 +5,28 @@
  */
 
 import dotenv from "dotenv";
+import fs from "node:fs";
 import path from "node:path";
 
-dotenv.config({ path: path.resolve(__dirname, "../.env"), override: false });
+// Attempt to load .env from multiple candidate paths across execution contexts
+const candidateEnvPaths = [
+  path.resolve(process.cwd(), ".env"),
+  path.resolve(process.cwd(), "apps/api/.env"),
+  path.resolve(__dirname, "../.env"),
+  path.resolve(__dirname, "../../.env"),
+  path.resolve(__dirname, "../../../apps/api/.env"),
+];
+
+for (const envPath of candidateEnvPaths) {
+  if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath, override: false });
+  }
+}
 
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./app.module";
+import { OIDC_ROUTES } from "./common/constants/routes";
 import { Logger, correlationMiddleware, requestLogger } from "@yuva-devlab/logger";
 
 const logger = new Logger("PortalApiBootstrap");
@@ -82,7 +97,7 @@ async function bootstrap(): Promise<void> {
   await app.listen(port);
 
   logger.info(`🚀 DevLab Portal API Control Plane listening on http://localhost:${port}`);
-  logger.info(`🔑 OIDC JWKS discovery endpoint: http://localhost:${port}/.well-known/jwks.json`);
+  logger.info(`🔑 OIDC JWKS discovery endpoint: http://localhost:${port}${OIDC_ROUTES.JWKS}`);
   logger.info(`📊 GraphQL Playground: http://localhost:${port}/graphql`);
 }
 

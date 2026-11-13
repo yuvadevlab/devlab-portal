@@ -11,34 +11,60 @@ import React from "react";
 import { LockKeyhole, Radio, ShieldCheck, Globe } from "lucide-react";
 import { CopyButton, Heading } from "@devlab-portal/ui";
 import { UI_COPY } from "@/lib/ui-copy";
-import { API_BASE_URL, type JwksData, type OpenIdConfig } from "@/lib/api-client";
+import { API_ROUTES } from "@/lib/constants/routes";
+import {
+  API_BASE_URL,
+  type JwksData,
+  type OpenIdConfig,
+  type SystemTelemetry,
+} from "@/lib/api-client";
 
 interface JwksViewerProps {
   jwks: JwksData | null;
   oidc: OpenIdConfig | null;
+  telemetry?: SystemTelemetry | null;
 }
 
-const samplePem = `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3fXQ65t9G7cE12Z9wP8n
-4vKz3q8j5d7n9m2p1v0x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t
-9u0v1w2x3y4z5a6b7c8d9e0f1g2h3i4j5k6l7m8n9o0p1q2r3s4t5u6v7w8x9y0z
------END PUBLIC KEY-----`;
-
-export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
-  const endpoint = `${API_BASE_URL}/.well-known/jwks.json`;
+export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks, oidc, telemetry }) => {
+  const endpoint = oidc?.jwks_uri || `${API_BASE_URL}${API_ROUTES.JWKS}`;
+  const activeKey = jwks?.keys?.[0];
+  const livePem =
+    jwks?.pem || (activeKey ? JSON.stringify(activeKey, null, 2) : "Loading public key...");
 
   const identityConfig = [
-    [UI_COPY.SETTINGS.IDENTITY.ISSUER, UI_COPY.SETTINGS.IDENTITY.ISSUER_VAL],
-    [UI_COPY.SETTINGS.IDENTITY.ALGORITHM, UI_COPY.SETTINGS.IDENTITY.ALGORITHM_VAL],
+    [UI_COPY.SETTINGS.IDENTITY.ISSUER, oidc?.issuer || UI_COPY.SETTINGS.IDENTITY.ISSUER_VAL],
+    [
+      UI_COPY.SETTINGS.IDENTITY.ALGORITHM,
+      activeKey?.alg || UI_COPY.SETTINGS.IDENTITY.ALGORITHM_VAL,
+    ],
     [UI_COPY.SETTINGS.IDENTITY.LIFETIME, UI_COPY.SETTINGS.IDENTITY.LIFETIME_VAL],
-    [UI_COPY.SETTINGS.IDENTITY.ENV, UI_COPY.SETTINGS.IDENTITY.ENV_VAL],
+    [
+      UI_COPY.SETTINGS.IDENTITY.ENV,
+      telemetry?.environmentLabel || UI_COPY.SETTINGS.IDENTITY.ENV_VAL,
+    ],
   ];
 
   const latencyMetrics = [
-    [UI_COPY.SETTINGS.TELEMETRY.MEDIAN_VAL, UI_COPY.SETTINGS.TELEMETRY.MEDIAN],
-    [UI_COPY.SETTINGS.TELEMETRY.P95_VAL, UI_COPY.SETTINGS.TELEMETRY.P95],
-    [UI_COPY.SETTINGS.TELEMETRY.P99_VAL, UI_COPY.SETTINGS.TELEMETRY.P99],
+    [
+      telemetry?.redisLatencyMs !== undefined ? `${telemetry.redisLatencyMs}ms` : "< 1ms",
+      UI_COPY.SETTINGS.TELEMETRY.MEDIAN,
+    ],
+    [
+      telemetry?.dbLatencyMs !== undefined ? `${telemetry.dbLatencyMs}ms` : "< 1ms",
+      UI_COPY.SETTINGS.TELEMETRY.P95,
+    ],
+    [
+      telemetry?.latencyMs !== undefined ? `${telemetry.latencyMs}ms` : "1ms",
+      UI_COPY.SETTINGS.TELEMETRY.P99,
+    ],
   ];
+
+  const latencyVal = telemetry?.latencyMs !== undefined ? `${telemetry.latencyMs}` : "1";
+  const apiPortVal = telemetry?.apiPort
+    ? `:${telemetry.apiPort}`
+    : UI_COPY.SETTINGS.CONNECTION.PORT_VAL;
+  const transportVal = telemetry?.redisStatus || UI_COPY.SETTINGS.CONNECTION.TRANSPORT_VAL;
+  const keyTag = activeKey?.alg ? `${activeKey.alg} · ${activeKey.kid}` : UI_COPY.SETTINGS.KEYS.TAG;
 
   return (
     <>
@@ -54,7 +80,7 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
           <section className="settings-section settings-section-first">
             <div className="settings-card-header">
               <LockKeyhole className="settings-header-icon" />
-              <span className="tag">{UI_COPY.SETTINGS.KEYS.TAG}</span>
+              <span className="tag">{keyTag}</span>
             </div>
             <h2>{UI_COPY.SETTINGS.KEYS.TITLE}</h2>
             <p>{UI_COPY.SETTINGS.KEYS.DESCRIPTION}</p>
@@ -71,9 +97,9 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
             <div className="settings-field-group">
               <div className="settings-card-header-spread">
                 <span className="settings-field-label">{UI_COPY.SETTINGS.KEYS.PEM_LABEL}</span>
-                <CopyButton textToCopy={samplePem} />
+                <CopyButton textToCopy={livePem} />
               </div>
-              <pre className="secret-box secret-box-pem">{samplePem}</pre>
+              <pre className="secret-box secret-box-pem">{livePem}</pre>
             </div>
           </section>
 
@@ -101,7 +127,7 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
             <p>{UI_COPY.SETTINGS.TELEMETRY.DESCRIPTION}</p>
 
             <div className="latency-value">
-              {UI_COPY.SETTINGS.TELEMETRY.LATENCY_VAL}
+              {latencyVal}
               <span className="latency-unit">{UI_COPY.SETTINGS.TELEMETRY.LATENCY_UNIT}</span>
             </div>
             <span className="settings-sla-note">
@@ -137,11 +163,11 @@ export const JwksViewer: React.FC<JwksViewerProps> = ({ jwks: _jwks }) => {
             <div className="settings-key-value-list">
               <div className="settings-key-value-row">
                 <span className="settings-key">{UI_COPY.SETTINGS.CONNECTION.PORT}</span>
-                <code className="settings-val">{UI_COPY.SETTINGS.CONNECTION.PORT_VAL}</code>
+                <code className="settings-val">{apiPortVal}</code>
               </div>
               <div className="settings-key-value-row">
                 <span className="settings-key">{UI_COPY.SETTINGS.CONNECTION.TRANSPORT}</span>
-                <span className="settings-val">{UI_COPY.SETTINGS.CONNECTION.TRANSPORT_VAL}</span>
+                <span className="settings-val">{transportVal}</span>
               </div>
             </div>
 
