@@ -5,6 +5,7 @@ import type { NextConfig } from "next";
  * Transpiles design-system packages linked from devlab-shared.
  */
 const nextConfig: NextConfig = {
+  output: process.env.VERCEL ? undefined : "standalone",
   reactStrictMode: true,
   transpilePackages: ["@devlab-portal/ui"],
   eslint: {
