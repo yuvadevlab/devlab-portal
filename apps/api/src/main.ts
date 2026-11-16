@@ -58,22 +58,26 @@ async function bootstrap(): Promise<void> {
         return callback(null, true);
       }
 
-      // Allow any local DevLab development port (3000-3099) or explicitly configured origin
+      // Allow any local DevLab development port (3000-3099), Vercel deployments, or explicitly configured origins
       const isLocalhost =
         origin.startsWith("http://localhost:") ||
         origin.startsWith("http://127.0.0.1:") ||
         origin === "http://localhost" ||
         origin === "http://127.0.0.1";
 
-      if (isLocalhost || configuredOrigins.includes(origin)) {
+      const isVercel =
+        origin.endsWith(".vercel.app") || /^https:\/\/([a-z0-9-]+)\.vercel\.app$/.test(origin);
+
+      if (isLocalhost || isVercel || configuredOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      callback(new Error(`Origin ${origin} not allowed by CORS`));
+      callback(null, false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: [
+      "Accept",
       "Content-Type",
       "Authorization",
       "X-Requested-With",
