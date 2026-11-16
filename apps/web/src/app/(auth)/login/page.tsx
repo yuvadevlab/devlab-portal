@@ -12,6 +12,16 @@ import { UI_COPY } from "@/lib/ui-copy";
 export const metadata: Metadata = {
   title: UI_COPY.AUTH.LOGIN.TITLE,
   description: UI_COPY.AUTH.LOGIN.DESCRIPTION,
+  openGraph: {
+    title: UI_COPY.AUTH.LOGIN.OG_TITLE,
+    description: UI_COPY.AUTH.LOGIN.OG_DESCRIPTION,
+    url: "/login",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: UI_COPY.AUTH.LOGIN.OG_TITLE,
+    description: UI_COPY.AUTH.LOGIN.OG_DESCRIPTION,
+  },
 };
 
 export default function LoginPage(): React.JSX.Element {
