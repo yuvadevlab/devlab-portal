@@ -43,11 +43,20 @@ export const metadata: Metadata = {
     siteName: UI_COPY.COMMON.METADATA.SITE_NAME,
     title: UI_COPY.COMMON.METADATA.OG_TITLE,
     description: UI_COPY.COMMON.METADATA.OG_DESCRIPTION,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: UI_COPY.COMMON.METADATA.OG_TITLE,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: UI_COPY.COMMON.METADATA.OG_TITLE,
     description: UI_COPY.COMMON.METADATA.OG_DESCRIPTION,
+    images: ["/opengraph-image"],
     creator: "@yuvadevlab",
   },
   robots: {
