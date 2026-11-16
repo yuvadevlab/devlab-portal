@@ -94,9 +94,9 @@ async function bootstrap(): Promise<void> {
   );
 
   const port = process.env.PORT || 4000;
-  await app.listen(port);
+  await app.listen(port, "0.0.0.0");
 
-  logger.info(`🚀 DevLab Portal API Control Plane listening on http://localhost:${port}`);
+  logger.info(`🚀 DevLab Portal API Control Plane listening on http://0.0.0.0:${port}`);
   logger.info(`🔑 OIDC JWKS discovery endpoint: http://localhost:${port}${OIDC_ROUTES.JWKS}`);
   logger.info(`📊 GraphQL Playground: http://localhost:${port}/graphql`);
 }

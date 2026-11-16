@@ -1,0 +1,82 @@
+# ==============================================================================
+# DevLab Portal — Local Production Stack Validation
+# Author: yuva.devlab@gmail.com
+# Usage: docker compose -f docker-compose.prod.yml up --build -d
+# ==============================================================================
+
+services:
+  # ─── Production PostgreSQL 16 ───────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: portal-prod-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: devlab_admin
+      POSTGRES_PASSWORD: DevLabSecurePass2026!
+      POSTGRES_DB: devlab_portal
+    volumes:
+      - portal_prod_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devlab_admin -d devlab_portal"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis 7 (Session Cache) ────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: portal-prod-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Portal API Control Plane ───────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: portal-prod-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://devlab_admin:DevLabSecurePass2026!@postgres:5432/devlab_portal?schema=public
+      REDIS_URL: redis://redis:6379
+      SESSION_SECRET: SuperSecretProductionJwtKey2026DevLabPortal!
+      PORTAL_ORIGIN: http://localhost:3000
+      OIDC_ISSUER: http://localhost:4000
+      CORS_ORIGIN: http://localhost:3000,http://localhost:3001
+
+  # ─── Portal Web Frontend ────────────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: portal-prod-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_PUBLIC_DEVLAB_PORTAL_API_URL: http://localhost:4000
+
+volumes:
+  portal_prod_pgdata:
+    driver: local
