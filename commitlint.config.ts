@@ -46,7 +46,7 @@ const config: UserConfig = {
     "subject-empty": [2, "never"],
     "subject-min-length": [2, "always", 8],
     "subject-max-length": [2, "always", 100],
-    "header-max-length": [2, "always", 100],
+    "header-max-length": [2, "always", 120],
   },
 };
 
