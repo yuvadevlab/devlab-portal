@@ -1,0 +1,53 @@
+# ==============================================================================
+# DevLab Portal — Render Blueprint Specification
+# Multi-Service Cloud Deployment
+# Author: yuva.devlab@gmail.com
+# ==============================================================================
+
+services:
+  # ─── Portal API Control Plane ───────────────────────────────────────────────
+  - type: web
+    name: devlab-portal-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.api
+    dockerContext: .
+    plan: starter
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "4000"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: OIDC_ISSUER
+        sync: false
+      - key: PORTAL_ORIGIN
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: REDIS_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+
+  # ─── Portal Web SSO Frontend ────────────────────────────────────────────────
+  - type: web
+    name: devlab-portal-web
+    runtime: docker
+    dockerfilePath: ./Dockerfile.web
+    dockerContext: .
+    plan: starter
+    region: oregon
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_DEVLAB_PORTAL_API_URL
+        fromService:
+          type: web
+          name: devlab-portal-api
+          property: host
