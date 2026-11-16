@@ -24,6 +24,21 @@ const AUTH_ROUTES: ReadonlySet<string> = new Set<string>([
  */
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
+
+  // Allow public dynamic metadata assets to pass through without authentication
+  const isPublicAsset =
+    pathname === "/opengraph-image" ||
+    pathname.startsWith("/opengraph-image") ||
+    pathname === "/apple-icon" ||
+    pathname.startsWith("/apple-icon") ||
+    pathname === "/icon.svg" ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/robots.txt";
+
+  if (isPublicAsset) {
+    return NextResponse.next();
+  }
+
   const tokenCookie = request.cookies.get(CookieKey.ACCESS_TOKEN);
   const tokenValue = tokenCookie?.value?.trim();
   const isAuthenticated = Boolean(tokenValue && !isJwtExpired(tokenValue));
@@ -87,8 +102,9 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - opengraph-image, apple-icon, icon.svg, manifest, robots
      * - public assets (*.png, *.svg, *.jpg, *.jpeg, *.gif, *.webp)
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|opengraph-image|apple-icon|icon\\.svg|manifest\\.webmanifest|robots\\.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
