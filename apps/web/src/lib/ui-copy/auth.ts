@@ -10,6 +10,9 @@ export const AUTH_COPY = {
   LOGIN: {
     TITLE: "Sign In — DevLab Portal",
     DESCRIPTION: "Sign in to your DevLab workspace control plane",
+    OG_TITLE: "Sign In — DevLab Portal Central SSO",
+    OG_DESCRIPTION:
+      "Securely access DevLab Portal and authorized ecosystem applications with enterprise Single Sign-On.",
     SSO_CONNECTING: "Authorizing single sign-on…",
     SSO_BADGE_PREFIX: "Single Sign-On for",
     REDIRECTING_TO_APP: (appName: string) => `Redirecting you to ${appName}…`,

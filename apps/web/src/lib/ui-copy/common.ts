@@ -17,7 +17,27 @@ export const COMMON_COPY = {
   },
   METADATA: {
     TITLE: "DevLab Portal — Ecosystem Control Plane",
-    DESCRIPTION: "Unified IAM, Kill-Switch, and App Launcher for DevLab Micro-Frontend Swarms",
+    TITLE_TEMPLATE: "%s | DevLab Portal",
+    DESCRIPTION:
+      "Unified Single Sign-On, IAM administration, and application control plane for DevLab Micro-Frontend ecosystem.",
+    SITE_NAME: "DevLab Portal",
+    AUTHOR: "Yuva DevLab",
+    AUTHOR_URL: "https://devlab-portal-self.vercel.app",
+    KEYWORDS: [
+      "DevLab",
+      "Portal",
+      "Single Sign-On",
+      "SSO",
+      "IAM",
+      "Micro-Frontends",
+      "Control Plane",
+      "Cloud Security",
+      "Identity Management",
+    ],
+    OG_TITLE: "DevLab Portal — Ecosystem Control Plane & Enterprise SSO",
+    OG_DESCRIPTION:
+      "Unified Single Sign-On, IAM administration, and application control plane for DevLab Micro-Frontend ecosystem.",
+    OG_IMAGE_ALT: "DevLab Portal Ecosystem Control Plane & Enterprise Single Sign-On",
   },
   TIME: {
     JUST_NOW: "just now",
