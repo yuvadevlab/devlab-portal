@@ -48,12 +48,14 @@ jobs:
             echo "ENV_NAME=production" >> $GITHUB_ENV
             echo "SERVICE_NAME=devlab-portal-api" >> $GITHUB_ENV
             echo "DB_URL=${{ secrets.DATABASE_URL_PROD }}" >> $GITHUB_ENV
-            echo "PORTAL_ORIGIN=${{ vars.PORTAL_ORIGIN_PROD || 'https://devlab-portal-self.vercel.app' }}" >> $GITHUB_ENV
+            echo "PORTAL_ORIGIN=${{ vars.PORTAL_ORIGIN_PROD || 'https://devlab-portal-yuvadevlab.vercel.app' }}" >> $GITHUB_ENV
+            echo "CORS_ALLOWED_ORIGINS=https://devlab-portal-yuvadevlab.vercel.app,https://fin-ai-yuvadevlab.vercel.app" >> $GITHUB_ENV
           else
             echo "ENV_NAME=development" >> $GITHUB_ENV
             echo "SERVICE_NAME=devlab-portal-api-dev" >> $GITHUB_ENV
             echo "DB_URL=${{ secrets.DATABASE_URL_DEV }}" >> $GITHUB_ENV
-            echo "PORTAL_ORIGIN=${{ vars.PORTAL_ORIGIN_DEV || 'https://devlab-portal-git-dev-yuvadevlab.vercel.app' }}" >> $GITHUB_ENV
+            echo "PORTAL_ORIGIN=${{ vars.PORTAL_ORIGIN_DEV || 'https://devlab-portal-dev-yuvadevlab.vercel.app' }}" >> $GITHUB_ENV
+            echo "CORS_ALLOWED_ORIGINS=https://devlab-portal-dev-yuvadevlab.vercel.app,https://fin-ai-dev-yuvadevlab.vercel.app" >> $GITHUB_ENV
           fi
 
       - name: Prepare Container Entrypoint
@@ -76,5 +78,6 @@ jobs:
           DATABASE_URL=${{ env.DB_URL }},\
           SESSION_SECRET=${{ secrets.SESSION_SECRET }},\
           PORTAL_ORIGIN=${{ env.PORTAL_ORIGIN }},\
+          CORS_ALLOWED_ORIGINS=${{ env.CORS_ALLOWED_ORIGINS }},\
           OIDC_ISSUER=https://${{ env.SERVICE_NAME }}-293436328335.asia-southeast1.run.app" \
             --quiet
