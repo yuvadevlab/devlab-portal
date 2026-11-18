@@ -200,15 +200,45 @@
     .settings-layout {
       grid-template-columns: 1fr;
       gap: 24px;
+      min-width: 0;
+      width: 100%;
+    }
+    .settings-layout > div {
+      min-width: 0;
+      max-width: 100%;
+      width: 100%;
     }
     .secret-box-spread {
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       gap: 8px;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .secret-box-code {
+      min-width: 0;
+      max-width: 100%;
+      word-break: break-all;
+      overflow-wrap: anywhere;
     }
     .secret-box-pem {
       max-width: 100%;
+      min-width: 0;
       font-size: 11px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
+    .benchmark {
+      gap: 2px;
+    }
+    .settings-key-value-row {
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .settings-val {
+      word-break: break-all;
+      overflow-wrap: anywhere;
     }
     .footer {
       flex-direction: column;
