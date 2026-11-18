@@ -220,8 +220,14 @@
   }
 
   .app-card-deactivate-btn,
-  .app-card-kill-btn {
+  .app-card-kill-btn,
+  .app-action-deactivate,
+  .app-action-kill {
     color: var(--destructive);
+  }
+
+  .app-card-deactivate-btn,
+  .app-card-kill-btn {
     transition:
       background-color 0.15s,
       color 0.15s;
@@ -232,8 +238,13 @@
     background-color: color-mix(in oklch, var(--destructive) 10%, transparent);
   }
 
-  .app-card-activate-btn {
+  .app-card-activate-btn,
+  .app-action-activate,
+  .app-action-revive {
     color: var(--primary);
+  }
+
+  .app-card-activate-btn {
     transition:
       background-color 0.15s,
       color 0.15s;
@@ -241,15 +252,5 @@
 
   .app-card-activate-btn:hover {
     background-color: color-mix(in oklch, var(--primary) 10%, transparent);
-  }
-
-  .app-action-deactivate,
-  .app-action-kill {
-    color: var(--destructive);
-  }
-
-  .app-action-activate,
-  .app-action-revive {
-    color: var(--primary);
   }
 }

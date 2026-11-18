@@ -68,7 +68,8 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
-    .navbar::-webkit-scrollbar {
+    .navbar::-webkit-scrollbar,
+    .segmented::-webkit-scrollbar {
       display: none;
     }
     .nav-link {
@@ -113,27 +114,44 @@
     .app-toolbar-actions-group {
       width: 100%;
       flex-direction: column;
-      align-items: stretch;
+      align-items: flex-start;
       gap: 8px;
     }
     .search-field {
       width: 100%;
       max-width: 100%;
     }
-    .search-field input {
+    .search-field input,
+    .app-search-input {
       width: 100%;
+      height: 34px;
+      font-size: 12px;
+    }
+    .search-field-icon {
+      width: 14px;
+      height: 14px;
     }
     .segmented {
       width: 100%;
+      padding: 2px;
+      gap: 2px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
-    .segmented::-webkit-scrollbar {
-      display: none;
+    .segmented .segment {
+      height: 28px;
+      padding: 0 10px;
+      font-size: 12px;
+      flex-shrink: 0;
     }
     .app-register-btn {
-      width: 100%;
+      width: auto;
+      align-self: flex-start;
+      height: 32px;
+      min-height: 32px;
+      font-size: 12px;
+      padding: 0 12px;
       justify-content: center;
     }
     .audit-toolbar-filters {
@@ -142,10 +160,39 @@
       gap: 8px;
     }
     .filter-select-wrap,
-    .filter-select-action,
-    .filter-select-app,
     .audit-date-input {
       width: 100%;
+    }
+    .filter-select-trigger,
+    .audit-date-input,
+    .form-field-input,
+    .form-field-input-mono,
+    .form-field-select {
+      height: 32px;
+      font-size: 12px;
+    }
+    .form-field-select span,
+    .dl-select-trigger span,
+    input::placeholder,
+    [data-placeholder] {
+      font-size: 12px;
+    }
+    .form-grid-2 {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .form-field-group {
+      gap: 4px;
+    }
+    .form-field-label {
+      font-size: 11px;
+    }
+    .modal-footer-btn,
+    .wizard-nav-btn {
+      height: 32px;
+      min-height: 32px;
+      font-size: 12px;
+      padding: 0 12px;
     }
     .app-grid {
       grid-template-columns: 1fr;
@@ -201,10 +248,7 @@
     .metrics {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .role-hierarchy-grid {
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
+    .role-hierarchy-grid,
     .settings-metrics-grid {
       grid-template-columns: 1fr;
     }

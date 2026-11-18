@@ -81,6 +81,34 @@
     font-family: var(--font-mono);
   }
 
+  /* ── Placeholders & Dropdown Values Typography Normalization ── */
+  input::placeholder,
+  textarea::placeholder,
+  .dl-input::placeholder,
+  .form-field-input::placeholder,
+  .form-field-input-mono::placeholder,
+  .form-field-textarea::placeholder,
+  .app-search-input::placeholder {
+    font-size: 12px;
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+
+  .form-field-select span,
+  .dl-select-trigger span,
+  .filter-select-trigger span,
+  [data-slot="select-value"],
+  [data-placeholder],
+  .dl-select-value {
+    font-size: 12px;
+  }
+
+  .dl-select-item,
+  .dl-menu-item,
+  [data-slot="select-item"] {
+    font-size: 12px;
+  }
+
   /* ── Action Buttons & Icon Alignment ── */
   .button-icon-prefix {
     margin-right: 6px;
