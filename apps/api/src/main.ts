@@ -37,16 +37,18 @@ async function bootstrap(): Promise<void> {
   app.use(correlationMiddleware({ serviceName: "devlab-portal-api" }));
   app.use(requestLogger(new Logger("HTTP")));
 
-  const configuredOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim())
-    : [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:3002",
-        "http://localhost:3003",
-        "http://localhost:3004",
-        "http://localhost:3030",
-      ];
+  const rawCorsOrigins =
+    process.env.CORS_ALLOWED_ORIGINS || process.env.CORS_ORIGIN || process.env.PORTAL_ORIGIN || "";
+
+  const allowedOriginsSet = new Set(
+    rawCorsOrigins
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+  );
+
+  const allowPreviews = process.env.CORS_ALLOW_PREVIEWS === "true";
+  const previewRegex = /^https:\/\/[a-z0-9-]+-yuvadevlab\.vercel\.app$/;
 
   app.enableCors({
     origin: (
@@ -58,17 +60,11 @@ async function bootstrap(): Promise<void> {
         return callback(null, true);
       }
 
-      // Allow any local DevLab development port (3000-3099), Vercel deployments, or explicitly configured origins
-      const isLocalhost =
-        origin.startsWith("http://localhost:") ||
-        origin.startsWith("http://127.0.0.1:") ||
-        origin === "http://localhost" ||
-        origin === "http://127.0.0.1";
+      if (allowedOriginsSet.has(origin)) {
+        return callback(null, true);
+      }
 
-      const isVercel =
-        origin.endsWith(".vercel.app") || /^https:\/\/([a-z0-9-]+)\.vercel\.app$/.test(origin);
-
-      if (isLocalhost || isVercel || configuredOrigins.includes(origin)) {
+      if (allowPreviews && previewRegex.test(origin)) {
         return callback(null, true);
       }
 
