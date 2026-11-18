@@ -82,7 +82,7 @@ export function ResetPasswordInputs({
       <button type="submit" disabled={loading} className="dl-auth-submit-btn">
         {loading ? (
           <>
-            <Loader2 className="animate-spin" size={16} />
+            <Loader2 className="dl-auth-spinner" size={16} />
             <span>{copy.UPDATING_PASSWORD}</span>
           </>
         ) : (
