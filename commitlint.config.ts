@@ -48,6 +48,14 @@ const config: UserConfig = {
     "subject-max-length": [2, "always", 100],
     "header-max-length": [2, "always", 120],
   },
+  ignores: [
+    (message) =>
+      message.includes("promote dev to main") ||
+      message.includes("reverse merge main into dev") ||
+      message.startsWith("chore(sync):") ||
+      message.startsWith("chore(release):") ||
+      message.startsWith("Merge branch"),
+  ],
 };
 
 export default config;
