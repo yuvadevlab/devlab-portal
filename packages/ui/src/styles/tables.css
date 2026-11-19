@@ -143,4 +143,10 @@
     width: 12px;
     height: 12px;
   }
+
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

@@ -59,10 +59,7 @@ export const WizardStepBranding: React.FC<WizardStepBrandingProps> = ({ form, on
           placeholder={UI_COPY.APPS.WIZARD.FIELDS.MAINTENANCE_NOTE_PLACEHOLDER}
           className="form-field-input"
         />
-        <p className="form-field-hint">
-          Optional banner message displayed across DevLab Portal when service is offline or in
-          maintenance.
-        </p>
+        <p className="form-field-hint">{UI_COPY.APPS.WIZARD.FIELDS.MAINTENANCE_NOTE_HINT}</p>
       </div>
     </div>
   );

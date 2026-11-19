@@ -75,5 +75,7 @@ export const AUTH_COPY = {
     SIGNED_OUT_DESC: "You have been securely signed out of DevLab Portal.",
     SESSION_EXPIRED_TITLE: "Session expired",
     SESSION_EXPIRED_DESC: "Your session has ended. Please sign in again to continue.",
+    SESSION_VALIDATION_FAILED_DESC:
+      "Session validation failed for this application. Please sign in again.",
   },
 } as const;

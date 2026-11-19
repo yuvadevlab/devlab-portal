@@ -185,7 +185,8 @@
     border-bottom-color: var(--primary);
   }
 
-  .nav-link svg {
+  .nav-link svg,
+  .nav-link-icon {
     width: 15px;
     height: 15px;
     flex-shrink: 0;

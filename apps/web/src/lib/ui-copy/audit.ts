@@ -35,6 +35,7 @@ export const AUDIT_COPY = {
     IP_ADDRESS: "IP address",
     INSPECT: "Inspect",
     EMPTY_TEXT: "No events match your filters.",
+    EMPTY_IP: "—",
   },
   DRAWER: {
     TITLE: "Event inspection",

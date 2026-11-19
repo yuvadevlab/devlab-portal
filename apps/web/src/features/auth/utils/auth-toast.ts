@@ -186,3 +186,20 @@ export function triggerAuthToast(payload: PendingAuthToast): void {
       break;
   }
 }
+
+/**
+ * Safely navigates the browser window to a destination URL appending the authenticated JWT token.
+ *
+ * @param destinationUrl - Target route or external origin
+ * @param token - Authenticated JWT access token
+ */
+export function redirectToDestination(destinationUrl: string, token: string): void {
+  try {
+    const url = new URL(destinationUrl, window.location.origin);
+    url.searchParams.set(AuthQueryParamKey.TOKEN, token);
+    window.location.href = url.toString();
+  } catch {
+    const separator = destinationUrl.includes("?") ? "&" : "?";
+    window.location.href = `${destinationUrl}${separator}${AuthQueryParamKey.TOKEN}=${encodeURIComponent(token)}`;
+  }
+}
