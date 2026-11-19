@@ -15,11 +15,12 @@ import { isJwtExpired, parseJwtClaims } from "@/lib/jwt";
 import { APP_ROUTES } from "@/lib/constants/routes";
 import { UI_COPY } from "@/lib/ui-copy";
 import { AUTH_COPY } from "@/lib/ui-copy/auth";
-import { AuthToastType, AuthQueryParamKey, AuthBrandTheme } from "../types";
+import { AuthToastType, AuthQueryParamKey, AuthPrompt, AuthBrandTheme, StorageKey } from "../types";
 import {
   resolveSsoAppName,
   resolveUserDisplayName,
   setPendingAuthToast,
+  redirectToDestination,
 } from "../utils/auth-toast";
 import { AuthBrandLogo } from "./auth-brand-logo";
 import { SsoHandoffCard } from "./sso-handoff-card";
@@ -45,20 +46,20 @@ export function LoginForm(): React.JSX.Element {
     [appParam, redirectParam],
   );
 
-  const SSO_GUARD_KEY = "devlab_sso_handoff_guard";
+  const SSO_GUARD_KEY = StorageKey.SSO_GUARD;
 
   // Preemptive SSO pass-through if session is already active and cryptographically verified
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     // Check for explicit re-auth / error flags
-    const promptParam = searchParams.get("prompt");
+    const promptParam = searchParams.get(AuthQueryParamKey.PROMPT);
     const errorParam =
       searchParams.get(AuthQueryParamKey.ERROR) ||
       searchParams.get(AuthQueryParamKey.AUTH_ERROR) ||
       searchParams.get(AuthQueryParamKey.SESSION_EXPIRED);
     const isForceReAuth =
-      promptParam === "login" || promptParam === "consent" || Boolean(errorParam);
+      promptParam === AuthPrompt.LOGIN || promptParam === AuthPrompt.CONSENT || Boolean(errorParam);
 
     if (isForceReAuth) {
       sessionStorage.removeItem(SSO_GUARD_KEY);
@@ -90,7 +91,7 @@ export function LoginForm(): React.JSX.Element {
             purgeClientSession();
             setHandoff(null);
             toast.error(AUTH_COPY.TOAST.SESSION_EXPIRED_TITLE, {
-              description: "Session validation failed for this application. Please sign in again.",
+              description: AUTH_COPY.TOAST.SESSION_VALIDATION_FAILED_DESC,
               duration: 6000,
             });
             return;
@@ -127,18 +128,9 @@ export function LoginForm(): React.JSX.Element {
           }
 
           setHandoff({ isHandoff: true, displayName: name });
-
           const timer = setTimeout(() => {
-            try {
-              const url = new URL(redirectParam, window.location.origin);
-              url.searchParams.set(AuthQueryParamKey.TOKEN, existingToken);
-              window.location.href = url.toString();
-            } catch {
-              const separator = redirectParam.includes("?") ? "&" : "?";
-              window.location.href = `${redirectParam}${separator}${AuthQueryParamKey.TOKEN}=${encodeURIComponent(existingToken)}`;
-            }
+            redirectToDestination(redirectParam, existingToken);
           }, 800);
-
           return () => clearTimeout(timer);
         }
       } catch {
@@ -173,14 +165,7 @@ export function LoginForm(): React.JSX.Element {
       setHandoff({ isHandoff: true, displayName });
 
       setTimeout(() => {
-        try {
-          const url = new URL(redirectParam, window.location.origin);
-          url.searchParams.set(AuthQueryParamKey.TOKEN, token);
-          window.location.href = url.toString();
-        } catch {
-          const separator = redirectParam.includes("?") ? "&" : "?";
-          window.location.href = `${redirectParam}${separator}${AuthQueryParamKey.TOKEN}=${encodeURIComponent(token)}`;
-        }
+        redirectToDestination(redirectParam, token);
       }, 900);
     } else {
       // Direct DevLab Portal workspace sign-in

@@ -91,6 +91,8 @@ export const APPS_WIZARD_COPY = {
     ICON_URL_PLACEHOLDER: "ChartNoAxesCombined",
     MAINTENANCE_NOTE: "Maintenance Note",
     MAINTENANCE_NOTE_PLACEHOLDER: "Optional operational banner note when inactive or maintenance",
+    MAINTENANCE_NOTE_HINT:
+      "Optional banner message displayed across DevLab Portal when service is offline or in maintenance.",
   },
   CREDENTIALS: {
     SUCCESS_TITLE: "Application Registered Successfully",

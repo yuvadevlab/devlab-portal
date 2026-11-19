@@ -8,6 +8,7 @@ export interface StatusFooterProps {
   statusLabel: string;
   statusClass: "healthy" | "warning" | "error";
   latencyMs?: number;
+  latencySuffix?: string;
   apiLabel?: string;
   redisLabel?: string;
   activeApps?: number;
@@ -27,6 +28,7 @@ export function StatusFooter({
   statusLabel,
   statusClass,
   latencyMs,
+  latencySuffix,
   apiLabel,
   redisLabel,
   activeApps,
@@ -51,7 +53,8 @@ export function StatusFooter({
             <span className="footer-sep">·</span>
             <span className="footer-latency">
               <Zap className="footer-latency-icon" />
-              {latencyMs}ms latency
+              {latencyMs}
+              {latencySuffix ? ` ${latencySuffix}` : "ms"}
             </span>
           </>
         )}

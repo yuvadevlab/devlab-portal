@@ -38,6 +38,8 @@ export const COMMON_COPY = {
     OG_DESCRIPTION:
       "Unified Single Sign-On, IAM administration, and application control plane for DevLab Micro-Frontend ecosystem.",
     OG_IMAGE_ALT: "DevLab Portal Ecosystem Control Plane & Enterprise Single Sign-On",
+    OG_FOOTER_LEFT: "Ecosystem Control Plane • DevLab Portal",
+    OG_FOOTER_RIGHT: "yuva.devlab@gmail.com",
   },
   TIME: {
     JUST_NOW: "just now",
@@ -114,6 +116,7 @@ export const COMMON_COPY = {
     DOCS: "Docs",
     APPS_ACTIVE: "Apps Active",
     COMMAND_HINT: "Press ⌘K for Command Palette",
+    LATENCY_UNIT: "ms",
     LATENCY_SUFFIX: "Latency",
     REDIS_DEGRADED: "Redis degraded",
   },
