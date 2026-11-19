@@ -19,7 +19,11 @@ export function getEcosystemRoot(): string {
   }
   let curr = process.cwd();
   for (let i = 0; i < 5; i++) {
-    if (fs.existsSync(path.join(curr, "finai")) && fs.existsSync(path.join(curr, "orchestrai"))) {
+    const hasFinAi =
+      fs.existsSync(path.join(curr, "finai")) || fs.existsSync(path.join(curr, "fin-ai"));
+    const hasOrchestrAi =
+      fs.existsSync(path.join(curr, "orchestrai")) || fs.existsSync(path.join(curr, "orchestr-ai"));
+    if (hasFinAi && hasOrchestrAi) {
       return curr;
     }
     curr = path.dirname(curr);
