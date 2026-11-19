@@ -9,6 +9,12 @@
     display: grid;
     grid-template-columns: 1.5fr 1fr;
     gap: 40px;
+    min-width: 0;
+  }
+
+  .settings-layout > div {
+    min-width: 0;
+    max-width: 100%;
   }
 
   .settings-section {
@@ -88,6 +94,11 @@
     font-family: var(--font-mono);
     font-size: 12px;
     line-height: 1.75;
+    max-width: 100%;
+    min-width: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-wrap: anywhere;
   }
 
   .settings-key-value-list {

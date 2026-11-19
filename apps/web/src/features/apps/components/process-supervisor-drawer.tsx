@@ -127,7 +127,7 @@ export const ProcessSupervisorDrawer: React.FC<ProcessSupervisorDrawerProps> = (
               <div className="supervisor-icon-box">
                 <Terminal className="supervisor-header-icon" />
               </div>
-              <div className="min-w-0 flex-1">
+              <div className="supervisor-title-text">
                 <SheetTitle className="supervisor-title">
                   {app?.name} {UI_COPY.APPS.SUPERVISOR.DRAWER_TITLE_SUFFIX}
                 </SheetTitle>

@@ -1,215 +1,218 @@
 /**
  * @file packages/ui/src/styles/app-activity.css
  * @description Register application placeholder card and recent activity audit feed.
+ * Governed under @layer dl-components (Rule 4: under 250 lines).
  */
 
-.register-card {
-  border: 1px dashed var(--border);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-  min-height: 265px;
-  color: var(--muted-foreground);
-  background: transparent;
-}
-
-.register-symbol {
-  width: 39px;
-  height: 39px;
-  border: 1px dashed var(--border);
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-}
-
-.register-card strong {
-  color: var(--foreground);
-  font-weight: 500;
-  font-size: 13px;
-}
-
-.register-card p {
-  font-size: 11px;
-  margin: 0;
-}
-
-.activity-section {
-  margin-top: 34px;
-}
-
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 17px;
-}
-
-.section-heading h2 {
-  font-size: 14px;
-  font-weight: 550;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-}
-
-.activity-list {
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  background: var(--card);
-}
-
-.activity-row {
-  padding: 14px 19px;
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  border-bottom: 1px solid var(--border);
-  font-size: 12px;
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 150ms ease;
-}
-
-.activity-row:hover {
-  background: var(--muted);
-}
-
-.activity-row:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: -2px;
-}
-
-.activity-row:hover .activity-arrow {
-  color: var(--foreground);
-  transform: translateX(2px);
-}
-
-.activity-row:last-child {
-  border-bottom: 0;
-}
-
-.activity-row time {
-  margin-left: auto;
-  color: var(--muted-foreground);
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-.section-heading-icon {
-  color: var(--muted-foreground);
-  width: 16px;
-  height: 16px;
-}
-
-.tag-compact {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.view-ledger-btn {
-  color: var(--muted-foreground);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-}
-
-.view-ledger-btn:hover {
-  color: var(--foreground);
-}
-
-.activity-icon-wrap {
-  color: var(--muted-foreground);
-  display: inline-flex;
-  align-items: center;
-}
-
-.activity-actor {
-  color: var(--foreground);
-  font-weight: 500;
-}
-
-.activity-action-label {
-  color: var(--muted-foreground);
-}
-
-.activity-target {
-  color: var(--foreground);
-  font-weight: 600;
-}
-
-.tag-responsive {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .tag-responsive {
-    display: inline-flex;
+@layer dl-components {
+  .register-card {
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    min-height: 265px;
+    color: var(--muted-foreground);
+    background: transparent;
   }
-}
 
-.activity-arrow {
-  color: var(--muted-foreground);
-  width: 12px;
-  height: 12px;
-  transition:
-    transform 150ms ease,
-    color 150ms ease;
-}
+  .register-symbol {
+    width: 39px;
+    height: 39px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+  }
 
-.activity-event-icon {
-  width: 14px;
-  height: 14px;
-}
+  .register-card strong {
+    color: var(--foreground);
+    font-weight: 500;
+    font-size: 13px;
+  }
 
-.activity-empty {
-  color: var(--muted-foreground);
-  padding: 28px 16px;
-  text-align: center;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
+  .register-card p {
+    font-size: 11px;
+    margin: 0;
+  }
 
-.activity-empty-icon {
-  width: 22px;
-  height: 22px;
-  color: var(--primary);
-  opacity: 0.85;
-}
+  .activity-section {
+    margin-top: 34px;
+  }
 
-.activity-empty-content {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
+  .section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 17px;
+  }
 
-.activity-empty-title {
-  font-weight: 550;
-  color: var(--foreground);
-  font-size: 13px;
-}
+  .section-heading h2 {
+    font-size: 14px;
+    font-weight: 550;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+  }
 
-.activity-empty-desc {
-  color: var(--muted-foreground);
-  font-size: 11px;
-}
+  .activity-list {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--card);
+  }
 
-.activity-live-tag {
-  background-color: color-mix(in oklch, var(--success) 12%, transparent);
-  color: var(--success);
-  border-color: color-mix(in oklch, var(--success) 28%, transparent);
-}
+  .activity-row {
+    padding: 14px 19px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 150ms ease;
+  }
 
-.activity-nominal-tag {
-  background: var(--muted);
-  color: var(--muted-foreground);
-  border-color: var(--border);
+  .activity-row:hover {
+    background: var(--muted);
+  }
+
+  .activity-row:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  .activity-row:hover .activity-arrow {
+    color: var(--foreground);
+    transform: translateX(2px);
+  }
+
+  .activity-row:last-child {
+    border-bottom: 0;
+  }
+
+  .activity-row time {
+    margin-left: auto;
+    color: var(--muted-foreground);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .section-heading-icon {
+    color: var(--muted-foreground);
+    width: 16px;
+    height: 16px;
+  }
+
+  .tag-compact {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .view-ledger-btn {
+    color: var(--muted-foreground);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+  }
+
+  .view-ledger-btn:hover {
+    color: var(--foreground);
+  }
+
+  .activity-icon-wrap {
+    color: var(--muted-foreground);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .activity-actor {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  .activity-action-label {
+    color: var(--muted-foreground);
+  }
+
+  .activity-target {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  .tag-responsive {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .tag-responsive {
+      display: inline-flex;
+    }
+  }
+
+  .activity-arrow {
+    color: var(--muted-foreground);
+    width: 12px;
+    height: 12px;
+    transition:
+      transform 150ms ease,
+      color 150ms ease;
+  }
+
+  .activity-event-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .activity-empty {
+    color: var(--muted-foreground);
+    padding: 28px 16px;
+    text-align: center;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .activity-empty-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--primary);
+    opacity: 0.85;
+  }
+
+  .activity-empty-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .activity-empty-title {
+    font-weight: 550;
+    color: var(--foreground);
+    font-size: 13px;
+  }
+
+  .activity-empty-desc {
+    color: var(--muted-foreground);
+    font-size: 11px;
+  }
+
+  .activity-live-tag {
+    background-color: color-mix(in oklch, var(--success) 12%, transparent);
+    color: var(--success);
+    border-color: color-mix(in oklch, var(--success) 28%, transparent);
+  }
+
+  .activity-nominal-tag {
+    background: var(--muted);
+    color: var(--muted-foreground);
+    border-color: var(--border);
+  }
 }
