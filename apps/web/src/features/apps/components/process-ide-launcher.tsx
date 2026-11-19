@@ -9,6 +9,7 @@
 import React, { useState } from "react";
 import { Code2, ExternalLink, Loader2 } from "lucide-react";
 import { Button, toast } from "@devlab-portal/ui";
+import { UI_COPY } from "@/lib/ui-copy";
 import { useOpenIdeMutation } from "../api/supervisor";
 import type { SupportedIde } from "../types";
 
@@ -58,7 +59,7 @@ export const ProcessIdeLauncher: React.FC<ProcessIdeLauncherProps> = ({ appId, t
     <div className="process-ide-launcher-card">
       <div className="process-ide-title-row">
         <Code2 className="process-ide-icon" />
-        <span className="process-ide-title">Open in Host IDE</span>
+        <span className="process-ide-title">{UI_COPY.APPS.SUPERVISOR.IDE_HOST_TITLE}</span>
       </div>
       <div className="process-ide-btn-group">
         <Button
@@ -68,9 +69,9 @@ export const ProcessIdeLauncher: React.FC<ProcessIdeLauncherProps> = ({ appId, t
           disabled={openIdeMutation.isPending}
           onClick={() => handleLaunch("antigravity")}
           className="process-ide-btn antigravity-btn"
-          title="Open in Google Antigravity IDE"
+          title={UI_COPY.APPS.SUPERVISOR.IDE_ANTIGRAVITY_TITLE}
         >
-          <span>Antigravity</span>
+          <span>{UI_COPY.APPS.SUPERVISOR.IDE_ANTIGRAVITY_LABEL}</span>
           {activeIde === "antigravity" ? (
             <Loader2 className="ide-link-icon spin" />
           ) : (
@@ -84,9 +85,9 @@ export const ProcessIdeLauncher: React.FC<ProcessIdeLauncherProps> = ({ appId, t
           disabled={openIdeMutation.isPending}
           onClick={() => handleLaunch("vscode")}
           className="process-ide-btn"
-          title="Open in Visual Studio Code"
+          title={UI_COPY.APPS.SUPERVISOR.IDE_VSCODE_TITLE}
         >
-          <span>VS Code</span>
+          <span>{UI_COPY.APPS.SUPERVISOR.IDE_VSCODE_LABEL}</span>
           {activeIde === "vscode" ? (
             <Loader2 className="ide-link-icon spin" />
           ) : (

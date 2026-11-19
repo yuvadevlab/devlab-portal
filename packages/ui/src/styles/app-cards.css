@@ -224,10 +224,6 @@
   .app-action-deactivate,
   .app-action-kill {
     color: var(--destructive);
-  }
-
-  .app-card-deactivate-btn,
-  .app-card-kill-btn {
     transition:
       background-color 0.15s,
       color 0.15s;
@@ -242,9 +238,6 @@
   .app-action-activate,
   .app-action-revive {
     color: var(--primary);
-  }
-
-  .app-card-activate-btn {
     transition:
       background-color 0.15s,
       color 0.15s;

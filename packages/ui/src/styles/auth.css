@@ -72,6 +72,23 @@
     text-decoration: none;
   }
 
+  .dl-auth-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: var(--text-sm, 0.875rem);
+    transition: color 0.15s ease;
+  }
+
+  .dl-auth-link:hover {
+    text-decoration: underline;
+  }
+
+  .dl-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4, 1rem);
+  }
+
   .dl-auth-success-state {
     text-align: center;
     padding: var(--space-4, 1rem) 0;

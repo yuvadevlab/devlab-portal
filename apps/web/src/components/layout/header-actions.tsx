@@ -85,7 +85,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
                   <button
                     key={app.id || app.appId}
                     type="button"
-                    className="ecosystem-app-btn group"
+                    className="ecosystem-app-btn"
                     onClick={() => {
                       window.open(app.originUrl, "_blank", "noopener,noreferrer");
                       setActiveMenu("");

@@ -5,14 +5,25 @@
  */
 
 import { ImageResponse } from "next/og";
+import { UI_COPY } from "../lib/ui-copy";
 
 export const runtime = "nodejs";
-export const alt = "DevLab Portal — Ecosystem Control Plane";
-export const size = {
-  width: 1200,
-  height: 630,
-};
+export const alt = UI_COPY.COMMON.METADATA.OG_IMAGE_ALT;
+export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+const pillStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  padding: "10px 20px",
+  borderRadius: "12px",
+  background: "rgba(15, 23, 42, 0.8)",
+  border: "1px solid rgba(148, 163, 184, 0.2)",
+  fontSize: "16px",
+  fontWeight: 600,
+  color: "#e2e8f0",
+};
 
 /**
  * Generates dynamic 1200x630 social card for link previews across WhatsApp, Twitter, Slack, and Google.
@@ -68,13 +79,7 @@ export default function OpenGraphImage(): ImageResponse {
           zIndex: 10,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div
             style={{
               width: "48px",
@@ -103,14 +108,9 @@ export default function OpenGraphImage(): ImageResponse {
             </svg>
           </div>
           <span
-            style={{
-              fontSize: "26px",
-              fontWeight: 700,
-              letterSpacing: "-0.5px",
-              color: "#f8fafc",
-            }}
+            style={{ fontSize: "26px", fontWeight: 700, letterSpacing: "-0.5px", color: "#f8fafc" }}
           >
-            Yuva DevLab
+            {UI_COPY.COMMON.METADATA.AUTHOR}
           </span>
         </div>
 
@@ -128,7 +128,7 @@ export default function OpenGraphImage(): ImageResponse {
             letterSpacing: "0.5px",
           }}
         >
-          CONTROL PLANE
+          {UI_COPY.COMMON.BRAND.TITLE.toUpperCase()}
         </div>
       </div>
 
@@ -157,7 +157,7 @@ export default function OpenGraphImage(): ImageResponse {
             margin: 0,
           }}
         >
-          DevLab Portal
+          {UI_COPY.COMMON.BRAND.APP_NAME}
         </h1>
 
         <p
@@ -169,64 +169,18 @@ export default function OpenGraphImage(): ImageResponse {
             maxWidth: "760px",
           }}
         >
-          Unified Single Sign-On, IAM administration, and application control plane for the DevLab
-          ecosystem.
+          {UI_COPY.COMMON.METADATA.DESCRIPTION}
         </p>
 
         {/* Feature Pills */}
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            marginTop: "12px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "10px 20px",
-              borderRadius: "12px",
-              background: "rgba(15, 23, 42, 0.8)",
-              border: "1px solid rgba(148, 163, 184, 0.2)",
-              fontSize: "16px",
-              fontWeight: 600,
-              color: "#e2e8f0",
-            }}
-          >
+        <div style={{ display: "flex", gap: "16px", marginTop: "12px" }}>
+          <div style={pillStyle}>
             <span>🔒 Centralized SSO</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "10px 20px",
-              borderRadius: "12px",
-              background: "rgba(15, 23, 42, 0.8)",
-              border: "1px solid rgba(148, 163, 184, 0.2)",
-              fontSize: "16px",
-              fontWeight: 600,
-              color: "#e2e8f0",
-            }}
-          >
+          <div style={pillStyle}>
             <span>⚡ Zero-Trust IAM</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "10px 20px",
-              borderRadius: "12px",
-              background: "rgba(15, 23, 42, 0.8)",
-              border: "1px solid rgba(148, 163, 184, 0.2)",
-              fontSize: "16px",
-              fontWeight: 600,
-              color: "#e2e8f0",
-            }}
-          >
+          <div style={pillStyle}>
             <span>🌐 Ecosystem Mesh</span>
           </div>
         </div>
@@ -246,8 +200,8 @@ export default function OpenGraphImage(): ImageResponse {
           zIndex: 10,
         }}
       >
-        <span>Ecosystem Control Plane • DevLab Portal</span>
-        <span>yuva.devlab@gmail.com</span>
+        <span>{UI_COPY.COMMON.METADATA.OG_FOOTER_LEFT}</span>
+        <span>{UI_COPY.COMMON.METADATA.OG_FOOTER_RIGHT}</span>
       </div>
     </div>,
     {

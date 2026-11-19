@@ -42,6 +42,7 @@ export const PortalFooter: React.FC = () => {
       statusLabel={statusLabel}
       statusClass={statusClass}
       latencyMs={latencyMs}
+      latencySuffix={`${UI_COPY.COMMON.FOOTER.LATENCY_UNIT} ${UI_COPY.COMMON.FOOTER.LATENCY_SUFFIX}`}
       redisLabel={telemetry?.redisStatus}
       versionLabel={versionLabel}
       environmentLabel={envLabel}

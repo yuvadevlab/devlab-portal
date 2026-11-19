@@ -7,6 +7,7 @@
 import {
   AuthToastType,
   AuthQueryParamKey,
+  AuthPrompt,
   QueryParamValue,
   StorageKey,
   AuthFormField,
@@ -16,6 +17,7 @@ import {
 export {
   AuthToastType,
   AuthQueryParamKey,
+  AuthPrompt,
   QueryParamValue,
   StorageKey,
   AuthFormField,

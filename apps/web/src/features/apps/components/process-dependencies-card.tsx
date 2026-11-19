@@ -63,12 +63,12 @@ export const ProcessDependenciesCard: React.FC<ProcessDependenciesCardProps> = (
               {dep.running ? (
                 <span className="process-dep-badge running">
                   <span className="dep-dot" />
-                  Running
+                  {UI_COPY.APPS.SUPERVISOR.DEP_RUNNING}
                 </span>
               ) : (
                 <span className="process-dep-badge stopped">
                   <AlertTriangle className="dep-icon" />
-                  Stopped
+                  {UI_COPY.APPS.SUPERVISOR.DEP_STOPPED}
                 </span>
               )}
             </div>

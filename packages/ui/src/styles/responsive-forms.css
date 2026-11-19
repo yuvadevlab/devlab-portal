@@ -1,0 +1,128 @@
+/**
+ * @file packages/ui/src/styles/responsive-forms.css
+ * @description Responsive adaptations for modal dialogs, drawer panels, form inputs, and settings.
+ * Governed strictly under @layer dl-components (Rule 4: strictly under 250 lines).
+ */
+
+@layer dl-components {
+  @media (max-width: 680px) {
+    .audit-toolbar-filters {
+      width: 100%;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-select-wrap,
+    .audit-date-input {
+      width: 100%;
+    }
+
+    .filter-select-trigger,
+    .audit-date-input,
+    .form-field-input,
+    .form-field-input-mono,
+    .form-field-select {
+      height: 32px;
+      font-size: 12px;
+    }
+
+    .form-field-select span,
+    .dl-select-trigger span,
+    input::placeholder,
+    [data-placeholder] {
+      font-size: 12px;
+    }
+
+    .form-grid-2 {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .form-field-group {
+      gap: 4px;
+    }
+
+    .form-field-label {
+      font-size: 11px;
+    }
+
+    .modal-footer-btn,
+    .wizard-nav-btn {
+      height: 32px;
+      min-height: 32px;
+      font-size: 12px;
+      padding: 0 12px;
+    }
+
+    .settings-layout,
+    .settings-layout > div {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      min-width: 0;
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .secret-box-spread {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .secret-box-code,
+    .secret-box-pem {
+      min-width: 0;
+      max-width: 100%;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
+
+    .secret-box-pem {
+      font-size: 11px;
+      white-space: pre-wrap;
+    }
+
+    .benchmark {
+      gap: 2px;
+    }
+
+    .settings-key-value-row {
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .settings-val {
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
+
+    .app-drawer-content,
+    .supervisor-drawer-content {
+      max-width: 100vw !important;
+      width: 100vw !important;
+    }
+
+    .cmd-dialog-content,
+    .tenant-modal-content {
+      max-width: calc(100vw - 32px);
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-content {
+      padding: 16px 12px;
+    }
+
+    .metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .role-hierarchy-grid,
+    .settings-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

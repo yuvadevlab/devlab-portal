@@ -180,7 +180,11 @@ export const AuditTable: React.FC<AuditTableProps> = ({ logs }) => {
                   <TableCell className="cell-target">
                     {log.targetType}: {log.targetId.slice(0, 8)}…
                   </TableCell>
-                  <TableCell className="cell-ip">192.168.1.24</TableCell>
+                  <TableCell className="cell-ip">
+                    {(log.metadata?.ip as string) ||
+                      (log.metadata?.ipAddress as string) ||
+                      UI_COPY.AUDIT.TABLE.EMPTY_IP}
+                  </TableCell>
                   <TableCell className="cell-actions">
                     <Button
                       variant="ghost"

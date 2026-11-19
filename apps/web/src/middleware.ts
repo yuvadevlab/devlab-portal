@@ -7,7 +7,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isJwtExpired } from "@/lib/jwt";
 import { APP_ROUTES } from "@/lib/constants/routes";
-import { CookieKey, AuthQueryParamKey } from "@/lib/constants/enums";
+import { CookieKey, AuthQueryParamKey, AuthPrompt } from "@/lib/constants/enums";
 
 /** Public authentication routes accessible without an active session */
 const AUTH_ROUTES: ReadonlySet<string> = new Set<string>([
@@ -46,12 +46,13 @@ export function middleware(request: NextRequest): NextResponse {
   const isAuthRoute = AUTH_ROUTES.has(pathname);
 
   // Check for explicit re-authentication flags or upstream auth failure signals
-  const promptParam = request.nextUrl.searchParams.get("prompt");
+  const promptParam = request.nextUrl.searchParams.get(AuthQueryParamKey.PROMPT);
   const errorParam =
     request.nextUrl.searchParams.get(AuthQueryParamKey.ERROR) ||
     request.nextUrl.searchParams.get(AuthQueryParamKey.AUTH_ERROR) ||
     request.nextUrl.searchParams.get(AuthQueryParamKey.SESSION_EXPIRED);
-  const isForceReAuth = promptParam === "login" || promptParam === "consent" || Boolean(errorParam);
+  const isForceReAuth =
+    promptParam === AuthPrompt.LOGIN || promptParam === AuthPrompt.CONSENT || Boolean(errorParam);
 
   // 1. If explicit re-authentication is requested on auth routes, clear stale cookie and pass through to login form
   if (isAuthRoute && isForceReAuth) {

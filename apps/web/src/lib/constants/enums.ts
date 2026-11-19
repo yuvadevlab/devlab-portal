@@ -118,12 +118,21 @@ export enum AuthQueryParamKey {
   BRAND = "brand",
   REDIRECT = "redirect",
   TOKEN = "token",
+  ACCESS_TOKEN = "access_token",
+  PROMPT = "prompt",
   WELCOME = "welcome",
   AUTH_ERROR = "auth_error",
   ERROR_DESCRIPTION = "error_description",
   ERROR = "error",
   SIGNED_OUT = "signed_out",
   SESSION_EXPIRED = "session_expired",
+}
+
+/** Standard OpenID Connect / OAuth authentication prompt directives */
+export enum AuthPrompt {
+  LOGIN = "login",
+  SELECT_ACCOUNT = "select_account",
+  CONSENT = "consent",
 }
 
 /** Standard query parameter values for flags and state */
@@ -140,6 +149,7 @@ export enum StorageKey {
   AUTH_TOKEN = "devlab_auth_token",
   AUTH_USER = "devlab_auth_user",
   PORTAL_THEME = "portal-theme",
+  SSO_GUARD = "devlab_sso_handoff_guard",
 }
 
 /** Browser Cookie keys */

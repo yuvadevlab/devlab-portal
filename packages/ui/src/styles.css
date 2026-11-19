@@ -37,6 +37,7 @@
 @import "./styles/app-activity.css";
 @import "./styles/widgets-layout.css";
 @import "./styles/responsive.css";
+@import "./styles/responsive-forms.css";
 @import "./styles/auth.css";
 @import "./styles/toast.css";
 @import "./styles/supervisor-drawer.css";
