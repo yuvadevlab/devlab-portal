@@ -83,9 +83,14 @@
       --footer-padding-x: 16px;
       --page-padding-x: 16px;
       --page-padding-y: 16px;
-      --dialog-padding-x: var(--space-4, 1rem);
-      --dialog-padding-y: var(--space-4, 1rem);
-      --dialog-gap: var(--space-3, 0.75rem);
+      --dialog-padding-x: 14px;
+      --dialog-padding-y: 12px;
+      --dialog-gap: 8px;
+      --control-height-sm: 1.875rem;
+      --control-height-md: 2rem;
+      --control-height-lg: 2.25rem;
+      --input-height: 2rem;
+      --input-font-size: 12px;
     }
   }
 }
