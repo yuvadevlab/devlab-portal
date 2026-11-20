@@ -54,23 +54,18 @@ export function LoginForm(): React.JSX.Element {
 
     // Check for explicit re-auth / error flags
     const promptParam = searchParams.get(AuthQueryParamKey.PROMPT);
-    const errorParam =
+    const hasAuthError = Boolean(
       searchParams.get(AuthQueryParamKey.ERROR) ||
       searchParams.get(AuthQueryParamKey.AUTH_ERROR) ||
-      searchParams.get(AuthQueryParamKey.SESSION_EXPIRED);
+      searchParams.get(AuthQueryParamKey.SESSION_EXPIRED),
+    );
     const isForceReAuth =
-      promptParam === AuthPrompt.LOGIN || promptParam === AuthPrompt.CONSENT || Boolean(errorParam);
+      promptParam === AuthPrompt.LOGIN || promptParam === AuthPrompt.CONSENT || hasAuthError;
 
     if (isForceReAuth) {
       sessionStorage.removeItem(SSO_GUARD_KEY);
       purgeClientSession();
       setHandoff(null);
-      if (errorParam) {
-        toast.warning(AUTH_COPY.TOAST.SESSION_EXPIRED_TITLE, {
-          description: AUTH_COPY.TOAST.SESSION_EXPIRED_DESC,
-          duration: 5000,
-        });
-      }
       return;
     }
 
@@ -132,6 +127,8 @@ export function LoginForm(): React.JSX.Element {
             redirectToDestination(redirectParam, existingToken);
           }, 800);
           return () => clearTimeout(timer);
+        } else {
+          router.replace(APP_ROUTES.HOME);
         }
       } catch {
         // Backend rejected token (401 or invalid signature)

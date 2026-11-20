@@ -134,17 +134,23 @@ async function fetchJson<T>(endpoint: string, options: RequestInit = {}): Promis
   if (!res.ok) {
     if (res.status === 401) {
       if (typeof window !== "undefined") {
-        try {
-          window.sessionStorage.setItem(
-            StorageKey.PENDING_AUTH_TOAST,
-            JSON.stringify({
-              type: AuthToastType.WARNING,
-              title: AUTH_COPY.TOAST.SESSION_EXPIRED_TITLE,
-              description: AUTH_COPY.TOAST.SESSION_EXPIRED_DESC,
-            }),
-          );
-        } catch {
-          // Ignore session storage errors
+        const isAuthPage =
+          window.location.pathname === APP_ROUTES.LOGIN ||
+          window.location.pathname === APP_ROUTES.FORGOT_PASSWORD ||
+          window.location.pathname === APP_ROUTES.RESET_PASSWORD;
+        if (!isAuthPage) {
+          try {
+            window.sessionStorage.setItem(
+              StorageKey.PENDING_AUTH_TOAST,
+              JSON.stringify({
+                type: AuthToastType.WARNING,
+                title: AUTH_COPY.TOAST.SESSION_EXPIRED_TITLE,
+                description: AUTH_COPY.TOAST.SESSION_EXPIRED_DESC,
+              }),
+            );
+          } catch {
+            // Ignore session storage errors
+          }
         }
       }
       purgeClientSession();
