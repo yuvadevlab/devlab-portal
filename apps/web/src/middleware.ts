@@ -16,6 +16,17 @@ const AUTH_ROUTES: ReadonlySet<string> = new Set<string>([
   APP_ROUTES.RESET_PASSWORD,
 ]);
 
+/** Public marketing and documentation routes accessible without authentication */
+const PUBLIC_MARKETING_ROUTES: ReadonlySet<string> = new Set<string>([
+  APP_ROUTES.HOME,
+  APP_ROUTES.ECOSYSTEM,
+  APP_ROUTES.ARCHITECTURE,
+  APP_ROUTES.DEVELOPERS,
+  APP_ROUTES.ABOUT,
+  APP_ROUTES.PRIVACY_POLICY,
+  APP_ROUTES.TERMS_OF_SERVICE,
+]);
+
 /**
  * Edge middleware intercepting requests to enforce active session cookies.
  *
@@ -33,7 +44,10 @@ export function middleware(request: NextRequest): NextResponse {
     pathname.startsWith("/apple-icon") ||
     pathname === "/icon.svg" ||
     pathname === "/manifest.webmanifest" ||
-    pathname === "/robots.txt";
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml" ||
+    pathname === "/sitemap" ||
+    (pathname.endsWith(".html") && pathname.startsWith("/google"));
 
   if (isPublicAsset) {
     return NextResponse.next();
@@ -44,6 +58,7 @@ export function middleware(request: NextRequest): NextResponse {
   const isAuthenticated = Boolean(tokenValue && !isJwtExpired(tokenValue));
 
   const isAuthRoute = AUTH_ROUTES.has(pathname);
+  const isMarketingRoute = PUBLIC_MARKETING_ROUTES.has(pathname);
 
   // Check for explicit re-authentication flags or upstream auth failure signals
   const promptParam = request.nextUrl.searchParams.get(AuthQueryParamKey.PROMPT);
@@ -63,12 +78,10 @@ export function middleware(request: NextRequest): NextResponse {
     return response;
   }
 
-  // 2. Unauthenticated or expired users attempting to access protected routes get redirected to /login
-  if (!isAuthenticated && !isAuthRoute) {
+  // 2. Unauthenticated or expired users attempting to access protected internal routes get redirected to /login
+  if (!isAuthenticated && !isAuthRoute && !isMarketingRoute) {
     const loginUrl = new URL(APP_ROUTES.LOGIN, request.url);
-    if (pathname !== APP_ROUTES.HOME) {
-      loginUrl.searchParams.set(AuthQueryParamKey.REDIRECT, pathname);
-    }
+    loginUrl.searchParams.set(AuthQueryParamKey.REDIRECT, pathname);
     const response = NextResponse.redirect(loginUrl);
     if (tokenCookie) {
       response.cookies.delete(CookieKey.ACCESS_TOKEN);

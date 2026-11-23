@@ -1,0 +1,9 @@
+/**
+ * @file apps/web/src/features/marketing/styles/marketing.css
+ * @description Master aggregation stylesheet for DevLab Portal public marketing layer.
+ * Strictly adheres to 250-line limit and W3C Cascade Layers.
+ */
+
+@import "./marketing-header-hero.css";
+@import "./marketing-sections-cards.css";
+@import "./marketing-footer.css";
