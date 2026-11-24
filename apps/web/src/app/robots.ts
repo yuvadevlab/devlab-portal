@@ -5,15 +5,28 @@
  */
 
 import type { MetadataRoute } from "next";
+import { SITE_CONFIG } from "@/lib/constants/seo.constants";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://devlab-portal-self.vercel.app";
+  const baseUrl = SITE_CONFIG.BASE_URL;
 
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/login", "/forgot-password"],
-      disallow: ["/api/", "/iam/", "/settings/", "/audit/"],
+      allow: [
+        "/",
+        "/ecosystem",
+        "/architecture",
+        "/developers",
+        "/about",
+        "/login",
+        "/forgot-password",
+        "/privacy-policy",
+        "/terms-of-service",
+        "/icon.svg",
+        "/opengraph-image",
+      ],
+      disallow: ["/api/", "/iam/", "/settings/", "/audit/", "/team/", "/apps/"],
     },
     sitemap: `${baseUrl}/sitemap.xml`,
   };

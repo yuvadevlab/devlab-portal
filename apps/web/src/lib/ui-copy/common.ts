@@ -22,7 +22,7 @@ export const COMMON_COPY = {
       "Unified Single Sign-On, IAM administration, and application control plane for DevLab Micro-Frontend ecosystem.",
     SITE_NAME: "DevLab Portal",
     AUTHOR: "Yuva DevLab",
-    AUTHOR_URL: "https://devlab-portal-self.vercel.app",
+    AUTHOR_URL: "https://portal-yuvadevlab.vercel.app",
     KEYWORDS: [
       "DevLab",
       "Portal",
