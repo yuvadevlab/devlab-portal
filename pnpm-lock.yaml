@@ -294,14 +294,14 @@ importers:
         specifier: 7.10.0
         version: 7.10.0
       '@yuva-devlab/logger':
-        specifier: ^1.3.1
-        version: 1.3.1
+        specifier: ^1.3.3
+        version: 1.3.3
       '@yuva-devlab/regex':
         specifier: ^0.3.0
         version: 0.3.0
       '@yuva-devlab/supervisor':
-        specifier: ^0.3.4
-        version: 0.3.4
+        specifier: ^0.3.6
+        version: 0.3.6
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -403,8 +403,8 @@ importers:
         specifier: ^5.67.2
         version: 5.104.1(react@19.3.0)
       '@yuva-devlab/auth-client':
-        specifier: ^1.3.0
-        version: 1.3.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^1.3.2
+        version: 1.3.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       date-fns:
         specifier: ^4.1.0
         version: 4.4.0
@@ -455,8 +455,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
       '@yuva-devlab/ui':
-        specifier: ^4.0.1
-        version: 4.0.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(@yuva-devlab/tokens@2.2.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
+        specifier: ^4.1.1
+        version: 4.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(@yuva-devlab/tokens@2.2.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
       lucide-react:
         specifier: ^0.475.0
         version: 0.475.0(react@19.3.0)
@@ -3056,8 +3056,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  '@yuva-devlab/auth-client@1.3.0':
-    resolution: {integrity: sha512-XCaYq9kQydfESy+JBz+TLOW8MLcYpJZAWH0d6ebcpnxsJd+1yGMlDdWWwoVNAlpXjMBOk824xkJukjHJ3CbPlg==}
+  '@yuva-devlab/auth-client@1.3.2':
+    resolution: {integrity: sha512-Fn2oASUsxSTQv58bW69VDxzGYeqtEA/BMGjk+o6VU+SHiYOoHJ98bJrBA6dGwX0Q26zuphJjUXAIm5fYXuzJDw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -3065,20 +3065,20 @@ packages:
   '@yuva-devlab/errors@0.2.0':
     resolution: {integrity: sha512-eGunJ1eDbkGfEida3MJx9gaWRTeWjx/UPFUHUs+r7m++hkbShw4VKekaH5MMb7gIIc5sUmb4mESgir0TYnE30w==}
 
-  '@yuva-devlab/logger@1.3.1':
-    resolution: {integrity: sha512-cppWT5HUoIi6cZG6zhJC0HhEFjbdZyz5014cT24WP9hbDcNF0Be4VcI9A7Z4QbJFMlhSHkQxQzXt6k2ZRlR2OQ==}
+  '@yuva-devlab/logger@1.3.3':
+    resolution: {integrity: sha512-uXFLJcqXE7ivcWkPUhG7KWeHTkMar0EN7tCUnQ0bPkxWQsNWLWgEcAx5iBMKLG7ylI/CoAp4IFoTua3z4/HIug==}
 
   '@yuva-devlab/regex@0.3.0':
     resolution: {integrity: sha512-/vYCn3B9N7g4V8lSCFB7Cu5VqTsElMO+bY7TIXxi34IarmSvLJlMlrbC3SwWPxiZPpW4v/tFhWS42ewPXwMqeA==}
 
-  '@yuva-devlab/supervisor@0.3.4':
-    resolution: {integrity: sha512-7h+efuWNYxmSnu58KtI/F1jJculhcTeOEZ8+lTOZttMTznzJ2nRvumUkh11j54FyQDTLIMhsxfniRIp7jl4LeA==}
+  '@yuva-devlab/supervisor@0.3.6':
+    resolution: {integrity: sha512-yQJ1SDXFclQLORY/R3G6eNpFI+aanrZtuP1+m0q2AAKO9bnoJWLqlvFBwegcQMd6TaEXxcYMH0oilaNIwlBFNg==}
 
   '@yuva-devlab/tokens@2.2.0':
     resolution: {integrity: sha512-XUsVuiZeb1PT8GFNgLmzTAFqoL6D6LkoEtD8Odvy3IwycBZwfGpzqmg78RshBqfpemzz+eCr2wmmhDq2Lxhtgg==}
 
-  '@yuva-devlab/ui@4.0.1':
-    resolution: {integrity: sha512-WlYT/8Fb2SS4e/STROzpi74zfxNHAE4hDbaijZm92rCefO69p6QkDKLBJ+4BdGQ7naWLR+Grb4Jbm54sGZEJ9Q==}
+  '@yuva-devlab/ui@4.1.1':
+    resolution: {integrity: sha512-HznrDdv2/LYvicYEXLbYp+bDN3IURp8m2BtP5ydGFcMTCV8suKDIhiLR+W0YtyRNdUf+d3l0pK8JycH76gsFnQ==}
     peerDependencies:
       '@yuva-devlab/tokens': '>=2.2.0'
       react: ^19.0.0
@@ -9337,28 +9337,28 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@yuva-devlab/auth-client@1.3.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@yuva-devlab/auth-client@1.3.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@yuva-devlab/errors': 0.2.0
-      '@yuva-devlab/logger': 1.3.1
+      '@yuva-devlab/logger': 1.3.3
       lucide-react: 0.575.0(react@19.3.0)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
   '@yuva-devlab/errors@0.2.0': {}
 
-  '@yuva-devlab/logger@1.3.1': {}
+  '@yuva-devlab/logger@1.3.3': {}
 
   '@yuva-devlab/regex@0.3.0': {}
 
-  '@yuva-devlab/supervisor@0.3.4':
+  '@yuva-devlab/supervisor@0.3.6':
     dependencies:
-      '@yuva-devlab/logger': 1.3.1
+      '@yuva-devlab/logger': 1.3.3
       '@yuva-devlab/regex': 0.3.0
 
   '@yuva-devlab/tokens@2.2.0': {}
 
-  '@yuva-devlab/ui@4.0.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(@yuva-devlab/tokens@2.2.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))':
+  '@yuva-devlab/ui@4.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(@yuva-devlab/tokens@2.2.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))':
     dependencies:
       '@radix-ui/react-accordion': 1.2.21(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-alert-dialog': 1.1.24(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
