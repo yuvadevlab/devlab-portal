@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@yuva-devlab/tokens": "^2.2.0",
-    "@yuva-devlab/ui": "^4.0.1",
+    "@yuva-devlab/ui": "^4.1.1",
     "lucide-react": "^0.475.0"
   },
   "devDependencies": {
