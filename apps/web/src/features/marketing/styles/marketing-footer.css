@@ -1,0 +1,82 @@
+/**
+ * @file apps/web/src/features/marketing/styles/marketing-footer.css
+ * @description Semantic component styles for DevLab Portal marketing footer and responsive layout.
+ */
+
+@layer dl-components {
+  /* Footer */
+  .portal-mkt-footer {
+    border-top: 1px solid var(--dl-color-border-subtle, rgba(255, 255, 255, 0.08));
+    background-color: var(--dl-color-bg-canvas, #090d16);
+    padding: 4rem 0 2rem;
+  }
+
+  .portal-mkt-footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .portal-mkt-footer-desc {
+    color: var(--dl-color-text-secondary, #94a3b8);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-top: 0.75rem;
+    max-width: 320px;
+  }
+
+  .portal-mkt-footer .portal-mkt-brand-link svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .portal-mkt-footer-heading {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--dl-color-text-primary, #f1f5f9);
+    margin: 0 0 1rem;
+  }
+
+  .portal-mkt-footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .portal-mkt-footer-link {
+    font-size: 0.875rem;
+    color: var(--dl-color-text-secondary, #94a3b8);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .portal-mkt-footer-link:hover {
+    color: var(--dl-color-primary, #5ed8a9);
+  }
+
+  .portal-mkt-footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.8125rem;
+    color: var(--dl-color-text-tertiary, #64748b);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  @media (max-width: 868px) {
+    .portal-mkt-footer-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+}

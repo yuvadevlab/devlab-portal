@@ -16,7 +16,22 @@ export const APP_ROUTES = {
   AUDIT: "/audit",
   TEAM: "/team",
   SETTINGS: "/settings",
+  ECOSYSTEM: "/ecosystem",
+  ARCHITECTURE: "/architecture",
+  DEVELOPERS: "/developers",
+  ABOUT: "/about",
+  PRIVACY_POLICY: "/privacy-policy",
+  TERMS_OF_SERVICE: "/terms-of-service",
   TAB: (tab: string) => (tab === "apps" ? "/apps" : `/${tab}`),
+} as const;
+
+/** Canonical alias matching ecosystem conventions */
+export const ROUTES = {
+  ...APP_ROUTES,
+  MARKETING_ECOSYSTEM: APP_ROUTES.ECOSYSTEM,
+  MARKETING_ARCHITECTURE: APP_ROUTES.ARCHITECTURE,
+  MARKETING_DEVELOPERS: APP_ROUTES.DEVELOPERS,
+  MARKETING_ABOUT: APP_ROUTES.ABOUT,
 } as const;
 
 /** Backend REST API endpoints */
@@ -46,7 +61,15 @@ export const SOCKET_EVENTS = {
   AUDIT_LOGGED: "audit.logged",
 } as const;
 
-/** External documentation and repository links */
+/** External documentation, ecosystem applications, and repository links */
 export const EXTERNAL_ROUTES = {
-  DOCS: process.env.NEXT_PUBLIC_DOCS_URL,
+  DOCS: process.env.NEXT_PUBLIC_DOCS_URL || "https://github.com/yuvadevlab",
+  FIN_AI: process.env.NEXT_PUBLIC_FINAI_URL || "https://fin-ai-yuvadevlab.vercel.app",
+  ORCHESTR_AI:
+    process.env.NEXT_PUBLIC_ORCHESTRAI_URL || "https://orchestr-ai-yuvadevlab.vercel.app",
+  DEVLAB_GUARD: process.env.NEXT_PUBLIC_GUARD_URL || "https://guard-yuvadevlab.vercel.app",
+  DEVLAB_LOGS: process.env.NEXT_PUBLIC_LOGS_URL || "https://logs-yuvadevlab.vercel.app",
+  INCIDENT_AI:
+    process.env.NEXT_PUBLIC_INCIDENTAI_URL || "https://incident-ai-yuvadevlab.vercel.app",
+  PORTAL: process.env.NEXT_PUBLIC_APP_URL || "https://portal-yuvadevlab.vercel.app",
 } as const;

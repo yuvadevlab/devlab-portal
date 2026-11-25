@@ -11,9 +11,14 @@ import { QueryProvider } from "@/providers";
 import { AuthToastListener } from "@/features/auth";
 import { appearanceScript } from "@/lib/appearance-script";
 import { UI_COPY } from "@/lib/ui-copy";
+import {
+  SITE_CONFIG,
+  getOrganizationJsonLd,
+  getWebSiteJsonLd,
+} from "@/lib/constants/seo.constants";
 import "./globals.css";
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://devlab-portal-self.vercel.app";
+const appUrl = SITE_CONFIG.BASE_URL;
 
 export const viewport: Viewport = {
   themeColor: "#5ed8a9",
@@ -70,16 +75,30 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 /**
  * Root Server Layout wrapping the portal application in Design System and TanStack Query providers.
  */
 export default function RootLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
+  const organizationJsonLd = getOrganizationJsonLd();
+  const webSiteJsonLd = getWebSiteJsonLd();
+
   return (
     <html lang="en" data-brand="portal" data-theme="portal" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: appearanceScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
+        />
       </head>
       <body className="portal-root">
         <ConfigProvider brand="portal" defaultTheme="dark" storageKey="portal-theme">

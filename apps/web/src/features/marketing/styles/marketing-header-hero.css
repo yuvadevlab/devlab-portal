@@ -1,0 +1,215 @@
+/**
+ * @file apps/web/src/features/marketing/styles/marketing-header-hero.css
+ * @description Semantic component styles for DevLab Portal marketing header, navigation, and hero.
+ */
+
+@layer dl-components {
+  .portal-mkt-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--dl-color-bg-canvas, #090d16);
+    color: var(--dl-color-text-primary, #f1f5f9);
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .portal-mkt-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* Header */
+  .portal-mkt-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    border-bottom: 1px solid var(--dl-color-border-subtle, rgba(255, 255, 255, 0.08));
+    background-color: var(--dl-color-bg-surface-translucent, rgba(9, 13, 22, 0.85));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .portal-mkt-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+    gap: 1.5rem;
+  }
+
+  .portal-mkt-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+
+  .portal-mkt-brand-link svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .portal-mkt-brand-badge {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background-color: rgba(94, 216, 169, 0.15);
+    color: var(--dl-color-primary, #5ed8a9);
+    border: 1px solid rgba(94, 216, 169, 0.3);
+  }
+
+  .portal-mkt-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .portal-mkt-nav-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dl-color-text-secondary, #94a3b8);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .portal-mkt-nav-link:hover,
+  .portal-mkt-nav-link--active {
+    color: var(--dl-color-primary, #5ed8a9);
+  }
+
+  .portal-mkt-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .portal-mkt-header-actions svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+
+  .portal-mkt-mobile-btn {
+    display: none;
+  }
+
+  /* Hero Section */
+  .portal-mkt-hero {
+    position: relative;
+    padding: 5rem 0 4rem;
+    text-align: center;
+  }
+
+  .portal-mkt-hero-glow {
+    position: absolute;
+    top: -6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(94, 216, 169, 0.18) 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(48px);
+  }
+
+  .portal-mkt-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    background: rgba(94, 216, 169, 0.1);
+    color: var(--dl-color-primary, #5ed8a9);
+    border: 1px solid rgba(94, 216, 169, 0.25);
+    margin-bottom: 1.5rem;
+  }
+
+  .portal-mkt-badge-pill svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .portal-mkt-hero-title {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+    margin: 0 auto 1.25rem;
+  }
+
+  .portal-mkt-hero-accent {
+    background: linear-gradient(135deg, #5ed8a9 0%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .portal-mkt-hero-sub {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--dl-color-text-secondary, #94a3b8);
+    max-width: 760px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+  }
+
+  .portal-mkt-hero-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .portal-mkt-hero-actions svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+
+  .portal-mkt-trust-strip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: var(--dl-color-text-tertiary, #64748b);
+    font-size: 0.875rem;
+  }
+
+  .portal-mkt-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .portal-mkt-trust-item svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 868px) {
+    .portal-mkt-nav {
+      display: none;
+    }
+    .portal-mkt-mobile-btn {
+      display: inline-flex;
+    }
+  }
+}
